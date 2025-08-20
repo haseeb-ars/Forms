@@ -17,9 +17,24 @@ export default function PatientsPage(){
   },[currentUser]);
 
   useEffect(()=>{
-    fetchPatients(tenant).then(setRows).catch(()=>setError("Failed to load"))
-      .finally(()=>setLoading(false));
-  },[tenant]);
+    if (!tenant) {
+      setError(`No tenant found for user: ${currentUser?.name || 'Not logged in'}`);
+      setLoading(false);
+      return;
+    }
+    
+    console.log('Fetching patients for tenant:', tenant);
+    fetchPatients(tenant)
+      .then(data => {
+        console.log('Patients data received:', data);
+        setRows(data);
+      })
+      .catch(err => {
+        console.error('Error fetching patients:', err);
+        setError(`Failed to load: ${err.message || 'Unknown error'}`);
+      })
+      .finally(() => setLoading(false));
+  },[tenant, currentUser]);
 
   const downloadPdf = () => {
     // quick path: use browser print to PDF
@@ -29,10 +44,20 @@ export default function PatientsPage(){
   return (
     <div className="patients">
       <div className="patients__actions">
-        <button className="btn" onClick={()=>downloadPatientsXlsx(tenant)}>Download Excel</button>
+        <button className="btn" onClick={()=>downloadPatientsXlsx(tenant)} disabled={!tenant}>Download Excel</button>
         <button className="btn" onClick={downloadPdf}>Print to PDF</button>
       </div>
-      {loading ? <div>Loading…</div> : error ? <div>{error}</div> : (
+      
+      {/* Debug info */}
+      <div style={{ marginBottom: '1rem', padding: '0.5rem', background: '#f0f0f0', borderRadius: '0.25rem' }}>
+        <strong>Debug:</strong> User: {currentUser?.name || 'None'}, Tenant: {tenant || 'None'}
+      </div>
+      
+      {loading ? <div>Loading…</div> : error ? (
+        <div style={{ color: 'red', padding: '1rem', background: '#fee', borderRadius: '0.25rem' }}>
+          {error}
+        </div>
+      ) : (
         <div className="tablewrap">
           <table className="table">
             <thead>
@@ -47,17 +72,25 @@ export default function PatientsPage(){
               </tr>
             </thead>
             <tbody>
-              {rows.map(r => (
-                <tr key={r.id || `${r.name}-${r.created_at}`}>
-                  <td>{r.name}</td>
-                  <td>{r.dob ? String(r.dob).slice(0,10) : ""}</td>
-                  <td>{r.address}</td>
-                  <td>{r.contact_no || r.contactNo}</td>
-                  <td>{r.email}</td>
-                  <td>{r.service}</td>
-                  <td>{r.created_at ? new Date(r.created_at).toLocaleString() : r.date}</td>
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
+                    No patients found for tenant: {tenant}
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                rows.map(r => (
+                  <tr key={r.id || `${r.name}-${r.created_at}`}>
+                    <td>{r.name}</td>
+                    <td>{r.dob ? String(r.dob).slice(0,10) : ""}</td>
+                    <td>{r.address}</td>
+                    <td>{r.contact_no || r.contactNo}</td>
+                    <td>{r.email}</td>
+                    <td>{r.service}</td>
+                    <td>{r.created_at ? new Date(r.created_at).toLocaleString() : r.date}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

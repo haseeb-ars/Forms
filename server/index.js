@@ -9,7 +9,17 @@ import XLSX from 'xlsx';
 const { Pool } = pkg;
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow specific origins
+const allowed = [
+  "http://localhost:3000",
+  "http://localhost:4000", 
+  "https://haseeb-ars.github.io",
+  "https://haseeb-ars.github.io/Forms",
+  "https://forms.careplushealth.co.uk" // ✅ add this
+];
+
+app.use(cors({ origin: allowed }));
 app.use(express.json({ limit: '5mb' }));
 
 const pool = new Pool({

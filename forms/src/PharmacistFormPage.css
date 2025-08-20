@@ -1,0 +1,57 @@
+.pharmacist-form {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+button {
+  background-color: #06d6a0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .pharmacist-form {
+    max-width: 100%;
+    padding: 15px;
+    margin: 0;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  input, textarea, select {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pharmacist-form {
+    max-width: 700px;
+    padding: 25px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 12px 25px;
+    font-size: 16px;
+  }
+}

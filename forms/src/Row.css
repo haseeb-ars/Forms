@@ -1,0 +1,52 @@
+.row{display:grid;grid-template-columns:1fr 2fr;gap:.5rem;align-items:center}
+.row__label{font-size:12px;color:#374151}
+.row__value{min-height:28px;border-bottom:1px solid #d1d5db;padding-bottom:2px}
+.row__value--sig{display:flex;align-items:flex-end;height:32px}
+.row__sigimg{height:32px;object-fit:contain}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .row__label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .row__value {
+    min-height: 32px;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+  }
+  
+  .row__value--sig {
+    min-height: 60px;
+    border-radius: 0.5rem;
+  }
+  
+  .row__sigimg {
+    height: 50px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .row {
+    gap: 0.75rem;
+  }
+  
+  .row__label {
+    font-size: 13px;
+  }
+  
+  .row__value {
+    min-height: 30px;
+  }
+}

@@ -1,0 +1,28 @@
+.lf{display:block}
+.lf--span{grid-column:span 2}
+.lf__label{font-size:.9rem;color:#374151;margin-bottom:.25rem}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .lf {
+    margin-bottom: 1rem;
+  }
+  
+  .lf--span {
+    grid-column: span 1;
+  }
+  
+  .lf__label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .lf__label {
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+}

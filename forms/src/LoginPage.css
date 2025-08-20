@@ -1,0 +1,21 @@
+/* Login page layout */
+.login-shell{min-height:70vh;display:flex;align-items:center;justify-content:center;vertical-align: middle;padding:1rem}
+.login-card{width:100%;max-width:420px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:24px}
+.login-brand{display:flex;justify-content:center;margin-bottom:12px}
+.login-brand img{height:64px}
+.login-title{margin:0;text-align:center;font-size:1.5rem}
+.login-sub{text-align:center;margin:.25rem 0 1rem;color:#475569}
+.login-form{display:flex;flex-direction:column;gap:.75rem}
+.login-label{font-weight:600;color:#334155;font-size:.9rem;display:flex;flex-direction:column;gap:.25rem}
+.login-input{border:1px solid #e2e8f0;border-radius:10px;padding:.6rem .75rem;font-size:1rem}
+.login-input:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.login-btn{margin-top:.5rem;background:#FF5c00;color:#fff;border:none;border-radius:10px;padding:.7rem 1rem;font-weight:600;cursor:pointer}
+.login-btn:hover{filter:brightness(1.05)}
+.login-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:10px;padding:.5rem .75rem}
+.login-hint{margin-top:1rem;color:#64748b;text-align:center;font-size:.85rem}
+
+@media (max-width:480px){
+  .login-card{padding:16px;border-radius:12px}
+  .login-brand img{height:56px}
+  .login-title{font-size:1.25rem}
+}

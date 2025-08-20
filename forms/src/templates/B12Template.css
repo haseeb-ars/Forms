@@ -1,0 +1,122 @@
+/* B12 print-like template, aligned to your reference */
+.formdoc{background:#fff;border-radius:1rem;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:1.25rem;font-family:ui-sans-serif,system-ui;line-height:1.5;font-size:12px;color:#111827}
+.formdoc__header{display:flex;align-items:flex-start;gap:1rem}
+.formdoc__brand{color:#059669;font-weight:600;font-size:1.2rem}
+.formdoc__brand--light{font-weight:400}
+.formdoc__title{text-align:center;flex:1}
+.bold{font-weight:600}
+.muted{color:#6b7280}
+.formdoc__grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1rem}
+.formdoc__grid--mt{margin-top:1.25rem}
+.formdoc__col{display:flex;flex-direction:column;gap:.5rem}
+.formdoc__section{margin-top:1rem}
+.formdoc__reason{min-height:80px;border-top:1px solid #d1d5db;padding-top:.5rem;white-space:pre-wrap}
+.formdoc__consent{margin-top:.75rem;font-size:11px;font-style:italic;color:#374151}
+.formdoc__siggrid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:.75rem;align-items:end}
+.sigbox{height:96px;border:1px solid #d1d5db;border-radius:.5rem;display:flex;align-items:center;justify-content:center}
+.sigimg{max-height:90px;object-fit:contain}
+.datebox{height:32px;border:1px solid #d1d5db;border-radius:.5rem;display:flex;align-items:center;padding:0 .5rem}
+.placeholder{color:#9ca3af}
+.row{display:grid;grid-template-columns:220px 1fr;gap:.5rem}
+.row__label{font-weight:600}
+.row__value{border-bottom:1px solid #d1d5db;min-height:20px;display:flex;align-items:center}
+.row__value--sig{border:1px solid #d1d5db;border-radius:.5rem;min-height:96px}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .formdoc {
+    padding: 1rem;
+    font-size: 14px;
+    margin: 0.5rem;
+  }
+  
+  .formdoc__header {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .formdoc__header img {
+    width: 200px;
+    height: auto;
+  }
+  
+  .formdoc__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .formdoc__siggrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .row__label {
+    font-size: 14px;
+    margin-bottom: 0.25rem;
+  }
+  
+  .row__value {
+    min-height: 32px;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+  }
+  
+  .row__value--sig {
+    min-height: 80px;
+  }
+  
+  .sigbox {
+    height: 80px;
+  }
+  
+  .sigimg {
+    max-height: 70px;
+  }
+  
+  .datebox {
+    height: 40px;
+    padding: 0 0.75rem;
+  }
+  
+  .formdoc__reason {
+    min-height: 60px;
+  }
+  
+  .formdoc__consent {
+    font-size: 12px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .formdoc {
+    padding: 1.5rem;
+    font-size: 13px;
+  }
+  
+  .formdoc__header img {
+    width: 240px;
+  }
+  
+  .formdoc__grid {
+    gap: 1.5rem;
+  }
+  
+  .formdoc__siggrid {
+    gap: 1.5rem;
+  }
+  
+  .row {
+    grid-template-columns: 180px 1fr;
+    gap: 0.75rem;
+  }
+}

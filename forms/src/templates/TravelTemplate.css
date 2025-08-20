@@ -1,0 +1,106 @@
+.travel-template {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: white;
+  color: #333;
+  border: 2px solid #ccc;
+}
+
+.travel-template h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0077aa;
+}
+
+.template-section {
+  margin-bottom: 20px;
+}
+
+.template-section h2 {
+  color: #005577;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.template-section p {
+  margin: 5px 0;
+}
+
+.signature-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.signature-img {
+  width: 200px;
+  border: 1px solid #aaa;
+}
+
+.signature-placeholder {
+  width: 200px;
+  height: 80px;
+  border: 1px dashed #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 768px) {
+  .travel-template {
+    padding: 15px;
+    margin: 0.5rem;
+    border: 1px solid #ccc;
+  }
+  
+  .travel-template h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .template-section {
+    margin-bottom: 15px;
+  }
+  
+  .template-section h2 {
+    font-size: 1.2rem;
+  }
+  
+  .signature-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .signature-img,
+  .signature-placeholder {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  
+  .signature-placeholder {
+    height: 60px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .travel-template {
+    padding: 25px;
+  }
+  
+  .travel-template h1 {
+    font-size: 1.8rem;
+  }
+  
+  .signature-section {
+    gap: 30px;
+  }
+  
+  .signature-img,
+  .signature-placeholder {
+    width: 180px;
+  }
+}

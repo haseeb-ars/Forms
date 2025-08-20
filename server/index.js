@@ -28,13 +28,12 @@ const pool = new Pool({
 });
 
 async function ensureSchema(){
-  // Enable uuid function
-  await pool.query('create extension if not exists pgcrypto');
+  // Create tables without requiring extensions
   const tables = ['patients_wrp','patients_cpc','patients_247'];
   for (const t of tables){
     await pool.query(`
       create table if not exists ${t} (
-        id uuid primary key default gen_random_uuid(),
+        id bigserial primary key,
         name text,
         dob date,
         address text,
@@ -42,11 +41,9 @@ async function ensureSchema(){
         email text,
         service text,
         created_at timestamptz default now(),
-        upsert_key text
+        upsert_key text unique
       );
     `);
-    await pool.query(`alter table ${t} add column if not exists upsert_key text`);
-    await pool.query(`create unique index if not exists ${t}_upsert_key_idx on ${t}(upsert_key)`);
   }
 }
 
@@ -59,7 +56,7 @@ function tableForTenant(tenant){
   }
 }
 
-ensureSchema().catch(console.error);
+ensureSchema().catch((e)=>{ console.error('ensureSchema error', e); });
 
 app.get('/health', (req,res)=>res.json({ ok:true }));
 
@@ -78,7 +75,7 @@ app.post('/api/patients', async (req, res) => {
     );
     res.json({ ok: true, row: rows[0], deduped: true });
   } catch (e) {
-    console.error(e);
+    console.error('insert error', e);
     res.status(500).json({ ok: false, error: 'db_error' });
   }
 });
@@ -90,7 +87,7 @@ app.get('/api/patients', async (req, res) => {
     const { rows } = await pool.query(`select * from ${table} order by created_at desc limit 1000`);
     res.json({ ok: true, rows });
   } catch (e) {
-    console.error(e);
+    console.error('select error', e);
     res.status(500).json({ ok: false, error: 'db_error' });
   }
 });
@@ -108,7 +105,7 @@ app.get('/api/patients.xlsx', async (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename="patients.xlsx"');
     res.send(buffer);
   } catch (e) {
-    console.error(e);
+    console.error('export error', e);
     res.status(500).json({ ok: false, error: 'export_error' });
   }
 });

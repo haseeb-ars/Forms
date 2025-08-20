@@ -1,4 +1,4 @@
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:4000";
+const API_BASE = process.env.REACT_APP_API_BASE || (typeof window !== 'undefined' ? (window.__API_BASE__ || "http://localhost:4000") : "http://localhost:4000");
 
 export async function savePatientRow(row){
   const res = await fetch(`${API_BASE}/api/patients`, {

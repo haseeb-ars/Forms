@@ -48,10 +48,7 @@ export default function PatientsPage(){
         <button className="btn" onClick={downloadPdf}>Print to PDF</button>
       </div>
       
-      {/* Debug info */}
-      <div style={{ marginBottom: '1rem', padding: '0.5rem', background: '#f0f0f0', borderRadius: '0.25rem' }}>
-        <strong>Debug:</strong> User: {currentUser?.name || 'None'}, Tenant: {tenant || 'None'}
-      </div>
+    
       
       {loading ? <div>Loading…</div> : error ? (
         <div style={{ color: 'red', padding: '1rem', background: '#fee', borderRadius: '0.25rem' }}>

@@ -85,6 +85,7 @@
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  min-height: 100px;
 }
 
 .bento-card.service {
@@ -144,6 +145,7 @@
     padding: 16px;
     margin: 0.5rem;
   }
+  .bento-card { min-height: 96px; border-radius: 20px; }
   
   .bento-card.service:nth-child(1) {
     grid-column: 1;

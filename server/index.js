@@ -22,6 +22,7 @@ const allowed = [
 app.use(cors({ origin: allowed }));
 app.use(express.json({ limit: '5mb' }));
 
+console.log("DB_URL",process.env.DATABASE_URL)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.PGSSL === 'false' ? false : { rejectUnauthorized: false },

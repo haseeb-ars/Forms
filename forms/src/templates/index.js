@@ -7,6 +7,8 @@ import EarwaxTemplate from "../templates/EarwaxTemplate.jsx";
 import EarwaxReferralLetter from "../templates/EarwaxReferralLetter.jsx";
 import EarwaxConsent from "../templates/EarwaxConsent.jsx";
 import EarwaxTerms from "../templates/EarwaxTerms.jsx";
+import WeightlossTemplate from "./WeightlossTemplate.jsx";
+import CovidTemplate from "./CovidTemplate.jsx"
 
 const templates = {
   travel: TravelTemplate,
@@ -18,6 +20,8 @@ const templates = {
   earwax_referral: EarwaxReferralLetter,
   earwax_consent: EarwaxConsent,
   earwax_terms: EarwaxTerms,
+  weightloss: WeightlossTemplate,
+  covid: CovidTemplate
 };
 
 export default templates;

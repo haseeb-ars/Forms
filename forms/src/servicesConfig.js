@@ -1,27 +1,45 @@
 // src/servicesConfig.js
 export const services = [
-  {
-    id: "b12",
-    name: "B12 Injection",
-    color: "#FFD166",
-    patientFields: [
-      { name: "fullName", label: "Full Name", type: "text" },
-      { name: "dob", label: "Date of Birth", type: "date" },
-      { name: "telephone", label: "Contact Number", type: "text" },
-      { name: "email", label: "Email", type: "email" },
-      { name: "address", label: "Address", type: "text", span: true },
-      { name: "reasonB12", label: "Reason for B12 Injection", type: "textarea", span: true }
-    ],
-    pharmacistFields: [
-      { name: "drug", label: "Drug", type: "text" },
-      { name: "route", label: "Injection Site (Route)", type: "text" },
-      { name: "manufacturer", label: "Manufacturer", type: "text" },
-      { name: "batchAndExpiry", label: "Batch Number & Expiry", type: "text" },
-      { name: "adverseReactions", label: "Adverse Reactions", type: "text" },
-      { name: "datePharm", label: "Date Given", type: "date" }
-    ],
-    template: "B12Template"
-  },
+ {
+  id: "b12",
+  name: "B12 Injection",
+  color: "#FFD166",
+  patientFields: [
+    { name: "fullName", label: "Full Name", type: "text" },
+    { name: "dob", label: "Date of Birth", type: "date" },
+    { name: "telephone", label: "Contact Number", type: "text" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "address", label: "Address", type: "text", span: true },
+    { name: "reasonB12", label: "Reason for B12 Injection", type: "textarea", span: true },
+
+    // Missing patient fields
+    { name: "gpName", label: "GP Name", type: "text" },
+    { name: "gpAddress", label: "GP Address", type: "text", span: true },
+    { name: "emergencyContact", label: "Emergency Contact Name", type: "text" },
+    { name: "emergencyPhone", label: "Emergency Contact Number", type: "text" },
+    { name: "signaturePatient", label: "Patient Signature", type: "signature" },
+    { name: "dateSignedPatient", label: "Date Signed by Patient", type: "date" }
+  ],
+  pharmacistFields: [
+    { name: "drug", label: "Drug", type: "text" },
+    { name: "dose", label: "Dose", type: "text" }, // new
+    { name: "quantity", label: "Quantity", type: "text" }, // new
+    { name: "route", label: "Injection Site (Route)", type: "text" },
+    { name: "manufacturer", label: "Manufacturer", type: "text" },
+    { name: "batchAndExpiry", label: "Batch Number & Expiry", type: "text" },
+    { name: "adverseReactions", label: "Adverse Reactions", type: "text" },
+    { name: "datePharm", label: "Date Given", type: "date" },
+
+    // Missing pharmacist fields
+    { name: "pharmacistName", label: "Pharmacist Name", type: "text" },
+    { name: "pharmacistGPhC", label: "Pharmacist GPhC", type: "text" },
+    { name: "pharmacistSignature", label: "Pharmacist Signature", type: "signature" },
+    { name: "prescriber", label: "Prescriber Name", type: "text" },
+    { name: "prescriberGPhC", label: "Prescriber GPhC", type: "text" },
+    { name: "prescriberSignature", label: "Prescriber Signature", type: "signature" }
+  ],
+  template: "B12Template"
+},
   {
     id: "weightloss",
     name: "Weightloss",

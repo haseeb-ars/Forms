@@ -1,11 +1,33 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react"
+
 
 const STORAGE_KEY = "prefilled-form-app-v2";
+
+// 🔹 Auth users mapped to branch IDs
 const AUTH_USERS = [
-  { username: "WRP1", password: "wrp5678!", name: "Wilmslow Road Pharmacy" },
-  { username: "CPC1", password: "cpc5678!", name: "CarePlus Chemist" },
-  { username: "2471", password: "2475678!", name: "247 Pharmacy" },
+  { username: "WRP1", password: "wrp5678!", name: "Wilmslow Road Pharmacy", branchId: "wilmslow" },
+  { username: "CPC1", password: "cpc5678!", name: "CarePlus Chemist", branchId: "southport" },
+  { username: "2471", password: "2475678!", name: "247 Pharmacy", branchId: "pharmacy247" },
 ];
+
+// 🔹 Branch-specific configuration
+const BRANCH_CONFIG = {
+  wilmslow: {
+    logo: `${process.env.PUBLIC_URL}/logos/wilmslow.png`,
+    pharmacyName: "Wilmslow Road Pharmacy",
+    pharmacyAddress: "123 Wilmslow Road, Manchester, M14 XYZ",
+  },
+  southport: {
+    logo: `${process.env.PUBLIC_URL}/logos/southport.png`,
+    pharmacyName: "Care Plus Chemist",
+    pharmacyAddress: "34 Shakespeare Street, Southport, Merseyside, PR8 5AB",
+  },
+  liverpool: {
+    logo: `${process.env.PUBLIC_URL}/logos/liverpool.png`,
+    pharmacyName: "247 Pharmacy",
+    pharmacyAddress: "456 High Street, Liverpool, L1 123",
+  },
+};
 
 export const DEFAULT_PATIENT = {
   fullName: "",
@@ -31,8 +53,8 @@ export const DEFAULT_PHARM = {
   batchAndExpiry: "",
   adverseReactions: "",
   pointOfVariance: "",
-  pharmacyName: "Care Plus Chemist",
-  pharmacyAddress: "34 Shakespeare Street, Southport, Merseyside, PR8 5AB",
+  pharmacyName: "",
+  pharmacyAddress: "",
 };
 
 const AppCtx = createContext(null);
@@ -45,29 +67,37 @@ export function AppProvider({ children }) {
   const [formData, setFormData] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [branch, setBranch] = useState(null); // 🔹 NEW
   const [isHydrated, setIsHydrated] = useState(false);
   const [apiBase] = useState(process.env.REACT_APP_API_BASE || "http://localhost:4000");
 
-  // Load saved auth data from localStorage on mount (do NOT hydrate form fields)
+  // Load saved auth data
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
       if (saved) {
-        // Optional: retain selected form type if you want
         if (saved.selectedFormType) setSelectedFormType(saved.selectedFormType);
         if (saved.auth) {
           setIsAuthenticated(!!saved.auth.isAuthenticated);
           setCurrentUser(saved.auth.currentUser || null);
+
+          // Restore branch config
+          if (saved.auth.currentUser?.branchId) {
+            setBranch(BRANCH_CONFIG[saved.auth.currentUser.branchId]);
+            setPharm((prev) => ({
+              ...prev,
+              pharmacyName: BRANCH_CONFIG[saved.auth.currentUser.branchId].pharmacyName,
+              pharmacyAddress: BRANCH_CONFIG[saved.auth.currentUser.branchId].pharmacyAddress,
+            }));
+          }
         }
       }
     } catch {}
-    // Always clear any persisted form values on fresh load
     setPatient(DEFAULT_PATIENT);
-    setPharm(DEFAULT_PHARM);
     setIsHydrated(true);
   }, []);
 
-  // Persist only auth (and optionally selected form type). Do not persist form fields
+  // Persist only auth + form type
   useEffect(() => {
     const id = setTimeout(() => {
       try {
@@ -92,13 +122,23 @@ export function AppProvider({ children }) {
     updateFormData();
   }, [updateFormData]);
 
+  // 🔹 Login function sets branch info
   const login = (username, password) => {
     const found = AUTH_USERS.find(
       (u) => u.username === username && u.password === password
     );
     if (found) {
       setIsAuthenticated(true);
-      setCurrentUser({ username: found.username, name: found.name });
+      setCurrentUser({ username: found.username, name: found.name, branchId: found.branchId });
+
+      const branchConfig = BRANCH_CONFIG[found.branchId];
+      setBranch(branchConfig);
+      setPharm((prev) => ({
+        ...prev,
+        pharmacyName: branchConfig.pharmacyName,
+        pharmacyAddress: branchConfig.pharmacyAddress,
+      }));
+
       return { ok: true };
     }
     return { ok: false, error: "Invalid username or password" };
@@ -107,6 +147,7 @@ export function AppProvider({ children }) {
   const logout = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
+    setBranch(null);
   };
 
   return (
@@ -122,6 +163,7 @@ export function AppProvider({ children }) {
         setFormData,
         isAuthenticated,
         currentUser,
+        branch, // 🔹 branch info available here
         isHydrated,
         login,
         logout,

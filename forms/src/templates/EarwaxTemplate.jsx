@@ -4,6 +4,7 @@ import "./EarwaxTemplate.css";
 export default function EarwaxTemplate({ data }) {
   return (
     <div className="template earwax-template">
+      <img src="/Logo3.png" alt="CarePlus Logo" width={300} />
       <h1>Earwax Removal Consent Form</h1>
 
       <section className="template-section">

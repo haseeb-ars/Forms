@@ -4,6 +4,7 @@ import "./CovidTemplate.css";
 export default function CovidTemplate({ data }) {
   return (
     <div className="template covid-template">
+      <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
       <h1>COVID-19 Vaccination Consent Form</h1>
 
       <section className="template-section">

@@ -4,6 +4,8 @@ import "./FluTemplate.css";
 export default function FluTemplate({ data }) {
   return (
     <div className="template flu-template">
+      <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
+
       <h1>Flu Vaccination Consent Form</h1>
 
       <section className="template-section">

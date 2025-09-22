@@ -147,6 +147,7 @@ export const services = [
       { name: "dob", label: "Date of Birth", type: "date" },
       { name: "telephone", label: "Contact Number", type: "text" },
       { name: "address", label: "Address", type: "text", span: true },
+      { name: "surgeryName", label: "Surgery Name", type: "text" },
       { name: "nhsNumber", label: "NHS Number", type: "text" },
       { name: "allergies", label: "Allergies", type: "textarea", span: true },
       { name: "hadCovid", label: "Had Covid Before", type: "select", options: ["Yes", "No"] },
@@ -157,6 +158,7 @@ export const services = [
       { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },
       { name: "doseNumber", label: "Dose Number", type: "select", options: ["1", "2", "3", "Booster"] },
       { name: "dateGiven", label: "Date Given", type: "date" },
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
       { name: "batchNumber", label: "Batch Number", type: "text" },
       { name: "site", label: "Injection Site", type: "text" }
     ],

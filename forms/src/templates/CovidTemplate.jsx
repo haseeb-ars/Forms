@@ -13,6 +13,8 @@ export default function CovidTemplate({ data }) {
         <p><strong>Contact Number:</strong> {data.telephone}</p>
         <p><strong>Address:</strong> {data.address}</p>
         <p><strong>NHS Number:</strong> {data.nhsNumber}</p>
+         <p><strong>Surgery Name:</strong> {data.surgeryName}</p>
+        
       </section>
 
       <section className="template-section">
@@ -28,6 +30,7 @@ export default function CovidTemplate({ data }) {
         <p><strong>Vaccine Brand:</strong> {data.vaccineBrand}</p>
         <p><strong>Dose Number:</strong> {data.doseNumber}</p>
         <p><strong>Date Given:</strong> {data.dateGiven}</p>
+        <p><strong>Expiry Date:</strong> {data.dateExpiry}</p>
         <p><strong>Batch Number:</strong> {data.batchNumber}</p>
         <p><strong>Injection Site:</strong> {data.site}</p>
       </section>

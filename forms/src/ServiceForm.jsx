@@ -95,6 +95,32 @@ export default function ServiceForm({ serviceKey, fields, nextPath }) {
         </div>
       )}
 
+
+
+{/* Prescriber Signature */}
+{fields.signatures?.prescriber && (
+  <div className="grid grid--2 mt items-end service-form__signature">
+    <div>
+      <div className="label">Prescriber Signature</div>
+      <SignatureBox
+        value={pharm.prescriberSignature}
+        onChange={v => setPharmField("prescriberSignature", v)}
+      />
+    </div>
+    <LabeledField label="Date">
+      <input
+        type="date"
+        className="input"
+        value={pharm.datePrescriber || ""}
+        onChange={e => setPharmField("datePrescriber", e.target.value)}
+      />
+    </LabeledField>
+  </div>
+)}
+
+
+
+
       {/* Actions */}
       <div className="page__actions">
         <Link to="/" className="btn">Home</Link>

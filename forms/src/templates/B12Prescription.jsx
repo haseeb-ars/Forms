@@ -29,7 +29,7 @@ export default function B12Prescription({ data = {} }){
       <div className="formdoc__section" style={{ textAlign: 'left', maxWidth: 520 }}>
         <div className="row"><div className="row__label">PRESCRIBER:</div><div className="row__value"><span>{safe(data.prescriber) || "Mr James Pendlebury"}</span></div></div>
         <div className="row"><div className="row__label">GPhC:</div><div className="row__value"><span>{safe(data.prescriberGPhC) || "2211954"}</span></div></div>
-        <div className="row"><div className="row__label">SIGNATURE:</div><div className="row__value row__value--sig">{data.pharmacistSignature ? <img src={data.pharmacistSignature} alt="Signature" className="sigimg" /> : <span className="placeholder">No signature</span>}</div></div>
+        <div className="row"><div className="row__label">SIGNATURE:</div><div className="row__value row__value--sig">{data.prescriberSignature ? <img src={data.prescriberSignature} alt="Signature" className="sigimg" /> : <span className="placeholder">No signature</span>}</div></div>
         <div className="row"><div className="row__label">DATE:</div><div className="row__value"><span>{safe(data.datePharm)}</span></div></div>
       </div>
 

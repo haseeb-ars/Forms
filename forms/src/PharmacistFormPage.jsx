@@ -24,6 +24,8 @@ export default function PharmacistFormPage() {
   return (
     <form className="pharmacist-form" onSubmit={handleSubmit}>
       <h2>{service.name} – Pharmacist Form</h2>
+
+      {/* Map through basic fields */}
       <div className="grid grid--2">
         {service.pharmacistFields.map(f => (
           <LabeledField key={f.name} label={f.label} span={f.span}>
@@ -59,6 +61,7 @@ export default function PharmacistFormPage() {
         ))}
       </div>
 
+      {/* Pharmacist Signature */}
       <div className="grid grid--2 mt items-end">
         <div>
           <div className="label">Pharmacist Signature</div>
@@ -77,7 +80,25 @@ export default function PharmacistFormPage() {
         </LabeledField>
       </div>
 
-      <button type="submit" className="btn btn--primary" style={{ marginTop: 16 }}>Preview</button>
+      {/* Prescriber Signature */}
+      <div className="grid grid--2 mt items-end">
+        <div>
+          <div className="label">Prescriber Signature</div>
+          <SignatureBox
+            value={pharm.prescriberSignature}
+            onChange={v => setPharmField("prescriberSignature", v)}
+          />
+        </div>
+        
+      </div>
+
+      <button
+        type="submit"
+        className="btn btn--primary"
+        style={{ marginTop: 16 }}
+      >
+        Preview
+      </button>
     </form>
   );
 }

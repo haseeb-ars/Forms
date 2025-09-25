@@ -64,13 +64,16 @@ export default function B12Template({ data = {} }) {
 
       <div className="formdoc__grid formdoc__grid--mt">
         <div className="formdoc__col">
-          <div className="row"><div className="row__label">PHARMACIST NAME & GPHC:</div><div className="row__value"><span>{safe(data.pharmacistNameGPhC)}</span></div></div>
+          <div className="row"><div className="row__label">PHARMACIST NAME:</div><div className="row__value"><span>{safe(data.pharmacistName)}</span></div></div>
+          <div className="row"><div className="row__label">PHARMACIST GPHC:</div><div className="row__value"><span>{safe(data.pharmacistGPhc)}</span></div></div>
           <div className="row"><div className="row__label">PHARMACIST SIGNATURE:</div><div className="row__value row__value--sig">{data.pharmacistSignature ? <img src={data.pharmacistSignature} alt="Pharmacist Signature" className="sigimg" /> : <span className="placeholder">No signature</span>}</div></div>
           <div className="row"><div className="row__label">DATE:</div><div className="row__value"><span>{safe(data.datePharm)}</span></div></div>
           <div className="row"><div className="row__label">DRUG:</div><div className="row__value"><span>{safe(data.drug)}</span></div></div>
-          <div className="row"><div className="row__label">ROUTE:</div><div className="row__value"><span>I.M &nbsp; Left / Right &nbsp; {safe(data.route)}</span></div></div>
+          <div className="row"><div className="row__label">Injection Type:</div><div className="row__value"><span> {safe(data.injectionType)}</span></div></div>
+          <div className="row"><div className="row__label">ROUTE:</div><div className="row__value"><span> {safe(data.route)}</span></div></div>
           <div className="row"><div className="row__label">MANUFACTURER:</div><div className="row__value"><span>{safe(data.manufacturer)}</span></div></div>
-          <div className="row"><div className="row__label">BATCH NUMBER & EXPIRY:</div><div className="row__value"><span>{safe(data.batchAndExpiry)}</span></div></div>
+          <div className="row"><div className="row__label">BATCH NUMBER</div><div className="row__value"><span>{safe(data.batchNumber)}</span></div></div>
+          <div className="row"><div className="row__label">EXPIRY:</div><div className="row__value"><span>{safe(data.expiry)}</span></div></div>
         </div>
         <div className="formdoc__col">
           <div className="row"><div className="row__label">PHARMACY NAME:</div><div className="row__value"><span>{safe(data.pharmacyName)}</span></div></div>

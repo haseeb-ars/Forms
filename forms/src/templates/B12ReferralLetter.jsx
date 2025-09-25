@@ -42,8 +42,9 @@ export default function B12ReferralLetter({ data = {} }){
       <div className="formdoc__section" style={{ textAlign: 'center' }}>
         <div className="row"><div className="row__label">DATE:</div><div className="row__value"><span>{safe(data.datePharm)}</span></div></div>
         <div className="row"><div className="row__label">DRUG:</div><div className="row__value"><span>{safe(data.drug)}</span></div></div>
-        <div className="row"><div className="row__label">DOSAGE:</div><div className="row__value"><span>{safe(data.dose) || "1000mcg"}</span></div></div>
-        <div className="row"><div className="row__label">ROUTE:</div><div className="row__value"><span>{safe(data.route) || "I.M"}</span></div></div>
+        <div className="row"><div className="row__label">DOSAGE:</div><div className="row__value"><span>{safe(data.dose)}</span></div></div>
+        <div className="row"><div className="row__label">ROUTE:</div><div className="row__value"><span>{safe(data.route)}</span></div></div>
+        <div className="row"><div className="row__label">INJECTION TYPE:</div><div className="row__value"><span>{safe(data.injectionType)}</span></div></div>
       </div>
     </div>
   );

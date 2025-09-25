@@ -15,17 +15,17 @@ const BRANCH_CONFIG = {
   wilmslow: {
     logo: `${process.env.PUBLIC_URL}/logos/wilmslow.png`,
     pharmacyName: "Wilmslow Road Pharmacy",
-    pharmacyAddress: "123 Wilmslow Road, Manchester, M14 XYZ",
+    pharmacyAddress: "480 Wilmslow Rd, Withington, Manchester M20 3BG",
   },
   southport: {
     logo: `${process.env.PUBLIC_URL}/logos/southport.png`,
     pharmacyName: "Care Plus Chemist",
-    pharmacyAddress: "34 Shakespeare Street, Southport, Merseyside, PR8 5AB",
+    pharmacyAddress: "34 Shakespeare St, Southport PR8 5AB",
   },
   liverpool: {
     logo: `${process.env.PUBLIC_URL}/logos/liverpool.png`,
     pharmacyName: "247 Pharmacy",
-    pharmacyAddress: "456 High Street, Liverpool, L1 123",
+    pharmacyAddress: "15 Stuart Rd, Waterloo, Liverpool L22 4QR",
   },
 };
 

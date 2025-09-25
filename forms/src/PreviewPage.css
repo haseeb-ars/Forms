@@ -4,6 +4,42 @@
     margin-bottom: .75rem
 }
 
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 5mm;   /* smaller left/right margins */
+  }
+
+  .pdf-generator .formdoc,
+  .pdf-generator .flu-template,
+  .pdf-generator .travel-template,
+  .pdf-generator .covid-template,
+  .pdf-generator .weightloss-template,
+  .pdf-generator .earwax-template {
+    width: 200mm !important;     /* closer to full A4 width */
+    max-width: 200mm !important;
+    margin: 0 auto !important;   /* center on page */
+    padding: 8mm 5mm !important; /* smaller inner padding */
+    box-sizing: border-box !important;
+    background: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Tighten grids */
+  .formdoc__grid,
+  .formdoc__siggrid {
+    gap: 6mm !important;
+  }
+
+  .row {
+    grid-template-columns: 55mm 1fr !important;
+    gap: 3mm !important;
+  }
+}
+
+
+/* ---------------- NORMAL SCREEN STYLES ---------------- */
 .formdoc {
     background: #fff;
     border-radius: 1rem;
@@ -36,9 +72,8 @@
     flex: 1
 }
 
-.bold {
-    font-weight: 600
-}
+.bold { font-weight: 600 }
+.muted { color: #6b7280 }
 
 .formdoc__grid {
     display: grid;
@@ -47,19 +82,11 @@
     margin-top: 1rem
 }
 
-.formdoc__grid--mt {
-    margin-top: 1.25rem
-}
+.formdoc__grid--mt { margin-top: 1.25rem }
 
-.formdoc__col {
-    display: flex;
-    flex-direction: column;
-    gap: .5rem
-}
+.formdoc__col { display: flex; flex-direction: column; gap: .5rem }
 
-.formdoc__section {
-    margin-top: 1rem
-}
+.formdoc__section { margin-top: 1rem }
 
 .formdoc__reason {
     min-height: 80px;
@@ -97,9 +124,7 @@
     object-fit: contain
 }
 
-.placeholder {
-    color: #9ca3af
-}
+.placeholder { color: #9ca3af }
 
 .datebox {
     height: 32px;
@@ -110,10 +135,6 @@
     padding: 0 .5rem
 }
 
-.muted {
-    color: #6b7280
-}
-
 /* Tabs */
 .tabs { display:flex; gap:.5rem; margin: 0 0 .75rem 0; }
 
@@ -121,7 +142,7 @@
 
 .tab--active { background:#7ebf41; border-color:#7ebf41; color:#fff; }
 
-/* PDF Generation Styles - Always Desktop Layout */
+/* PDF Generation Styles - Always Desktop Layout (screen only) */
 .pdf-generator .formdoc {
     padding: 1.25rem !important;
     font-size: 12px !important;
@@ -135,214 +156,24 @@
     margin: 0 !important
 }
 
-.pdf-generator .formdoc__header {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 1rem !important;
-    flex-direction: row !important;
-    text-align: left !important
-}
-
-.pdf-generator .formdoc__header img {
-    width: 280px !important;
-    height: auto !important
-}
-
-.pdf-generator .formdoc__grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.25rem !important;
-    margin-top: 1rem !important
-}
-
-.pdf-generator .formdoc__siggrid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.25rem !important;
-    margin-top: .75rem !important;
-    align-items: end !important
-}
-
-.pdf-generator .row {
-    display: grid !important;
-    grid-template-columns: 220px 1fr !important;
-    gap: .5rem !important;
-    align-items: center !important;
-    margin-bottom: 0 !important
-}
-
-.pdf-generator .row__label {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-    margin-bottom: 0 !important
-}
-
-.pdf-generator .row__value {
-    min-height: 20px !important;
-    padding: 0 !important;
-    border-bottom: 1px solid #d1d5db !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    display: flex !important;
-    align-items: center !important
-}
-
-.pdf-generator .sigbox {
-    height: 96px !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: .5rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important
-}
-
-.pdf-generator .datebox {
-    height: 32px !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: .5rem !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 .5rem !important
-}
-
-.pdf-generator .sigimg {
-    max-height: 90px !important;
-    object-fit: contain !important
-}
-
-/* PDF styles for Flu, Travel, Covid, Weightloss, Earwax templates */
-.pdf-generator .flu-template,
-.pdf-generator .travel-template,
-.pdf-generator .covid-template,
-.pdf-generator .weightloss-template,
-.pdf-generator .earwax-template {
-    padding: 20px !important;
-    background: white !important;
-    color: #333 !important;
-    border: 2px solid #ccc !important;
-    font-family: Arial, sans-serif !important;
-    width: 800px !important;
-    max-width: none !important;
-    margin: 0 !important
-}
-
-.pdf-generator .flu-template h1,
-.pdf-generator .travel-template h1,
-.pdf-generator .covid-template h1,
-.pdf-generator .weightloss-template h1,
-.pdf-generator .earwax-template h1 {
-    text-align: center !important;
-    margin-bottom: 20px !important;
-    font-size: 1.5rem !important
-}
-
-.pdf-generator .template-section {
-    margin-bottom: 20px !important
-}
-
-.pdf-generator .template-section h2 {
-    color: inherit !important;
-    border-bottom: 1px solid #ddd !important;
-    padding-bottom: 5px !important;
-    font-size: 1.2rem !important
-}
-
-.pdf-generator .signature-section {
-    display: flex !important;
-    justify-content: space-between !important;
-    gap: 20px !important;
-    flex-direction: row !important
-}
-
-.pdf-generator .signature-img,
-.pdf-generator .signature-placeholder {
-    width: 200px !important;
-    margin: 0 !important
-}
-
-.pdf-generator .signature-placeholder {
-    height: 80px !important;
-    border: 1px dashed #aaa !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #777 !important
-}
-
-/* Responsive Design - Mobile First */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .preview__actions {
-        flex-direction: column;
-        gap: .5rem;
-        margin-bottom: 1rem
-    }
-
-    .formdoc {
-        padding: 1rem;
-        font-size: 14px;
-        margin: .5rem
-    }
-
-    .formdoc__header {
-        flex-direction: column;
-        gap: .5rem;
-        text-align: center
-    }
-
-    .formdoc__header img {
-        width: 200px;
-        height: auto
-    }
-
-    .formdoc__grid {
-        grid-template-columns: 1fr;
-        gap: 1rem
-    }
-
-    .formdoc__siggrid {
-        grid-template-columns: 1fr;
-        gap: 1rem
-    }
-
-    .sigbox {
-        height: 80px
-    }
-
-    .sigimg {
-        max-height: 70px
-    }
-
-    .datebox {
-        height: 40px;
-        padding: 0 .75rem
-    }
-
-    .formdoc__reason {
-        min-height: 60px
-    }
-
-    .formdoc__consent {
-        font-size: 12px
-    }
+    .preview__actions { flex-direction: column; gap: .5rem; margin-bottom: 1rem }
+    .formdoc { padding: 1rem; font-size: 14px; margin: .5rem }
+    .formdoc__header { flex-direction: column; gap: .5rem; text-align: center }
+    .formdoc__header img { width: 200px; height: auto }
+    .formdoc__grid { grid-template-columns: 1fr; gap: 1rem }
+    .formdoc__siggrid { grid-template-columns: 1fr; gap: 1rem }
+    .sigbox { height: 80px }
+    .sigimg { max-height: 70px }
+    .datebox { height: 40px; padding: 0 .75rem }
+    .formdoc__reason { min-height: 60px }
+    .formdoc__consent { font-size: 12px }
 }
 
-/* Tablet Styles */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .formdoc {
-        padding: 1.5rem;
-        font-size: 13px
-    }
-
-    .formdoc__header img {
-        width: 240px
-    }
-
-    .formdoc__grid {
-        gap: 1.5rem
-    }
-
-    .formdoc__siggrid {
-        gap: 1.5rem
-    }
+    .formdoc { padding: 1.5rem; font-size: 13px }
+    .formdoc__header img { width: 240px }
+    .formdoc__grid { gap: 1.5rem }
+    .formdoc__siggrid { gap: 1.5rem }
 }

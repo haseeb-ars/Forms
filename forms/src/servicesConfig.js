@@ -24,9 +24,11 @@ export const services = [
     { name: "drug", label: "Drug", type: "text" },
     { name: "dose", label: "Dose", type: "text" }, // new
     { name: "quantity", label: "Quantity", type: "text" }, // new
-    { name: "route", label: "Injection Site (Route)", type: "text" },
+    { name: "injectionType", label: "Injection Type", type: "select", options: ["IM", "SC"] },
+    { name: "route", label: "Injection Site (Route)", type: "select", options: ["Left Arm", "Right Arm", "Left Thigh", "Right Thigh"] },
     { name: "manufacturer", label: "Manufacturer", type: "text" },
-    { name: "batchAndExpiry", label: "Batch Number & Expiry", type: "text" },
+    { name: "batchNumber", label: "Batch Number", type: "text" },
+    { name: "expiry", label: "Expiry", type: "date" },
     { name: "adverseReactions", label: "Adverse Reactions", type: "text" },
     { name: "datePharm", label: "Date Given", type: "date" },
 

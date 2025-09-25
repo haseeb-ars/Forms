@@ -60,61 +60,54 @@ export default function PreviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Download as PDF with desktop template layout
 const downloadPDF = async () => {
   if (!previewRef.current) return;
 
-  // Create a temporary container for PDF generation
   const tempContainer = document.createElement('div');
   tempContainer.className = 'pdf-generator';
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
   tempContainer.style.top = '0';
-  tempContainer.style.width = '800px'; // Desktop width
   tempContainer.style.background = '#fff';
   tempContainer.style.padding = '20px';
-  
-  // Clone the preview content
+
   const clonedContent = previewRef.current.cloneNode(true);
-  
-  // Add the cloned content to the temporary container
   tempContainer.appendChild(clonedContent);
   document.body.appendChild(tempContainer);
-  
+
   try {
-    // Generate PDF from the desktop-styled content
+    // Use natural container width instead of hardcoding 800px
     const canvas = await html2canvas(tempContainer, { 
       scale: 2,
-      width: 800,
-      height: tempContainer.scrollHeight,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff'
     });
-    
+
     const imgData = canvas.toDataURL("image/png");
-    
     const pdf = new jsPDF("p", "pt", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();   // ~595pt
+    const pdfHeight = pdf.internal.pageSize.getHeight(); // ~842pt
+
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-    
+
+    // Scale so image fits inside A4 width
+    const ratio = pdfWidth / imgWidth;
     let heightLeft = imgHeight * ratio;
     let position = 0;
-    
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth * ratio, imgHeight * ratio);
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight * ratio);
     heightLeft -= pdfHeight;
-    
+
     while (heightLeft > 0) {
       position = heightLeft - imgHeight * ratio;
       pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth * ratio, imgHeight * ratio);
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight * ratio);
       heightLeft -= pdfHeight;
     }
-    
+
     const fname = isB12
       ? (activeB12?.pdfName || "form.pdf")
       : isEarwax
@@ -122,7 +115,6 @@ const downloadPDF = async () => {
       : "form.pdf";
     pdf.save(fname);
   } finally {
-    // Clean up the temporary container
     document.body.removeChild(tempContainer);
   }
 };

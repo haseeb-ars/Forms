@@ -69,7 +69,7 @@ export default function B12Template({ data = {} }) {
           <div className="row"><div className="row__label">PHARMACIST SIGNATURE:</div><div className="row__value row__value--sig">{data.pharmacistSignature ? <img src={data.pharmacistSignature} alt="Pharmacist Signature" className="sigimg" /> : <span className="placeholder">No signature</span>}</div></div>
           <div className="row"><div className="row__label">DATE:</div><div className="row__value"><span>{safe(data.datePharm)}</span></div></div>
           <div className="row"><div className="row__label">DRUG:</div><div className="row__value"><span>{safe(data.drug)}</span></div></div>
-          <div className="row"><div className="row__label">Injection Type:</div><div className="row__value"><span> {safe(data.injectionType)}</span></div></div>
+          <div className="row"><div className="row__label">INJECTION TYPE:</div><div className="row__value"><span> {safe(data.injectionType)}</span></div></div>
           <div className="row"><div className="row__label">ROUTE:</div><div className="row__value"><span> {safe(data.route)}</span></div></div>
           <div className="row"><div className="row__label">MANUFACTURER:</div><div className="row__value"><span>{safe(data.manufacturer)}</span></div></div>
           <div className="row"><div className="row__label">BATCH NUMBER</div><div className="row__value"><span>{safe(data.batchNumber)}</span></div></div>

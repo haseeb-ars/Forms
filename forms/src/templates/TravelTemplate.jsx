@@ -4,7 +4,8 @@ import "./TravelTemplate.css";
 export default function TravelTemplate({ data }) {
   return (
     <div className="template travel-template">
-      <h1>Travel Clinic Consent Form</h1>
+          <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
+      <h1>Travel Vaccination Form</h1>
 
       <section className="template-section">
         <h2>Patient Details</h2>
@@ -26,6 +27,10 @@ export default function TravelTemplate({ data }) {
         <p><strong>Existing Conditions:</strong> {data.conditions}</p>
         <p><strong>Allergies:</strong> {data.allergies}</p>
         <p><strong>Required Vaccinations:</strong> {data.vaccinations}</p>
+        <p><strong>Date Given:</strong> {data.dateGiven}</p>
+        <p><strong>Date Expiry:</strong> {data.dateExpiry}</p>
+        <p><strong>Batch Number:</strong> {data.batchNumber}</p>
+        <p><strong>Injection Site:</strong> {data.site}</p>
       </section>
 
       <section className="template-section signature-section">

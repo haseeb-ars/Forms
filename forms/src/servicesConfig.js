@@ -181,7 +181,11 @@ export const services = [
       { name: "purpose", label: "Purpose of Travel", type: "text" },
       { name: "conditions", label: "Existing Conditions", type: "textarea", span: true },
       { name: "allergies", label: "Allergies", type: "textarea", span: true },
-      { name: "vaccinations", label: "Required Vaccinations", type: "textarea", span: true }
+      { name: "vaccinations", label: "Required Vaccinations", type: "textarea", span: true },
+            { name: "dateGiven", label: "Date Given", type: "date" },
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
+      { name: "batchNumber", label: "Batch Number", type: "text" },
+      { name: "site", label: "Injection Site", type: "text" }
     ],
     template: "TravelTemplate"
   }

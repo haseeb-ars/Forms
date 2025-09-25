@@ -1,30 +1,77 @@
-.earwaxdoc { font-family: Arial, sans-serif; background: #fff; color: #111; padding: 24px; }
+.earwaxdoc {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #111;
+  padding: 24px;
+  max-width: 190mm;        /* fit nicely inside A4 */
+  margin: 0 auto;          /* center on page */
+  box-sizing: border-box;
+}
+
 .earwaxdoc__header { display: flex; justify-content: space-between; align-items: center; }
 .earwaxdoc__header--center { justify-content: center; }
-.earwaxdoc__logo { width: 220px; }
-.earwaxdoc__title { margin: 12px 0 16px; text-align: left; }
+.earwaxdoc__logo { width: 180px; } /* slightly smaller for balance */
+.earwaxdoc__title { margin: 12px 0 16px; text-align: center; } /* center title */
+
 .earwaxdoc__meta { display: flex; justify-content: space-between; margin: 24px 0; }
-.earwaxdoc__block { white-space: pre-wrap; max-width: 360px; }
+.earwaxdoc__block { white-space: pre-wrap; max-width: 100%; } /* allow full width */
+
 .earwaxdoc__salutation { margin: 24px 0; }
 .earwaxdoc__body { margin: 16px 0 24px; line-height: 1.5; }
-.earwaxdoc__image { margin: 24px 0; }
-.earwaxdoc__photo { width: 360px; border: 1px solid #999; }
-.earwaxdoc__placeholder { width: 360px; height: 220px; border: 1px dashed #bbb; }
+
+.earwaxdoc__image { margin: 24px 0; text-align: center; }
+.earwaxdoc__photo,
+.earwaxdoc__placeholder {
+  width: 100%;
+  max-width: 100%;         /* use full available space */
+  border: 1px solid #999;
+  height: auto;
+}
+
+.earwaxdoc__placeholder {
+  min-height: 220px;
+  border: 1px dashed #bbb;
+}
+
 .earwaxdoc__signature { margin: 24px 0; }
-.earwaxdoc__sigimg { width: 260px; border: 1px solid #999; }
-.earwaxdoc__sigplaceholder { width: 260px; height: 90px; border: 1px dashed #bbb; display:flex; align-items:center; justify-content:center; color:#777; }
+.earwaxdoc__sigimg,
+.earwaxdoc__sigplaceholder {
+  width: 100%;             /* take full width */
+  max-width: 100%;
+  border: 1px solid #999;
+}
+
+.earwaxdoc__sigplaceholder {
+  height: 90px;
+  border: 1px dashed #bbb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#777;
+}
+
 .earwaxdoc__closing { margin-top: 24px; }
 .earwaxdoc__paragraphs p { margin: 10px 0; }
 .earwaxdoc__subtitle { margin-top: 16px; }
 .earwaxdoc__qa { margin-top: 12px; }
-.earwaxdoc__q { display: flex; justify-content: space-between; border-bottom: 1px dotted #ccc; padding: 6px 0; }
+
+.earwaxdoc__q {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dotted #ccc;
+  padding: 6px 0;
+}
 .earwaxdoc__q--sub { padding-left: 16px; font-size: 0.95em; }
+
 .earwaxdoc--terms { padding-top: 12px; }
 .earwaxdoc__details > div { margin: 8px 0; }
 
-@media (max-width: 800px){
+/* Responsive adjustments */
+@media (max-width: 800px) {
   .earwaxdoc__meta { flex-direction: column; gap: 16px; }
-  .earwaxdoc__photo, .earwaxdoc__placeholder { width: 100%; max-width: 360px; }
+  .earwaxdoc__photo, .earwaxdoc__placeholder,
+  .earwaxdoc__sigimg, .earwaxdoc__sigplaceholder {
+    width: 100%;
+    max-width: 100%;
+  }
 }
-
-

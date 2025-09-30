@@ -10,7 +10,8 @@ import { savePatientRow } from "./api";
 import ReactDOMServer from "react-dom/server";
 
 export default function PreviewPage() {
-  const { patient, pharm, currentUser } = useApp();
+  // pull everything needed from context (include branch so templates using it won't crash)
+  const { patient, pharm, currentUser, branch } = useApp();
   const { id } = useParams();
   const previewRef = useRef();
   const initialTab = id === "b12" ? "admin" : id === "earwax" ? "ref" : "single";
@@ -69,73 +70,84 @@ export default function PreviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Generate a single PDF
-  const generatePDF = async (Comp, fileName) => {
-    const tempContainer = document.createElement("div");
-    tempContainer.className = "pdf-generator";
-    tempContainer.style.position = "absolute";
-    tempContainer.style.left = "-9999px";
-    tempContainer.style.top = "0";
-    tempContainer.style.background = "#fff";
-    tempContainer.style.padding = "20px";
+  // Generate a single PDF (stable via useCallback)
+  const generatePDF = useCallback(
+    async (Comp, fileName) => {
+      const tempContainer = document.createElement("div");
+      tempContainer.className = "pdf-generator";
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.top = "0";
+      tempContainer.style.background = "#fff";
+      tempContainer.style.padding = "20px";
 
-    const htmlString = ReactDOMServer.renderToString(
-      <AppContext.Provider value={{ patient, pharm, currentUser }}>
-        <Comp data={{ ...patient, ...pharm }} />
-      </AppContext.Provider>
-    );
-    tempContainer.innerHTML = htmlString;
-    document.body.appendChild(tempContainer);
+      const htmlString = ReactDOMServer.renderToString(
+        <AppContext.Provider value={{ patient, pharm, currentUser, branch }}>
+          <Comp data={{ ...patient, ...pharm }} />
+        </AppContext.Provider>
+      );
+      tempContainer.innerHTML = htmlString;
+      document.body.appendChild(tempContainer);
 
-    try {
-      const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
+      try {
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: "#ffffff",
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "pt", "a4");
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const ratio = pdfWidth / canvas.width;
-      const scaledHeight = canvas.height * ratio;
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const ratio = pdfWidth / canvas.width;
+        const scaledHeight = canvas.height * ratio;
 
-      let heightLeft = scaledHeight;
-      let position = 0;
+        let heightLeft = scaledHeight;
+        let position = 0;
 
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
-      heightLeft -= pdfHeight;
-
-      const pagePaddingTop = 30;
-      const pagePaddingBottom = 30;
-
-      while (heightLeft > 0) {
-        position = -(scaledHeight - heightLeft) + pagePaddingTop;
-        pdf.addPage();
+        // First page
         pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
-        heightLeft -= pdfHeight - (pagePaddingTop + pagePaddingBottom);
+        heightLeft -= pdfHeight;
+
+        // Add gentle padding around page breaks
+        const pagePaddingTop = 30;
+        const pagePaddingBottom = 30;
+
+        while (heightLeft > 0) {
+          position = -(scaledHeight - heightLeft) + pagePaddingTop;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
+          heightLeft -= pdfHeight - (pagePaddingTop + pagePaddingBottom);
+        }
+
+        const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
+        pdf.save(`${safeName}-${fileName}`);
+      } finally {
+        document.body.removeChild(tempContainer);
       }
+    },
+    [patient, pharm, currentUser, branch]
+  );
 
-      const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
-      pdf.save(`${safeName}-${fileName}`);
-    } finally {
-      document.body.removeChild(tempContainer);
-    }
-  };
-
-  // ✅ useCallback so ESLint is satisfied
-// ✅ Clean deps so ESLint passes
-const downloadPDFs = useCallback(async () => {
-  if (isB12) {
-    for (const tab of b12Tabs) {
-      await generatePDF(tab.Comp, tab.pdfName);
-    }
-  } else if (isEarwax) {
-    for (const tab of earwaxTabs) {
-      await generatePDF(tab.Comp, tab.pdfName);
-    }
-  } else {
-    await generatePDF(Template, "form.pdf");
-  }
-}, [isB12, isEarwax, b12Tabs, earwaxTabs, Template]);
-
+  // Download all PDFs (stable and depends on generatePDF)
+  const downloadPDFs = useCallback(
+    async () => {
+      if (isB12) {
+        for (const tab of b12Tabs) {
+          await generatePDF(tab.Comp, tab.pdfName);
+        }
+      } else if (isEarwax) {
+        for (const tab of earwaxTabs) {
+          await generatePDF(tab.Comp, tab.pdfName);
+        }
+      } else {
+        await generatePDF(Template, "form.pdf");
+      }
+    },
+    [isB12, isEarwax, b12Tabs, earwaxTabs, Template, generatePDF]
+  );
 
   // Auto-download all PDFs once
   useEffect(() => {

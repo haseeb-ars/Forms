@@ -121,19 +121,21 @@ export default function PreviewPage() {
   };
 
   // ✅ useCallback so ESLint is satisfied
-  const downloadPDFs = useCallback(async () => {
-    if (isB12) {
-      for (const tab of b12Tabs) {
-        await generatePDF(tab.Comp, tab.pdfName);
-      }
-    } else if (isEarwax) {
-      for (const tab of earwaxTabs) {
-        await generatePDF(tab.Comp, tab.pdfName);
-      }
-    } else {
-      await generatePDF(Template, "form.pdf");
+// ✅ Clean deps so ESLint passes
+const downloadPDFs = useCallback(async () => {
+  if (isB12) {
+    for (const tab of b12Tabs) {
+      await generatePDF(tab.Comp, tab.pdfName);
     }
-  }, [isB12, isEarwax, b12Tabs, earwaxTabs, Template, patient, pharm, currentUser, generatePDF]);
+  } else if (isEarwax) {
+    for (const tab of earwaxTabs) {
+      await generatePDF(tab.Comp, tab.pdfName);
+    }
+  } else {
+    await generatePDF(Template, "form.pdf");
+  }
+}, [isB12, isEarwax, b12Tabs, earwaxTabs, Template]);
+
 
   // Auto-download all PDFs once
   useEffect(() => {

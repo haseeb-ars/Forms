@@ -69,7 +69,7 @@ export default function PreviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Generate single PDF
+  // Generate a single PDF
   const generatePDF = async (Comp, fileName) => {
     const tempContainer = document.createElement("div");
     tempContainer.className = "pdf-generator";
@@ -120,7 +120,7 @@ export default function PreviewPage() {
     }
   };
 
-  // ✅ Wrap in useCallback so lint is happy
+  // ✅ useCallback so ESLint is satisfied
   const downloadPDFs = useCallback(async () => {
     if (isB12) {
       for (const tab of b12Tabs) {
@@ -133,7 +133,7 @@ export default function PreviewPage() {
     } else {
       await generatePDF(Template, "form.pdf");
     }
-  }, [isB12, isEarwax, b12Tabs, earwaxTabs, Template, patient, pharm, currentUser]);
+  }, [isB12, isEarwax, b12Tabs, earwaxTabs, Template, patient, pharm, currentUser, generatePDF]);
 
   // Auto-download all PDFs once
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function PreviewPage() {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [autoDownloaded, downloadPDFs]); // ✅ include downloadPDFs
+  }, [autoDownloaded, downloadPDFs]);
 
   const downloadExcel = () => {
     const data = [{ ...patient, ...pharm }];

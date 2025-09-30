@@ -1,49 +1,95 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useApp } from "./AppContext.jsx";
+import { useApp, AppContext } from "./AppContext.jsx"; // ⬅️ bring in AppContext
 import templates from "./templates";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from "xlsx";
 import "./PreviewPage.css";
 import { savePatientRow } from "./api";
+import ReactDOMServer from "react-dom/server";
 
 export default function PreviewPage() {
   const { patient, pharm, currentUser } = useApp();
   const { id } = useParams();
   const previewRef = useRef();
-  const initialTab = id === 'b12' ? 'admin' : id === 'earwax' ? 'ref' : 'single';
+  const initialTab = id === "b12" ? "admin" : id === "earwax" ? "ref" : "single";
   const [activeTab, setActiveTab] = useState(initialTab);
   const [savedOnce, setSavedOnce] = useState(false);
+  const [autoDownloaded, setAutoDownloaded] = useState(false);
 
-  // For b12 and earwax, render multiple documents; otherwise single template
-  const isB12 = id === 'b12';
-  const isEarwax = id === 'earwax';
+  const isB12 = id === "b12";
+  const isEarwax = id === "earwax";
   const Template = templates[id] || templates.b12;
 
-  const b12Tabs = useMemo(() => ([
-    { key: "admin", label: "Administration", Comp: templates.b12, pdfName: "b12-administration.pdf", xlsxName: "b12-administration.xlsx" },
-    { key: "ref", label: "GP Letter", Comp: templates.b12_referral, pdfName: "b12-gp-letter.pdf", xlsxName: "b12-gp-letter.xlsx" },
-    { key: "rx", label: "Prescription", Comp: templates.b12_prescription, pdfName: "b12-prescription.pdf", xlsxName: "b12-prescription.xlsx" },
-  ]), []);
-  const activeB12 = isB12 ? (b12Tabs.find(t => t.key === activeTab) || b12Tabs[0]) : null;
+  const b12Tabs = useMemo(
+    () => [
+      {
+        key: "admin",
+        label: "Administration",
+        Comp: templates.b12,
+        pdfName: "b12-administration.pdf",
+        xlsxName: "b12-administration.xlsx",
+      },
+      {
+        key: "ref",
+        label: "GP Letter",
+        Comp: templates.b12_referral,
+        pdfName: "b12-gp-letter.pdf",
+        xlsxName: "b12-gp-letter.xlsx",
+      },
+      {
+        key: "rx",
+        label: "Prescription",
+        Comp: templates.b12_prescription,
+        pdfName: "b12-prescription.pdf",
+        xlsxName: "b12-prescription.xlsx",
+      },
+    ],
+    []
+  );
 
-  const earwaxTabs = useMemo(() => ([
-    { key: 'ref', label: 'GP Referral Letter', Comp: templates.earwax_referral, pdfName: 'earwax-gp-referral.pdf', xlsxName: 'earwax-gp-referral.xlsx' },
-    { key: 'terms', label: 'Terms & Conditions', Comp: templates.earwax_terms, pdfName: 'earwax-terms.pdf', xlsxName: 'earwax-terms.xlsx' },
-    { key: 'consent', label: 'Consent', Comp: templates.earwax_consent, pdfName: 'earwax-consent.pdf', xlsxName: 'earwax-consent.xlsx' },
-  ]), []);
-  const activeEarwax = isEarwax ? (earwaxTabs.find(t => t.key === activeTab) || earwaxTabs[0]) : null;
+  const earwaxTabs = useMemo(
+    () => [
+      {
+        key: "ref",
+        label: "GP Referral Letter",
+        Comp: templates.earwax_referral,
+        pdfName: "earwax-gp-referral.pdf",
+        xlsxName: "earwax-gp-referral.xlsx",
+      },
+      {
+        key: "terms",
+        label: "Terms & Conditions",
+        Comp: templates.earwax_terms,
+        pdfName: "earwax-terms.pdf",
+        xlsxName: "earwax-terms.xlsx",
+      },
+      {
+        key: "consent",
+        label: "Consent",
+        Comp: templates.earwax_consent,
+        pdfName: "earwax-consent.pdf",
+        xlsxName: "earwax-consent.xlsx",
+      },
+    ],
+    []
+  );
 
-  // Template is guaranteed by fallback in templates map
+  const activeB12 = isB12 ? b12Tabs.find((t) => t.key === activeTab) : null;
+  const activeEarwax = isEarwax ? earwaxTabs.find((t) => t.key === activeTab) : null;
 
-  // Auto-save on first render
+  // Auto-save patient row
   useEffect(() => {
     if (savedOnce) return;
     const row = {
-      tenant: (currentUser?.name || '').toUpperCase().includes('WILMSLOW') ? 'WRP' :
-              (currentUser?.name || '').toUpperCase().includes('CAREPLUS') ? 'CPC' :
-              (currentUser?.name || '').toUpperCase().includes('247') ? '247' : '',
+      tenant: (currentUser?.name || "").toUpperCase().includes("WILMSLOW")
+        ? "WRP"
+        : (currentUser?.name || "").toUpperCase().includes("CAREPLUS")
+        ? "CPC"
+        : (currentUser?.name || "").toUpperCase().includes("247")
+        ? "247"
+        : "",
       name: patient.fullName || "",
       dob: patient.dob || "",
       address: patient.address || "",
@@ -52,97 +98,134 @@ export default function PreviewPage() {
       service: id,
       date: new Date().toISOString(),
     };
-    // small debounce in case component mounts twice (StrictMode)
-    const timer = setTimeout(()=>{
-      savePatientRow(row).then(()=>setSavedOnce(true)).catch(()=>{});
+    const timer = setTimeout(() => {
+      savePatientRow(row)
+        .then(() => setSavedOnce(true))
+        .catch(() => {});
     }, 200);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-const downloadPDF = async () => {
-  if (!previewRef.current) return;
+  const generatePDF = async (Comp, fileName) => {
+    const tempContainer = document.createElement("div");
+    tempContainer.className = "pdf-generator";
+    tempContainer.style.position = "absolute";
+    tempContainer.style.left = "-9999px";
+    tempContainer.style.top = "0";
+    tempContainer.style.background = "#fff";
+    tempContainer.style.padding = "20px";
 
-  const tempContainer = document.createElement('div');
-  tempContainer.className = 'pdf-generator';
-  tempContainer.style.position = 'absolute';
-  tempContainer.style.left = '-9999px';
-  tempContainer.style.top = '0';
-  tempContainer.style.background = '#fff';
-  tempContainer.style.padding = '20px';
+    // Wrap with AppContext.Provider so useApp() works inside templates
+    const htmlString = ReactDOMServer.renderToString(
+      <AppContext.Provider value={{ patient, pharm, currentUser }}>
+        <Comp data={{ ...patient, ...pharm }} />
+      </AppContext.Provider>
+    );
+    tempContainer.innerHTML = htmlString;
 
-  const clonedContent = previewRef.current.cloneNode(true);
-  tempContainer.appendChild(clonedContent);
-  document.body.appendChild(tempContainer);
+    document.body.appendChild(tempContainer);
 
-  try {
-    // Use natural container width instead of hardcoding 800px
-    const canvas = await html2canvas(tempContainer, { 
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff'
-    });
+    try {
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+      });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "pt", "a4");
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();   // ~595pt
-    const pdfHeight = pdf.internal.pageSize.getHeight(); // ~842pt
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
 
-    // Scale so image fits inside A4 width
-    const ratio = pdfWidth / imgWidth;
-    let heightLeft = imgHeight * ratio;
-    let position = 0;
+      const ratio = pdfWidth / imgWidth;
+      const scaledHeight = imgHeight * ratio;
 
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight * ratio);
-    heightLeft -= pdfHeight;
+      let heightLeft = scaledHeight;
+      let position = 0;
 
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight * ratio;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight * ratio);
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
       heightLeft -= pdfHeight;
+
+      const pagePaddingTop = 30;
+      const pagePaddingBottom = 30;
+
+      while (heightLeft > 0) {
+        position = -(scaledHeight - heightLeft) + pagePaddingTop;
+
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
+
+        heightLeft -= pdfHeight - (pagePaddingTop + pagePaddingBottom);
+      }
+
+      const safeName = patient.fullName
+        ? patient.fullName.replace(/\s+/g, "_")
+        : "form";
+      pdf.save(`${safeName}-${fileName}`);
+    } finally {
+      document.body.removeChild(tempContainer);
     }
+  };
 
-    const fname = isB12
-      ? (activeB12?.pdfName || "form.pdf")
-      : isEarwax
-      ? (activeEarwax?.pdfName || "form.pdf")
-      : "form.pdf";
-    pdf.save(fname);
-  } finally {
-    document.body.removeChild(tempContainer);
-  }
-};
+  const downloadPDFs = async () => {
+    if (isB12) {
+      for (const tab of b12Tabs) {
+        await generatePDF(tab.Comp, tab.pdfName);
+      }
+    } else if (isEarwax) {
+      for (const tab of earwaxTabs) {
+        await generatePDF(tab.Comp, tab.pdfName);
+      }
+    } else {
+      await generatePDF(Template, "form.pdf");
+    }
+  };
 
-  // Download as Excel
+  // Auto-download all PDFs once
+  useEffect(() => {
+    if (!autoDownloaded) {
+      const timer = setTimeout(() => {
+        downloadPDFs();
+        setAutoDownloaded(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoDownloaded]);
+
   const downloadExcel = () => {
     const data = [{ ...patient, ...pharm }];
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "FormData");
+
+    const safeName = patient.fullName
+      ? patient.fullName.replace(/\s+/g, "_")
+      : "form";
+
     const fname = isB12
-      ? (activeB12?.xlsxName || "form.xlsx")
+      ? `${safeName}-${activeB12?.xlsxName || "form.xlsx"}`
       : isEarwax
-      ? (activeEarwax?.xlsxName || "form.xlsx")
-      : "form.xlsx";
+      ? `${safeName}-${activeEarwax?.xlsxName || "form.xlsx"}`
+      : `${safeName}-form.xlsx`;
+
     XLSX.writeFile(workbook, fname);
   };
-
 
   return (
     <div>
       <h2>Preview</h2>
       {(isB12 || isEarwax) && (
         <div className="tabs">
-          {(isB12 ? b12Tabs : earwaxTabs).map(t => (
+          {(isB12 ? b12Tabs : earwaxTabs).map((t) => (
             <button
               key={t.key}
-              className={`tab ${activeTab === t.key ? 'tab--active' : ''}`}
+              className={`tab ${activeTab === t.key ? "tab--active" : ""}`}
               onClick={() => setActiveTab(t.key)}
               type="button"
             >
@@ -163,7 +246,7 @@ const downloadPDF = async () => {
       </div>
 
       <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
-        <button className="btn btn--primary" onClick={downloadPDF}>
+        <button className="btn btn--primary" onClick={downloadPDFs}>
           Download as PDF
         </button>
         <button className="btn btn--primary" onClick={downloadExcel}>

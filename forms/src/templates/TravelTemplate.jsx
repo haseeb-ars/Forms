@@ -13,6 +13,7 @@ export default function TravelTemplate({ data }) {
         <p><strong>Date of Birth:</strong> {data.dob}</p>
         <p><strong>Passport Number:</strong> {data.passportNumber}</p>
         <p><strong>Contact Number:</strong> {data.telephone}</p>
+        <p><strong>Surgery Name:</strong> {data.surgery}</p>
       </section>
 
       <section className="template-section">
@@ -26,11 +27,12 @@ export default function TravelTemplate({ data }) {
         <h2>Medical & Vaccination Details</h2>
         <p><strong>Existing Conditions:</strong> {data.conditions}</p>
         <p><strong>Allergies:</strong> {data.allergies}</p>
-        <p><strong>Required Vaccinations:</strong> {data.vaccinations}</p>
+        <p><strong>Vaccination Administered:</strong> {data.vaccinations}</p>
         <p><strong>Date Given:</strong> {data.dateGiven}</p>
         <p><strong>Date Expiry:</strong> {data.dateExpiry}</p>
         <p><strong>Batch Number:</strong> {data.batchNumber}</p>
         <p><strong>Injection Site:</strong> {data.site}</p>
+        
       </section>
 
       <section className="template-section signature-section">

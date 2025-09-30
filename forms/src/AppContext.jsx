@@ -29,6 +29,7 @@ const BRANCH_CONFIG = {
   },
 };
 
+
 export const DEFAULT_PATIENT = {
   fullName: "",
   address: "",
@@ -56,6 +57,8 @@ export const DEFAULT_PHARM = {
   pharmacyName: "",
   pharmacyAddress: "",
 };
+
+
 
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
@@ -172,5 +175,10 @@ export function AppProvider({ children }) {
     >
       {children}
     </AppCtx.Provider>
+
+    
   );
 }
+
+
+export { AppCtx as AppContext };

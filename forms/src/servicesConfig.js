@@ -175,7 +175,8 @@ export const services = [
       { name: "dob", label: "Date of Birth", type: "date" },
       { name: "passportNumber", label: "Passport Number", type: "text" },
       { name: "telephone", label: "Contact Number", type: "text" },
-      { name: "email", label: "Email", type: "email" }
+      { name: "email", label: "Email", type: "email" },
+      { name: "surgery", label: "Surgery Name", type: "text" },
     ],
     pharmacistFields: [
       { name: "destinationCountry", label: "Destination Country", type: "text" },
@@ -183,7 +184,7 @@ export const services = [
       { name: "purpose", label: "Purpose of Travel", type: "text" },
       { name: "conditions", label: "Existing Conditions", type: "textarea", span: true },
       { name: "allergies", label: "Allergies", type: "textarea", span: true },
-      { name: "vaccinations", label: "Required Vaccinations", type: "textarea", span: true },
+      { name: "vaccinations", label: "Vaccinations Administered", type: "textarea", span: true },
             { name: "dateGiven", label: "Date Given", type: "date" },
       { name: "dateExpiry", label: "Expiry Date", type: "date" },
       { name: "batchNumber", label: "Batch Number", type: "text" },

@@ -19,3 +19,6 @@
   .login-brand img{height:56px}
   .login-title{font-size:1.25rem}
 }
+.forDeployment{
+  image-resolution: 50%;
+}

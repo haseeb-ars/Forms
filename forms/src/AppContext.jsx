@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react"
 
-
 const STORAGE_KEY = "prefilled-form-app-v2";
 
 // 🔹 Auth users mapped to branch IDs
 const AUTH_USERS = [
   { username: "WRP1", password: "wrp5678!", name: "Wilmslow Road Pharmacy", branchId: "wilmslow" },
   { username: "CPC1", password: "cpc5678!", name: "CarePlus Chemist", branchId: "southport" },
-  { username: "2471", password: "2475678!", name: "247 Pharmacy", branchId: "pharmacy247" },
+  { username: "2471", password: "2475678!", name: "247 Pharmacy", branchId: "liverpool" },
 ];
 
 // 🔹 Branch-specific configuration
@@ -56,8 +55,26 @@ export const DEFAULT_PHARM = {
   pointOfVariance: "",
   pharmacyName: "",
   pharmacyAddress: "",
+  vaccines: []
 };
 
+// 🔹 DEFAULT TRAVEL CONSULTATION STATE
+export const DEFAULT_TRAVEL_CONSULTATION = {
+  countries: [],
+  departureDate: "",
+  returnDate: "",
+  reason: "",
+  eggAllergy: false,
+  pregnant: false,
+  immunosuppressed: false,
+  allergiesText: "",
+  medications: "",
+  // derived fields
+  recommendedVaccines: [],
+  cautionVaccines: [],
+  contraindicatedVaccines: [],
+  otherRisks: []
+};
 
 
 const AppCtx = createContext(null);
@@ -70,9 +87,13 @@ export function AppProvider({ children }) {
   const [formData, setFormData] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [branch, setBranch] = useState(null); // 🔹 NEW
+  const [branch, setBranch] = useState(null); 
   const [isHydrated, setIsHydrated] = useState(false);
   const [apiBase] = useState(process.env.REACT_APP_API_BASE || "http://localhost:4000");
+
+  // 🔹 NEW: Travel consultation state
+  const [travelConsultation, setTravelConsultation] = useState(DEFAULT_TRAVEL_CONSULTATION);
+  const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
 
   // Load saved auth data
   useEffect(() => {
@@ -151,6 +172,7 @@ export function AppProvider({ children }) {
     setIsAuthenticated(false);
     setCurrentUser(null);
     setBranch(null);
+    resetTravelConsultation(); // 🔹 clear consultation state on logout
   };
 
   return (
@@ -166,19 +188,21 @@ export function AppProvider({ children }) {
         setFormData,
         isAuthenticated,
         currentUser,
-        branch, // 🔹 branch info available here
+        branch, 
         isHydrated,
         login,
         logout,
         apiBase,
+
+        // 🔹 Travel consultation exposed in context
+        travelConsultation,
+        setTravelConsultation,
+        resetTravelConsultation,
       }}
     >
       {children}
     </AppCtx.Provider>
-
-    
   );
 }
-
 
 export { AppCtx as AppContext };

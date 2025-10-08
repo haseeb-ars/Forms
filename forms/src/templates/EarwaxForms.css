@@ -33,13 +33,15 @@
   border: 1px dashed #bbb;
 }
 
-.earwaxdoc__signature { margin: 24px 0; }
+
 .earwaxdoc__sigimg,
 .earwaxdoc__sigplaceholder {
-  width: 100%;             /* take full width */
-  max-width: 100%;
+  width: 30%;             /* take full width */
+  max-width: 50%;
   border: 1px solid #999;
 }
+
+.earwaxdoc__signature { margin: 4px 0; }
 
 .earwaxdoc__sigplaceholder {
   height: 90px;

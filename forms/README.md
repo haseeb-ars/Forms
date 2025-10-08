@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# CDC Travelers' Health → Country Risk JSON (Starter Pack)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This pack contains a one-off scraper to build a destination → risks JSON file from CDC Travelers' Health country pages.
 
-## Available Scripts
+**Why CDC?** Content on CDC websites is generally in the public domain (unless otherwise noted), so you can reproduce it with attribution.
 
-In the project directory, you can run:
+## Files
+- `cdc_travel_scraper.py` — Python script using `requests` + `beautifulsoup4`.
+- `example_output.json` — Small sample to show the target shape.
 
-### `npm start`
+## How to run
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Install dependencies:
+   ```bash
+   python -m venv .venv && . .venv/bin/activate
+   pip install requests beautifulsoup4
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Run the scraper:
+   ```bash
+   python cdc_travel_scraper.py
+   ```
+   This writes `cdc_travel_risks.json` in the current directory.
 
-### `npm test`
+Optional arguments:
+```bash
+# custom output, faster delay (0.5s between requests)
+python cdc_travel_scraper.py my_output.json 0.5
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# test first 10 countries quickly
+python cdc_travel_scraper.py sample.json 0.5 10
+```
 
-### `npm run build`
+## Output structure (example)
+```json
+{
+  "India": {
+    "source_url": "https://wwwnc.cdc.gov/travel/destinations/traveler/none/india",
+    "vaccines": ["Hepatitis A ...", "Typhoid ..."],
+    "malaria": ["Risk in many areas ..."],
+    "other_risks": ["Dengue ...", "Japanese Encephalitis ..."]
+  }
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Notes & caveats
+- CDC pages vary slightly; the scraper uses heuristics. Review and tune selectors if needed.
+- Be polite: keep a delay (default 1.0s). Do not hammer the site.
+- Keep an attribution note in your app (e.g., “Risk information adapted from CDC Travelers’ Health”).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License & attribution
+- CDC content is generally public domain: https://www.cdc.gov/other/agencymaterials.html
+- If you combine with other sources, check their license/terms first.

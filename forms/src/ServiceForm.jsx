@@ -2,6 +2,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useApp } from "./AppContext.jsx";
 import LabeledField from "./LabeledField.jsx";
 import SignatureBox from "./SignatureBox.jsx";
+import VaccineRepeater from "./VaccineRepeater.jsx"; // ✅ new import
 import "./ServiceForm.css";
 
 export default function ServiceForm({ serviceKey, fields, nextPath }) {
@@ -20,37 +21,98 @@ export default function ServiceForm({ serviceKey, fields, nextPath }) {
 
       {/* Patient Fields */}
       <div className="grid grid--2 service-form__fields">
-        {fields.patient?.map(f => (
-          <LabeledField key={f.key} label={f.label} span={f.span}>
-            {f.type === "textarea" ? (
-              <textarea
-                className="input textarea"
-                value={patient[f.key] || ""}
-                onChange={e => setPatientField(f.key, e.target.value)}
-                placeholder={f.placeholder || ""}
-              />
-            ) : f.type === "select" ? (
-              <select
-                className="input"
-                value={patient[f.key] || ""}
-                onChange={e => setPatientField(f.key, e.target.value)}
-              >
-                <option value="">Select...</option>
-                {f.options?.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            ) : (
-              <input
-                className="input"
-                type={f.type || "text"}
-                value={patient[f.key] || ""}
-                onChange={e => setPatientField(f.key, e.target.value)}
-                placeholder={f.placeholder || ""}
-              />
-            )}
-          </LabeledField>
-        ))}
+        {fields.patient?.map(f => {
+          if (f.type === "vaccineRepeater") {
+            return (
+              <div key={f.name} className="field-span">
+                <VaccineRepeater
+                  value={patient[f.name] || []}
+                  onChange={(val) => setPatientField(f.name, val)}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <LabeledField key={f.name} label={f.label} span={f.span}>
+              {f.type === "textarea" ? (
+                <textarea
+                  className="input textarea"
+                  value={patient[f.name] || ""}
+                  onChange={e => setPatientField(f.name, e.target.value)}
+                  placeholder={f.placeholder || ""}
+                />
+              ) : f.type === "select" ? (
+                <select
+                  className="input"
+                  value={patient[f.name] || ""}
+                  onChange={e => setPatientField(f.name, e.target.value)}
+                >
+                  <option value="">Select...</option>
+                  {f.options?.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className="input"
+                  type={f.type || "text"}
+                  value={patient[f.name] || ""}
+                  onChange={e => setPatientField(f.name, e.target.value)}
+                  placeholder={f.placeholder || ""}
+                />
+              )}
+            </LabeledField>
+          );
+        })}
+      </div>
+
+      {/* Pharmacist Fields */}
+      <div className="grid grid--2 service-form__fields">
+        {fields.pharmacist?.map(f => {
+          if (f.type === "vaccineRepeater") {
+            return (
+              <div key={f.name} className="field-span">
+                <VaccineRepeater
+                  value={pharm[f.name] || []}
+                  onChange={(val) => setPharmField(f.name, val)}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <LabeledField key={f.name} label={f.label} span={f.span}>
+              {f.type === "textarea" ? (
+                <textarea
+                  className="input textarea"
+                  value={pharm[f.name] || ""}
+                  onChange={e => setPharmField(f.name, e.target.value)}
+                  placeholder={f.placeholder || ""}
+                />
+              ) : f.type === "select" ? (
+                <select
+                  className="input"
+                  value={pharm[f.name] || ""}
+                  onChange={e => setPharmField(f.name, e.target.value)}
+                >
+                  <option value="">Select...</option>
+                  {f.options?.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className="input"
+                  type={f.type || "text"}
+                  value={pharm[f.name] || ""}
+                  onChange={e => setPharmField(f.name, e.target.value)}
+                  placeholder={f.placeholder || ""}
+                />
+              )}
+            </LabeledField>
+          );
+        })}
       </div>
 
       {/* Patient Signature */}
@@ -95,31 +157,26 @@ export default function ServiceForm({ serviceKey, fields, nextPath }) {
         </div>
       )}
 
-
-
-{/* Prescriber Signature */}
-{fields.signatures?.prescriber && (
-  <div className="grid grid--2 mt items-end service-form__signature">
-    <div>
-      <div className="label">Prescriber Signature</div>
-      <SignatureBox
-        value={pharm.prescriberSignature}
-        onChange={v => setPharmField("prescriberSignature", v)}
-      />
-    </div>
-    <LabeledField label="Date">
-      <input
-        type="date"
-        className="input"
-        value={pharm.datePrescriber || ""}
-        onChange={e => setPharmField("datePrescriber", e.target.value)}
-      />
-    </LabeledField>
-  </div>
-)}
-
-
-
+      {/* Prescriber Signature */}
+      {fields.signatures?.prescriber && (
+        <div className="grid grid--2 mt items-end service-form__signature">
+          <div>
+            <div className="label">Prescriber Signature</div>
+            <SignatureBox
+              value={pharm.prescriberSignature}
+              onChange={v => setPharmField("prescriberSignature", v)}
+            />
+          </div>
+          <LabeledField label="Date">
+            <input
+              type="date"
+              className="input"
+              value={pharm.datePrescriber || ""}
+              onChange={e => setPharmField("datePrescriber", e.target.value)}
+            />
+          </LabeledField>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="page__actions">
@@ -130,6 +187,8 @@ export default function ServiceForm({ serviceKey, fields, nextPath }) {
           </button>
         )}
       </div>
+
+      
     </section>
   );
 }

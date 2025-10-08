@@ -152,7 +152,7 @@ export const services = [
       { name: "surgeryName", label: "Surgery Name", type: "text" },
       { name: "nhsNumber", label: "NHS Number", type: "text" },
       { name: "allergies", label: "Allergies", type: "textarea", span: true },
-      { name: "hadCovid", label: "Had Covid Before", type: "select", options: ["Yes", "No"] },
+      { name: "hadCovid", label: "Had Covid Vaccine Before", type: "select", options: ["Yes", "No"] },
       { name: "previousDoses", label: "Previous Vaccine Doses", type: "select", options: ["0", "1", "2", "3", "4+"] },
       { name: "symptomsToday", label: "Any symptoms today?", type: "select", options: ["No", "Yes"] }
     ],
@@ -166,31 +166,48 @@ export const services = [
     ],
     template: "CovidTemplate"
   },
-  {
-    id: "travel",
-    name: "Travel Clinic",
-    color: "#118AB2",
-    patientFields: [
-      { name: "fullName", label: "Full Name", type: "text" },
-      { name: "dob", label: "Date of Birth", type: "date" },
-      { name: "passportNumber", label: "Passport Number", type: "text" },
-      { name: "telephone", label: "Contact Number", type: "text" },
-      { name: "email", label: "Email", type: "email" },
-      { name: "surgery", label: "Surgery Name", type: "text" },
-    ],
-    pharmacistFields: [
-      { name: "destinationCountry", label: "Destination Country", type: "text" },
-      { name: "travelDate", label: "Travel Date", type: "date" },
-      { name: "purpose", label: "Purpose of Travel", type: "text" },
-      { name: "conditions", label: "Existing Conditions", type: "textarea", span: true },
-      { name: "allergies", label: "Allergies", type: "textarea", span: true },
-      { name: "vaccinations", label: "Vaccinations Administered", type: "textarea", span: true },
-            { name: "dateGiven", label: "Date Given", type: "date" },
-      { name: "dateExpiry", label: "Expiry Date", type: "date" },
-      { name: "batchNumber", label: "Batch Number", type: "text" },
-      { name: "site", label: "Injection Site", type: "text" }
-    ],
-    template: "TravelTemplate"
-  }
+{
+  id: "travel",
+  name: "Travel Clinic",
+  color: "#118AB2",
+  patientFields: [
+    { name: "fullName", label: "Full Name", type: "text" },
+    { name: "dob", label: "Date of Birth", type: "date" },
+    { name: "passportNumber", label: "Passport Number", type: "text" },
+    { name: "telephone", label: "Contact Number", type: "text" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "surgery", label: "Surgery Name", type: "text" },
+  ],
+  pharmacistFields: [
+    { name: "Prescriber", label: "Prescriber's Name", type: "text" },
+    { name: "GPHCNumber", label: "GPHC Number", type: "text" },
+
+    // ✅ Keep vaccine repeater (administered)
+    { name: "vaccines", label: "Vaccinations Administered", type: "vaccineRepeater" },
+
+    // ✅ Malaria fields
+    {
+      name: "malariaGiven",
+      label: "Was malaria medication given?",
+      type: "select",
+      options: ["Yes", "No"],
+    },
+    {
+      name: "malariaNotes",
+      label: "Malaria Notes",
+      type: "textarea",
+      span: true,
+      showIf: { field: "malariaGiven", equals: "Yes" },
+    },
+    {
+      name: "malariaVaccines",
+      label: "Vaccinations Administered (Malaria)",
+      type: "vaccineRepeater",
+      showIf: { field: "malariaGiven", equals: "Yes" },
+    },
+  ],
+  template: "TravelTemplate",
+}
+
 ];
 

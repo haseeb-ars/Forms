@@ -1,0 +1,46 @@
+{
+  "India": {
+    "source_url": "https://wwwnc.cdc.gov/travel/destinations/traveler/none/india",
+    "vaccines": [
+      "Hepatitis A vaccination is recommended for most travelers.",
+      "Typhoid vaccination is recommended for most travelers.",
+      "Consider Rabies vaccination for travelers with increased risk (e.g., rural/long stays).",
+      "Consider Cholera vaccine for certain travelers."
+    ],
+    "malaria": [
+      "Malaria is a risk in many areas; prophylaxis (atovaquone-proguanil, doxycycline, or mefloquine) may be recommended depending on itinerary."
+    ],
+    "other_risks": [
+      "Dengue occurs; prevent mosquito bites.",
+      "Japanese Encephalitis risk for long stays in rural areas."
+    ]
+  },
+  "Kenya": {
+    "source_url": "https://wwwnc.cdc.gov/travel/destinations/traveler/none/kenya",
+    "vaccines": [
+      "Hepatitis A recommended for most travelers.",
+      "Typhoid recommended for most travelers.",
+      "Yellow Fever vaccine recommended/required depending on itinerary and entry rules."
+    ],
+    "malaria": [
+      "Malaria risk present in most areas; prophylaxis recommended (atovaquone-proguanil, doxycycline, or mefloquine)."
+    ],
+    "other_risks": [
+      "Dengue occurs; prevent mosquito bites."
+    ]
+  },
+  "Brazil": {
+    "source_url": "https://wwwnc.cdc.gov/travel/destinations/traveler/none/brazil",
+    "vaccines": [
+      "Hepatitis A recommended for most travelers.",
+      "Yellow Fever vaccine recommended for many areas.",
+      "Typhoid recommended for some travelers."
+    ],
+    "malaria": [
+      "Malaria risk exists in parts of the Amazon basin; prophylaxis may be recommended depending on itinerary."
+    ],
+    "other_risks": [
+      "Dengue, Zika, and Chikungunya occur; avoid mosquito bites."
+    ]
+  }
+}

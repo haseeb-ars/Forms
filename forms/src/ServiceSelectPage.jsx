@@ -9,7 +9,14 @@ export default function ServiceSelectPage() {
 
   const handleSelect = (serviceId) => {
     setSelectedFormType(serviceId); // update context
-    navigate(`/service/${serviceId}/patient`);
+
+    // 🔹 Special case for Travel service → start with consultation
+    if (serviceId === "travel") {
+      navigate(`/service/travel/consultation`);
+    } else {
+      // all other services go directly to patient form
+      navigate(`/service/${serviceId}/patient`);
+    }
   };
 
   // Placeholder services for the bento box layout
@@ -30,7 +37,7 @@ export default function ServiceSelectPage() {
       {allServices.map((s) => (
         <div
           key={s.id}
-          className={`bento-card ${s.placeholder ? 'placeholder' : 'service'}`}
+          className={`bento-card ${s.placeholder ? "placeholder" : "service"}`}
           style={{ backgroundColor: s.color }}
           onClick={() => !s.placeholder && handleSelect(s.id)}
         >

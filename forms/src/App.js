@@ -8,6 +8,7 @@ import PharmacistFormPage from "./PharmacistFormPage.jsx";
 import PreviewPage from "./PreviewPage.jsx";
 import LoginPage from "./LoginPage.jsx";
 import PatientsPage from "./PatientsPage.jsx";
+import TravelConsultationPage from "./TravelConsultationPage";
 
 import "./App.css";
 
@@ -20,8 +21,7 @@ export default function App() {
             <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
           </div>
           <nav className="topbar__nav">
-            <Link to="/" className="link-btn"      
->Home</Link>
+            <Link to="/" className="link-btn">Home</Link>
             <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>Patients</Link>
             <AuthHeaderControls />
           </nav>
@@ -29,11 +29,20 @@ export default function App() {
 
         <main className="main">
           <Routes>
+            {/* Login */}
             <Route path="/login" element={<LoginPage />} />
+
             {/* Home - Service Selection */}
             <Route path="/" element={
               <RequireAuth>
                 <ServiceSelectPage />
+              </RequireAuth>
+            } />
+
+            {/* 🔹 Travel Consultation (step before form) */}
+            <Route path="/service/travel/consultation" element={
+              <RequireAuth>
+                <TravelConsultationPage />
               </RequireAuth>
             } />
 
@@ -71,24 +80,23 @@ export default function App() {
   );
 }
 
-function RequireAuth({ children }){
+function RequireAuth({ children }) {
   const { isAuthenticated, isHydrated } = useApp();
   const location = useLocation();
-  if (!isHydrated){
+  if (!isHydrated) {
     return null;
   }
-  if (!isAuthenticated){
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 }
 
-function AuthHeaderControls(){
-  const { isAuthenticated,  logout } = useApp();
+function AuthHeaderControls() {
+  const { isAuthenticated, logout } = useApp();
   if (!isAuthenticated) return null;
   return (
     <>
-     
       <button className="btn" onClick={logout}>Logout</button>
     </>
   );

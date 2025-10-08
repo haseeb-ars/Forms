@@ -1,35 +1,89 @@
+/* =======================
+   Shared Template Layout
+   ======================= */
+
 .travel-template {
   font-family: Arial, sans-serif;
-  padding: 20px;
   background: white;
   color: #333;
-  border: 2px solid #ccc;
+  border: 0.5px solid #ccc;
+  padding: 30px;
+  max-width: 1050px;
+  margin: 0 auto;
 }
 
-.travel-template h1 {
-  text-align: center;
+/* ---------- Header ---------- */
+.template-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* logo aligned left */
   margin-bottom: 20px;
+}
+
+.template-header img {
+  width: 200px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.template-header h1 {
+  text-align: center; /* title centered */
+  width: 100%;
+  margin: 0;
+  font-size: 1.8rem;
   color: #0077aa;
+  border-bottom: 2px solid #0077aa;
+  padding-bottom: 5px;
 }
 
+/* ---------- Sections ---------- */
 .template-section {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .template-section h2 {
   color: #005577;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
 }
 
 .template-section p {
-  margin: 5px 0;
+  margin: 4px 0;
+  line-height: 1.5;
 }
 
+/* ---------- Tables ---------- */
+.template-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+.template-table th,
+.template-table td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.template-table th {
+  background-color: #f2f8fc;
+  color: #005577;
+  font-weight: bold;
+}
+
+.template-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* ---------- Signatures ---------- */
 .signature-section {
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  margin-top: 30px;
 }
 
 .signature-img {
@@ -47,60 +101,29 @@
   color: #777;
 }
 
-/* Responsive Design - Mobile First */
+/* ---------- Responsive Design ---------- */
 @media (max-width: 768px) {
   .travel-template {
-    padding: 15px;
-    margin: 0.5rem;
-    border: 1px solid #ccc;
+    padding: 20px;
   }
-  
-  .travel-template h1 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+
+  .template-header img {
+    width: 150px;
   }
-  
-  .template-section {
-    margin-bottom: 15px;
+
+  .template-header h1 {
+    font-size: 1.4rem;
   }
-  
-  .template-section h2 {
-    font-size: 1.2rem;
-  }
-  
+
   .signature-section {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .signature-img,
   .signature-placeholder {
     width: 100%;
     max-width: 250px;
     margin: 0 auto;
-  }
-  
-  .signature-placeholder {
-    height: 60px;
-  }
-}
-
-/* Tablet Styles */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .travel-template {
-    padding: 25px;
-  }
-  
-  .travel-template h1 {
-    font-size: 1.8rem;
-  }
-  
-  .signature-section {
-    gap: 30px;
-  }
-  
-  .signature-img,
-  .signature-placeholder {
-    width: 180px;
   }
 }

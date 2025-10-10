@@ -1,0 +1,108 @@
+.weight-consultation {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.weight-page-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 12px 0 24px;
+}
+
+.weight-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.weight-label {
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+  margin-top: 10px;
+}
+
+.weight-question {
+  margin-bottom: 20px;
+}
+
+.weight-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 8px 2px;
+}
+
+.weight-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.weight-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.weight-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.weight-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.weight-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+.weight-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.weight-actions.between {
+  justify-content: space-between;
+}
+
+.weight-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  background: #e5e7eb;
+  font-weight: 700;
+}
+
+.weight-btn--primary {
+  background: #2563eb;
+  color: white;
+}
+
+.weight-btn:hover {
+  opacity: 0.9;
+}
+.weight-form-group select {
+  margin-top: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: white;
+}

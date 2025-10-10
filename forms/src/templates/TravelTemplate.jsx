@@ -48,7 +48,6 @@ export default function TravelTemplate() {
         <h2>Patient Details</h2>
         <p><strong>Full Name:</strong> {patient?.fullName || merged.fullName || "—"}</p>
         <p><strong>Date of Birth:</strong> {patient?.dob || merged.dob || "—"}</p>
-        <p><strong>Passport Number:</strong> {patient?.passportNumber || "—"}</p>
         <p><strong>Contact Number:</strong> {patient?.telephone || "—"}</p>
         <p><strong>Surgery Name:</strong> {patient?.surgery || "—"}</p>
       </section>

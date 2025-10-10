@@ -18,7 +18,6 @@ export default function TravelConsultationTemplate({ consultation, data }) {
         <h2>Patient Details</h2>
         <p><strong>Full Name:</strong> {f.fullName || "-"}</p>
         <p><strong>Date of Birth:</strong> {f.dob || "-"}</p>
-        <p><strong>Passport Number:</strong> {f.passportNumber || "-"}</p>
         <p><strong>Contact Number:</strong> {f.telephone || "-"}</p>
         <p><strong>Email:</strong> {f.email || "-"}</p>
         <p><strong>Surgery Name:</strong> {f.surgery || "-"}</p>

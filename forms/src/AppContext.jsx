@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react"
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 const STORAGE_KEY = "prefilled-form-app-v2";
 
@@ -27,7 +27,6 @@ const BRANCH_CONFIG = {
     pharmacyAddress: "15 Stuart Rd, Waterloo, Liverpool L22 4QR",
   },
 };
-
 
 export const DEFAULT_PATIENT = {
   fullName: "",
@@ -69,13 +68,25 @@ export const DEFAULT_TRAVEL_CONSULTATION = {
   immunosuppressed: false,
   allergiesText: "",
   medications: "",
-  // derived fields
   recommendedVaccines: [],
   cautionVaccines: [],
   contraindicatedVaccines: [],
   otherRisks: []
 };
 
+// 🔹 DEFAULT WEIGHT LOSS CONSULTATION STATE
+export const DEFAULT_WEIGHTLOSS_CONSULTATION = {
+  ageGroup: "",
+  medicalConditions: "",
+  weightConditions: "",
+  bmi: "",
+  currentMedications: "",
+  previousAttempts: "",
+  familyHistory: "",
+  lifestyle: "",
+  goals: "",
+  consent: false,
+};
 
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
@@ -87,13 +98,16 @@ export function AppProvider({ children }) {
   const [formData, setFormData] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [branch, setBranch] = useState(null); 
+  const [branch, setBranch] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [apiBase] = useState(process.env.REACT_APP_API_BASE || "http://localhost:4000");
 
-  // 🔹 NEW: Travel consultation state
+  // 🔹 Consultation states
   const [travelConsultation, setTravelConsultation] = useState(DEFAULT_TRAVEL_CONSULTATION);
+  const [weightLossConsultation, setWeightLossConsultation] = useState(DEFAULT_WEIGHTLOSS_CONSULTATION);
+
   const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
+  const resetWeightLossConsultation = () => setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
 
   // Load saved auth data
   useEffect(() => {
@@ -105,7 +119,6 @@ export function AppProvider({ children }) {
           setIsAuthenticated(!!saved.auth.isAuthenticated);
           setCurrentUser(saved.auth.currentUser || null);
 
-          // Restore branch config
           if (saved.auth.currentUser?.branchId) {
             setBranch(BRANCH_CONFIG[saved.auth.currentUser.branchId]);
             setPharm((prev) => ({
@@ -146,11 +159,9 @@ export function AppProvider({ children }) {
     updateFormData();
   }, [updateFormData]);
 
-  // 🔹 Login function sets branch info
+  // 🔹 Login
   const login = (username, password) => {
-    const found = AUTH_USERS.find(
-      (u) => u.username === username && u.password === password
-    );
+    const found = AUTH_USERS.find((u) => u.username === username && u.password === password);
     if (found) {
       setIsAuthenticated(true);
       setCurrentUser({ username: found.username, name: found.name, branchId: found.branchId });
@@ -168,11 +179,13 @@ export function AppProvider({ children }) {
     return { ok: false, error: "Invalid username or password" };
   };
 
+  // 🔹 Logout
   const logout = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
     setBranch(null);
-    resetTravelConsultation(); // 🔹 clear consultation state on logout
+    resetTravelConsultation();
+    resetWeightLossConsultation();
   };
 
   return (
@@ -188,16 +201,19 @@ export function AppProvider({ children }) {
         setFormData,
         isAuthenticated,
         currentUser,
-        branch, 
+        branch,
         isHydrated,
         login,
         logout,
         apiBase,
 
-        // 🔹 Travel consultation exposed in context
+        // 🔹 Consultations
         travelConsultation,
         setTravelConsultation,
         resetTravelConsultation,
+        weightLossConsultation,
+        setWeightLossConsultation,
+        resetWeightLossConsultation,
       }}
     >
       {children}

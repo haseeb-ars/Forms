@@ -14,6 +14,7 @@ export default function FluTemplate({ data }) {
         <p><strong>Date of Birth:</strong> {data.dob}</p>
         <p><strong>Contact Number:</strong> {data.telephone}</p>
         <p><strong>Address:</strong> {data.address}</p>
+        <p><strong>Surgery Name:</strong> {data.surgery}</p>
       </section>
 
       <section className="template-section">

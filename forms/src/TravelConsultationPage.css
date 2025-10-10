@@ -1,17 +1,17 @@
-.consultation {
+.consultation1 {
   max-width: 980px;
   margin: 0 auto;
   padding: 24px;
 }
 
-.page-title {
+.page-title1 {
   font-size: 40px;
   font-weight: 800;
   color: #0f172a;
   margin: 12px 0 24px;
 }
 
-.card, .form-card {
+.card1, .form-card1 {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
@@ -19,39 +19,34 @@
   margin-bottom: 16px;
 }
 
-.cards-3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 16px;
-  margin: 16px 0;
+.card-title1 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0b3fad;
+  margin-bottom: 10px;
 }
 
-.two-col {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 12px 24px;
+.q-title1 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0b3fad;
+  margin: 4px 0 12px;
 }
 
-.sub {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 6px;
+.form-group1 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 16px;
-}
-
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-
-.label {
+.label1 {
   font-weight: 700;
   color: #111827;
 }
 
+input[type="text"],
+input[type="number"],
 input[type="date"],
 select,
 textarea {
@@ -59,40 +54,54 @@ textarea {
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 14px;
+  width: 100%;
 }
 
-textarea { min-height: 70px; }
-
-.checkboxes { display: flex; gap: 24px; margin: 8px 0 4px; flex-wrap: wrap; }
-.check { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-
-.card-title {
-  font-size: 18px;
-  font-weight: 800;
-  color: #0b3fad;
-  margin-bottom: 10px;
+textarea {
+  min-height: 70px;
 }
 
-.q-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0b3fad;
-  margin: 4px 0 12px;
+.checkboxes1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 8px 0 4px;
 }
 
-.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 10px 24px; }
-.yesno { display: flex; gap: 28px; padding: 8px 2px; }
-.radio { display: flex; align-items: center; gap: 10px; }
+.check1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
 
-.bullets { padding-left: 18px; }
-.bullets li { list-style: disc; margin-left: 14px; line-height: 1.6; }
+.radio-group1 {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 8px 0 12px;
+}
 
-.muted { color: #6b7280; }
+.radio1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
-.actions.between { justify-content: space-between; }
+.two-col1 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+}
 
-.btn {
+.actions1 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn1 {
   border: 0;
   border-radius: 10px;
   padding: 10px 16px;
@@ -100,8 +109,16 @@ textarea { min-height: 70px; }
   background: #e5e7eb;
   font-weight: 700;
 }
-.btn--primary { background: #2563eb; color: white; }
 
+.btn--primary1 {
+  background: #2563eb;
+  color: white;
+}
+
+.muted1 {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
 
 .vaccine-link {
   background: none;
@@ -125,4 +142,48 @@ textarea { min-height: 70px; }
   border-radius: 6px;
   font-size: 0.9rem;
   line-height: 1.4;
+}
+/* === Vaccine Cards Layout (3 on top + 1 below) === */
+.cards-31 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* make all 3 vaccine boxes look consistent */
+.cards-31 .card1 {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* make the "Other Risks" box span full width */
+.cards-31 + .card1 {
+  grid-column: 1 / -1;
+}
+
+/* optional subtle coloring per type */
+.cards-31 .card1:nth-child(1) {
+  border-top: 4px solid #2563eb; /* blue */
+}
+.cards-31 .card1:nth-child(2) {
+  border-top: 4px solid #facc15; /* yellow */
+}
+.cards-31 .card1:nth-child(3) {
+  border-top: 4px solid #dc2626; /* red */
+}
+.cards-31 + .card1 {
+  border-top: 4px solid #6b7280; /* gray */
+}
+
+/* Responsive stacking for tablets & mobile */
+@media (max-width: 900px) {
+  .cards-31 {
+    grid-template-columns: 1fr;
+  }
+  .cards-31 + .card1 {
+    grid-column: auto;
+  }
 }

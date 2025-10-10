@@ -1,3 +1,4 @@
+// src/PreviewPage.jsx
 import React, {
   useRef,
   useMemo,
@@ -15,11 +16,21 @@ import "./PreviewPage.css";
 import { savePatientRow } from "./api";
 import ReactDOMServer from "react-dom/server";
 
-import TravelConsultationTemplate from "./templates/TravelConsultationTemplate";
-import PrescriptionTemplate from "./templates/PrescriptionTemplate";
+// 🧩 Template Imports
+import TravelConsultationTemplate from "./templates/TravelConsultationTemplate.jsx";
+import WeightlossConsultationTemplate from "./templates/WeightLossConsultationTemplate.jsx";
+import PrescriptionTemplate from "./templates/PrescriptionTemplate.jsx";
 
 export default function PreviewPage() {
-  const { patient, pharm, currentUser, branch, travelConsultation } = useApp();
+  const {
+    patient,
+    pharm,
+    currentUser,
+    branch,
+    travelConsultation,
+    weightLossConsultation,
+  } = useApp();
+
   const { id } = useParams();
   const previewRef = useRef();
   const [activeTab, setActiveTab] = useState("form");
@@ -28,39 +39,30 @@ export default function PreviewPage() {
 
   const Template = templates[id] || templates.b12;
 
-  // 🧭 Service Tabs Definition
+  // 🧭 Define service-specific tabs
   const serviceTabs = useMemo(() => {
     switch (id) {
       case "travel":
         return [
-          {
-            key: "form",
-            label: "Form",
-            Comp: Template,
-            pdfName: "travel-form.pdf",
-            xlsxName: "travel-form.xlsx",
-          },
-          {
-            key: "consult",
-            label: "Consultation",
-            Comp: TravelConsultationTemplate,
-            pdfName: "travel-consultation.pdf",
-            xlsxName: "travel-consultation.xlsx",
-          },
-          {
-            key: "rx",
-            label: "Prescription",
-            Comp: PrescriptionTemplate,
-            pdfName: "travel-prescription.pdf",
-            xlsxName: "travel-prescription.xlsx",
-          },
+          { key: "form", label: "Form", Comp: Template, pdfName: "travel-form.pdf", xlsxName: "travel-form.xlsx" },
+          { key: "consult", label: "Consultation", Comp: TravelConsultationTemplate, pdfName: "travel-consultation.pdf", xlsxName: "travel-consultation.xlsx" },
+          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "travel-prescription.pdf", xlsxName: "travel-prescription.xlsx" },
         ];
+
+      case "weightloss":
+        return [
+          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-form.pdf", xlsxName: "weightloss-form.xlsx" },
+          { key: "consult", label: "Consultation", Comp: WeightlossConsultationTemplate, pdfName: "weightloss-consultation.pdf", xlsxName: "weightloss-consultation.xlsx" },
+          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf", xlsxName: "weightloss-prescription.xlsx" },
+        ];
+
       case "b12":
         return [
           { key: "admin", label: "Administration", Comp: templates.b12, pdfName: "b12-administration.pdf", xlsxName: "b12-administration.xlsx" },
           { key: "ref", label: "GP Letter", Comp: templates.b12_referral, pdfName: "b12-gp-letter.pdf", xlsxName: "b12-gp-letter.xlsx" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "b12-prescription.pdf", xlsxName: "b12-prescription.xlsx" },
         ];
+
       case "earwax":
         return [
           { key: "ref", label: "GP Referral Letter", Comp: templates.earwax_referral, pdfName: "earwax-gp-referral.pdf", xlsxName: "earwax-gp-referral.xlsx" },
@@ -68,21 +70,19 @@ export default function PreviewPage() {
           { key: "consent", label: "Consent", Comp: templates.earwax_consent, pdfName: "earwax-consent.pdf", xlsxName: "earwax-consent.xlsx" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "earwax-prescription.pdf", xlsxName: "earwax-prescription.xlsx" },
         ];
-      case "weightloss":
-        return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-form.pdf", xlsxName: "weightloss-form.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf", xlsxName: "weightloss-prescription.xlsx" },
-        ];
+
       case "flu":
         return [
           { key: "form", label: "Form", Comp: Template, pdfName: "flu-form.pdf", xlsxName: "flu-form.xlsx" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "flu-prescription.pdf", xlsxName: "flu-prescription.xlsx" },
         ];
+
       case "covid":
         return [
           { key: "form", label: "Form", Comp: Template, pdfName: "covid-form.pdf", xlsxName: "covid-form.xlsx" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "covid-prescription.pdf", xlsxName: "covid-prescription.xlsx" },
         ];
+
       default:
         return [
           { key: "form", label: "Form", Comp: Template, pdfName: `${id}-form.pdf`, xlsxName: `${id}-form.xlsx` },
@@ -91,10 +91,9 @@ export default function PreviewPage() {
     }
   }, [id, Template]);
 
-  const activeTabDef =
-    serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
+  const activeTabDef = serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
 
-  // 🧾 Save Patient Row
+  // 🧾 Auto-save patient row
   useEffect(() => {
     if (savedOnce) return;
     const row = {
@@ -114,46 +113,54 @@ export default function PreviewPage() {
       date: new Date().toISOString(),
     };
     const timer = setTimeout(() => {
-      savePatientRow(row)
-        .then(() => setSavedOnce(true))
-        .catch(() => {});
+      savePatientRow(row).then(() => setSavedOnce(true)).catch(() => {});
     }, 200);
     return () => clearTimeout(timer);
   }, [savedOnce, currentUser, patient, id]);
 
-  // 🧩 Centralised merged data for rendering & export
+  // 🧩 Merge all relevant data
   const getMergedData = useCallback(() => {
-    if (id === "travel") {
-      return {
-        ...patient,
-        ...pharm,
-        ...travelConsultation,
-        consultation: travelConsultation,
-      };
+    const baseData = { ...patient, ...pharm };
+    switch (id) {
+      case "travel":
+        return { ...baseData, ...travelConsultation, consultation: travelConsultation, branch };
+      case "weightloss":
+        return { ...baseData, ...weightLossConsultation, consultation: weightLossConsultation, branch };
+      default:
+        return { ...baseData, branch };
     }
-    return { ...patient, ...pharm };
-  }, [id, patient, pharm, travelConsultation]);
+  }, [id, patient, pharm, branch, travelConsultation, weightLossConsultation]);
 
-  // 🧾 Generate PDF
+  // 🧾 Generate PDF function (FIXED)
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
       const tempContainer = document.createElement("div");
       tempContainer.className = "pdf-generator";
-      tempContainer.style.position = "absolute";
-      tempContainer.style.left = "-9999px";
-      tempContainer.style.top = "0";
-      tempContainer.style.background = "#fff";
-      tempContainer.style.padding = "20px";
+      Object.assign(tempContainer.style, {
+        position: "absolute",
+        left: "-9999px",
+        top: "0",
+        width: "900px",
+        background: "#fff",
+        padding: "24px",
+        zIndex: "-1",
+      });
 
       const mergedData = getMergedData();
-
       const htmlString = ReactDOMServer.renderToString(
         <AppContext.Provider
-          value={{ patient, pharm, currentUser, branch, travelConsultation }}
+          value={{
+            patient,
+            pharm,
+            currentUser,
+            branch,
+            travelConsultation,
+            weightLossConsultation,
+          }}
         >
           <Comp
             data={mergedData}
-            consultation={travelConsultation}
+            consultation={id === "weightloss" ? weightLossConsultation : travelConsultation}
             serviceId={id}
             {...extraProps}
           />
@@ -163,16 +170,23 @@ export default function PreviewPage() {
       tempContainer.innerHTML = htmlString;
       document.body.appendChild(tempContainer);
 
+      // ⏳ Wait a bit to allow layout & fonts to settle
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
       try {
         const canvas = await html2canvas(tempContainer, {
-          scale: 2,
+          scale: 2.5, // better quality
           useCORS: true,
           allowTaint: true,
           backgroundColor: "#ffffff",
+          windowWidth: tempContainer.scrollWidth,
+          windowHeight: tempContainer.scrollHeight,
+          scrollX: 0,
+          scrollY: 0,
         });
+
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
-
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const ratio = pdfWidth / canvas.width;
@@ -185,31 +199,27 @@ export default function PreviewPage() {
         heightLeft -= pdfHeight;
 
         while (heightLeft > 0) {
-          position = -(scaledHeight - heightLeft);
+          position -= pdfHeight;
           pdf.addPage();
           pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
           heightLeft -= pdfHeight;
         }
 
-        const safeName = patient.fullName
-          ? patient.fullName.replace(/\s+/g, "_")
-          : "form";
+        const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
         pdf.save(`${safeName}-${fileName}`);
       } finally {
         document.body.removeChild(tempContainer);
       }
     },
-    [getMergedData, patient, pharm, currentUser, branch, travelConsultation, id]
+    [getMergedData, patient, pharm, currentUser, branch, travelConsultation, weightLossConsultation, id]
   );
 
-  // 🧾 Download all PDFs
+  // 📄 Download all PDFs
   const downloadPDFs = useCallback(async () => {
-    for (const tab of serviceTabs) {
-      await generatePDF(tab.Comp, tab.pdfName);
-    }
+    for (const tab of serviceTabs) await generatePDF(tab.Comp, tab.pdfName);
   }, [serviceTabs, generatePDF]);
 
-  // ⏱️ Auto-download once
+  // ⏱️ Auto download trigger
   useEffect(() => {
     if (!autoDownloaded && (patient.fullName || pharm.destinationCountry)) {
       const timer = setTimeout(() => {
@@ -227,9 +237,7 @@ export default function PreviewPage() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "FormData");
 
-    const safeName = patient.fullName
-      ? patient.fullName.replace(/\s+/g, "_")
-      : "form";
+    const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
     const fname = `${safeName}-${activeTabDef?.xlsxName || "form.xlsx"}`;
     XLSX.writeFile(workbook, fname);
   };
@@ -256,13 +264,13 @@ export default function PreviewPage() {
         {activeTabDef && (
           <activeTabDef.Comp
             data={getMergedData()}
-            consultation={travelConsultation}
+            consultation={id === "weightloss" ? weightLossConsultation : travelConsultation}
             serviceId={id}
           />
         )}
       </div>
 
-      <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
+      <div style={{ marginTop: 24, display: "flex", gap: 12 }}>
         <button className="btn btn--primary" onClick={downloadPDFs}>
           Download as PDF
         </button>

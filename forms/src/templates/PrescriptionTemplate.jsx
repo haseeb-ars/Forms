@@ -8,44 +8,53 @@ const prescriptionMappings = {
     drug: (d) => d.drug || "Hydroxocobalamin 1000mcg/1ml ampoule",
     quantity: (d) => d.quantity || "One ampoule",
     dose: (d) => d.dose || "1000mcg (1ml) IM injection",
-    prescriber: (d) => d.prescriber || "Mr James Pendlebury",
-    prescriberGPhC: (d) => d.prescriberGPhC || "2211954",
+    prescriber: (d) => d.prescriberName || d.prescriber || "Mr James Pendlebury",
+    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "2211954",
+    prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
   },
+
   weightloss: {
     title: "Weight Loss Prescription",
-    drug: (d) => d.medication || "Semaglutide / Tirzepatide",
+    drug: (d) =>
+      d.medication === "Other"
+        ? d.otherMedication || "Other Medication"
+        : d.medication || "Semaglutide / Tirzepatide",
     quantity: (d) => d.quantity || "As prescribed",
-    dose: (d) => d.dosage || "-",
-    prescriber: (d) => d.prescriber || "-",
-    prescriberGPhC: (d) => d.prescriberGPhC || "-",
+    dose: (d) => d.dosage || "—",
+    prescriber: (d) => d.prescriberName || d.prescriber || "—",
+    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberType: (d) => d.prescriberType || "—",
   },
+
   flu: {
     title: "Flu Vaccine Prescription",
     drug: (d) => d.vaccineBrand || "Influenza vaccine",
     quantity: () => "1 dose",
     dose: () => "0.5ml IM injection",
-    prescriber: (d) => d.prescriber || "-",
-    prescriberGPhC: (d) => d.prescriberGPhC || "-",
+    prescriber: (d) => d.prescriber || "—",
+    prescriberGPhC: (d) => d.prescriberGPhC || "—",
+    prescriberType: (d) => d.prescriberType || "—",
   },
+
   covid: {
     title: "COVID-19 Vaccine Prescription",
     drug: (d) => d.vaccineBrand || "COVID-19 Vaccine",
     quantity: () => "1 dose",
     dose: (d) => `Dose ${d.doseNumber || "-"}`,
-    prescriber: (d) => d.prescriber || "-",
-    prescriberGPhC: (d) => d.prescriberGPhC || "-",
+    prescriber: (d) => d.prescriber || "—",
+    prescriberGPhC: (d) => d.prescriberGPhC || "—",
+    prescriberType: (d) => d.prescriberType || "—",
   },
+
   travel: {
     title: "Travel Vaccination Prescription",
     drug: (d) => {
       let vaccines = [];
 
-      // Regular vaccines
       if (Array.isArray(d.vaccines) && d.vaccines.length > 0) {
         vaccines = d.vaccines.map((v) => v.vaccine).filter(Boolean);
       }
 
-      // Malaria vaccines (if given)
       if (
         d.malariaGiven === "Yes" &&
         Array.isArray(d.malariaVaccines) &&
@@ -57,9 +66,8 @@ const prescriptionMappings = {
         vaccines.push(...malariaNames);
       }
 
-      if (vaccines.length === 0) {
+      if (vaccines.length === 0)
         return "Travel vaccines as per consultation form";
-      }
 
       return vaccines.join(", ");
     },
@@ -72,7 +80,8 @@ const prescriptionMappings = {
       d.pharmacistName ||
       "-",
     prescriberGPhC: (d) =>
-      d.prescriberGPhC || d.GPHCNumber || d.gphcNumber || "-",
+      d.prescriberGPhC || d.GPHCnumber || d.gphcNumber || "-",
+    prescriberType: (d) => d.prescriberType || "-",
   },
 };
 
@@ -86,6 +95,13 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
 
   // 🔹 Determine heading and style
   const showGenericHeader = serviceId !== "travel";
+
+  // 🔹 Determine consultation date
+  const consultationDate =
+    data.consultationDate ||
+    data.datePharm ||
+    data.date ||
+    new Date().toLocaleDateString();
 
   return (
     <div className="formdoc" style={{ pageBreakInside: "avoid" }}>
@@ -132,22 +148,22 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
       >
         <div className="row">
           <div className="row__label">FULL NAME:</div>
-          <div className="row__value">
-            <span>{safe(data.fullName)}</span>
-          </div>
+          <div className="row__value">{safe(data.fullName)}</div>
         </div>
         <div className="row">
           <div className="row__label">ADDRESS:</div>
-          <div className="row__value">
-            <span>{safe(data.address)}</span>
-          </div>
+          <div className="row__value">{safe(data.address)}</div>
         </div>
         <div className="row">
           <div className="row__label">DATE OF BIRTH:</div>
-          <div className="row__value">
-            <span>{safe(data.dob)}</span>
-          </div>
+          <div className="row__value">{safe(data.dob)}</div>
         </div>
+        {data.surgery && (
+          <div className="row">
+            <div className="row__label">SURGERY NAME:</div>
+            <div className="row__value">{safe(data.surgery)}</div>
+          </div>
+        )}
       </section>
 
       {/* Prescription details */}
@@ -158,19 +174,19 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         <div className="row">
           <div className="row__label">DRUG:</div>
           <div className="row__value">
-            <span>{map.drug ? map.drug(data) : "—"}</span>
+            {map.drug ? map.drug(data) : "—"}
           </div>
         </div>
         <div className="row">
           <div className="row__label">QUANTITY:</div>
           <div className="row__value">
-            <span>{map.quantity ? map.quantity(data) : "—"}</span>
+            {map.quantity ? map.quantity(data) : "—"}
           </div>
         </div>
         <div className="row">
           <div className="row__label">DOSE:</div>
           <div className="row__value">
-            <span>{map.dose ? map.dose(data) : "—"}</span>
+            {map.dose ? map.dose(data) : "—"}
           </div>
         </div>
       </section>
@@ -183,13 +199,19 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         <div className="row">
           <div className="row__label">PRESCRIBER:</div>
           <div className="row__value">
-            <span>{map.prescriber ? map.prescriber(data) : "—"}</span>
+            {map.prescriber ? map.prescriber(data) : "—"}
+          </div>
+        </div>
+        <div className="row">
+          <div className="row__label">PRESCRIBER TYPE:</div>
+          <div className="row__value">
+            {map.prescriberType ? map.prescriberType(data) : "—"}
           </div>
         </div>
         <div className="row">
           <div className="row__label">GPhC:</div>
           <div className="row__value">
-            <span>{map.prescriberGPhC ? map.prescriberGPhC(data) : "—"}</span>
+            {map.prescriberGPhC ? map.prescriberGPhC(data) : "—"}
           </div>
         </div>
 
@@ -210,9 +232,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
 
         <div className="row">
           <div className="row__label">DATE:</div>
-          <div className="row__value">
-            <span>{safe(data.datePharm)}</span>
-          </div>
+          <div className="row__value">{safe(consultationDate)}</div>
         </div>
       </section>
 
@@ -222,8 +242,8 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         style={{ maxWidth: 520, marginLeft: 0, marginTop: 10 }}
       >
         This prescription is valid only when used with the corresponding
-        administration form in a certified pharmacy consultation room under the
-        supervision of a pharmacist or prescriber.
+        consultation and administration forms in a certified pharmacy
+        consultation room under the supervision of a pharmacist or prescriber.
       </div>
     </div>
   );

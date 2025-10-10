@@ -9,6 +9,8 @@ import PreviewPage from "./PreviewPage.jsx";
 import LoginPage from "./LoginPage.jsx";
 import PatientsPage from "./PatientsPage.jsx";
 import TravelConsultationPage from "./TravelConsultationPage";
+import WeightlossConsultationPage from "./WeightLossConsultationPage"; // ✅ ADD THIS LINE
+
 
 import "./App.css";
 
@@ -45,6 +47,15 @@ export default function App() {
                 <TravelConsultationPage />
               </RequireAuth>
             } />
+
+
+            {/* 🔹 Weight Loss Consultation */}
+            <Route path="/service/weightloss/consultation" element={
+              <RequireAuth>
+                <WeightlossConsultationPage />  {/* ✅ NEW ROUTE */}
+              </RequireAuth>
+            } />
+
 
             {/* Patient Form */}
             <Route path="/service/:id/patient" element={

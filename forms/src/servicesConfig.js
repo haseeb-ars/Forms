@@ -42,34 +42,111 @@ export const services = [
   ],
   template: "B12Template"
 },
-  {
-    id: "weightloss",
-    name: "Weightloss",
-    color: "#f97316",
-    patientFields: [
-      { name: "fullName", label: "Full Name", type: "text" },
-      { name: "dob", label: "Date of Birth", type: "date" },
-      { name: "telephone", label: "Contact Number", type: "text" },
-      { name: "email", label: "Email", type: "email" },
-      { name: "address", label: "Address", type: "text", span: true },
-      { name: "heightCm", label: "Height (cm)", type: "number" },
-      { name: "weightKg", label: "Weight (kg)", type: "number" },
-      { name: "bmi", label: "BMI", type: "text" },
-      { name: "medicalHistory", label: "Medical History", type: "textarea", span: true },
-      { name: "currentMedications", label: "Current Medications", type: "textarea", span: true },
-      { name: "programType", label: "Program Type", type: "select", options: ["Semaglutide", "Tirzepatide", "Other"] },
-      { name: "pregnancyStatus", label: "Pregnancy Status", type: "select", options: ["N/A", "Pregnant", "Planning Pregnancy"] }
-    ],
-    pharmacistFields: [
-      { name: "medication", label: "Medication", type: "text" },
-      { name: "dosage", label: "Dosage", type: "text" },
-      { name: "startDate", label: "Start Date", type: "date" },
-      { name: "followUpDate", label: "Follow-up Date", type: "date" },
-      { name: "batchNumber", label: "Batch Number", type: "text" },
-      { name: "notes", label: "Notes", type: "textarea", span: true }
-    ],
-    template: "WeightlossTemplate"
-  },
+{
+  id: "weightloss",
+  name: "Weight Loss",
+  color: "#f97316",
+
+  patientFields: [
+    { name: "fullName", label: "Full Name", type: "text" },
+    { name: "dob", label: "Date of Birth", type: "date" },
+    { name: "telephone", label: "Contact Number", type: "text" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "address", label: "Address", type: "text", span: true },
+    { name: "surgery", label: "Surgery Name", type: "text" },
+
+    // Lifestyle + program-level inputs
+    
+    
+    {
+      name: "followUpPreference",
+      label: "Preferred Follow-up Method",
+      type: "select",
+      options: ["In-person", "Video Call", "Phone Call", "Email"]
+    },
+    {
+      name: "additionalNotes",
+      label: "Additional Notes",
+      type: "textarea",
+      span: true
+    }
+  ],
+
+  pharmacistFields: [
+       {
+      name: "medication",
+      label: "Dispensed Medication",
+      type: "select",
+      options: [
+        "Wegovy (Semaglutide)",
+        "Ozempic (Semaglutide)",
+        "Mounjaro (Tirzepatide)",
+        "Saxenda (Liraglutide)",
+        "Rybelsus (Semaglutide Oral)",
+        "Trulicity (Dulaglutide)",
+        "Other"
+      ]
+    },
+    {
+      name: "otherMedication",
+      label: "If Other, Specify Medication",
+      type: "text",
+      conditional: { field: "medication", value: "Other" } // optional if your form renderer supports it
+    },
+
+    {
+      name: "dosage",
+      label: "Dosage",
+      type: "text"
+    },
+    {
+      name: "startDate",
+      label: "Start Date",
+      type: "date"
+    },
+    {
+      name: "followUpDate",
+      label: "Follow-up Date",
+      type: "date"
+    },
+    {
+      name: "batchNumber",
+      label: "Batch Number",
+      type: "text"
+    },
+    {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "GP",
+        "Pharmacist Independent Prescriber",
+        "Nurse Prescriber",
+        "Doctor (Specialist)",
+        "Other"
+      ]
+    },
+     {
+      name: "prescriberName",
+      label: "Prescriber Name",
+      type: "text"
+    },
+     {
+      name: "GPHCnumber",
+      label: "GPHC Number",
+      type: "text"
+    },
+    {
+      name: "notes",
+      label: "Pharmacist Notes",
+      type: "textarea",
+      span: true
+    }
+  ],
+
+  template: "WeightLossTemplate"
+}
+,
   {
     id: "earwax",
     name: "Earwax",
@@ -131,7 +208,9 @@ export const services = [
       { name: "address", label: "Address", type: "text", span: true },
       { name: "allergies", label: "Allergies", type: "textarea", span: true },
       { name: "conditions", label: "Chronic Conditions", type: "textarea", span: true },
-      { name: "pregnant", label: "Pregnant", type: "select", options: ["Yes", "No"] }
+      { name: "pregnant", label: "Pregnant", type: "select", options: ["Yes", "No"] },
+       { name: "surgery", label: "Surgery Name", type: "text" },
+
     ],
     pharmacistFields: [
       { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },
@@ -173,7 +252,6 @@ export const services = [
   patientFields: [
     { name: "fullName", label: "Full Name", type: "text" },
     { name: "dob", label: "Date of Birth", type: "date" },
-    { name: "passportNumber", label: "Passport Number", type: "text" },
     { name: "telephone", label: "Contact Number", type: "text" },
     { name: "email", label: "Email", type: "email" },
     { name: "surgery", label: "Surgery Name", type: "text" },

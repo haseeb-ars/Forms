@@ -1,68 +1,77 @@
 import React from "react";
 import "./WeightlossTemplate.css";
-import { useApp } from "../AppContext";
 
-export default function WeightlossTemplate({ data }) {
+export default function WeightlossTemplate({ data = {} }) {
+  const safe = (v) => (v && v !== "" ? v : "—");
 
-const { branch } = useApp();                // <— define branch
-  const logoSrc = branch?.logo || `${process.env.PUBLIC_URL}/Logo3.png`; // fallback
-
-
-  
   return (
     <div className="template weightloss-template">
       {/* Header */}
       <header className="template-header">
         <div className="logo">
-        
-<img src={logoSrc} alt="CarePlus Health" className="logo-img" />
-
+          <img src="/Logo3.png" alt="CarePlus Logo" className="logo" />
         </div>
         <div className="form-meta">
-          <p><strong>Weightloss Program Consent Form</strong></p>
+          <h1>Weight Loss Program Consent Form</h1>
         </div>
       </header>
 
       {/* Patient Details */}
       <section className="template-section two-column">
         <div>
-          <p><strong>Full Name:</strong> {data.fullName}</p>
-          <p><strong>Date of Birth:</strong> {data.dob}</p>
-          <p><strong>Contact Number:</strong> {data.telephone}</p>
+          <p><strong>Full Name:</strong> {safe(data.fullName)}</p>
+          <p><strong>Date of Birth:</strong> {safe(data.dob)}</p>
+          <p><strong>Contact Number:</strong> {safe(data.telephone)}</p>
+          <p><strong>Email:</strong> {safe(data.email)}</p>
         </div>
         <div>
-          <p><strong>Email:</strong> {data.email}</p>
-          <p><strong>Address:</strong> {data.address}</p>
+          <p><strong>Address:</strong> {safe(data.address)}</p>
+          <p><strong>Surgery:</strong> {safe(data.surgery)}</p>
+          <p><strong>Preferred Follow-Up:</strong> {safe(data.followUpPreference)}</p>
         </div>
       </section>
 
-      {/* Measurements & History */}
+      {/* Measurements */}
       <section className="template-section">
-        <h2>Measurements & History</h2>
-        <p><strong>Height (cm):</strong> {data.heightCm}</p>
-        <p><strong>Weight (kg):</strong> {data.weightKg}</p>
-        <p><strong>BMI:</strong> {data.bmi}</p>
-        <p><strong>Program Type:</strong> {data.programType}</p>
-        <p><strong>Pregnancy Status:</strong> {data.pregnancyStatus}</p>
-        <p><strong>Medical History:</strong> {data.medicalHistory}</p>
-        <p><strong>Current Medications:</strong> {data.currentMedications}</p>
+        <h2>Measurements</h2>
+        <p><strong>Height:</strong> {safe(data.heightCm)} cm</p>
+        <p><strong>Weight:</strong> {safe(data.weightKg)} kg</p>
+        <p><strong>BMI:</strong> {safe(data.bmi)}</p>
       </section>
 
       {/* Medication Plan */}
       <section className="template-section">
         <h2>Medication Plan</h2>
-        <p><strong>Medication:</strong> {data.medication}</p>
-        <p><strong>Dosage:</strong> {data.dosage}</p>
-        <p><strong>Start Date:</strong> {data.startDate}</p>
-        <p><strong>Follow-up Date:</strong> {data.followUpDate}</p>
-        <p><strong>Batch Number:</strong> {data.batchNumber}</p>
-        <p><strong>Notes:</strong> {data.notes}</p>
+        <p><strong>Medication:</strong> {safe(data.medication)}</p>
+        {data.medication === "Other" && (
+          <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
+        )}
+        <p><strong>Dosage:</strong> {safe(data.dosage)}</p>
+        <p><strong>Start Date:</strong> {safe(data.startDate)}</p>
+        <p><strong>Follow-up Date:</strong> {safe(data.followUpDate)}</p>
+        <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
       </section>
+
+      {/* Prescriber Info */}
+      <section className="template-section">
+        <h2>Prescriber Details</h2>
+        <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
+        <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
+        <p><strong>GPhC Number:</strong> {safe(data.GPHCnumber)}</p>
+      </section>
+
+      {/* Pharmacist Notes */}
+      {data.notes && (
+        <section className="template-section">
+          <h2>Pharmacist Notes</h2>
+          <p>{data.notes}</p>
+        </section>
+      )}
 
       {/* Consent */}
       <section className="template-section consent">
         <p>
-          I consent to participate in the weightloss program. I understand the potential risks,
+          I consent to participate in the weight loss program. I understand the potential risks,
           benefits, and alternatives. I confirm that the information provided is accurate to the best
           of my knowledge and that I have discussed this treatment with my pharmacist.
         </p>

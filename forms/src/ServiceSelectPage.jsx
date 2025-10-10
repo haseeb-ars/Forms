@@ -5,21 +5,21 @@ import "./ServiceSelectPage.css";
 
 export default function ServiceSelectPage() {
   const navigate = useNavigate();
-  const { setSelectedFormType } = useApp(); // get setter
+  const { setSelectedFormType } = useApp();
 
   const handleSelect = (serviceId) => {
-    setSelectedFormType(serviceId); // update context
+    setSelectedFormType(serviceId);
 
-    // 🔹 Special case for Travel service → start with consultation
-    if (serviceId === "travel") {
-      navigate(`/service/travel/consultation`);
+    // 🔹 Services that start with a Consultation page
+    if (serviceId === "travel" || serviceId === "weightloss") {
+      navigate(`/service/${serviceId}/consultation`);
     } else {
-      // all other services go directly to patient form
+      // All others go directly to patient form
       navigate(`/service/${serviceId}/patient`);
     }
   };
 
-  // Placeholder services for the bento box layout
+  // Placeholder services
   const placeholderServices = [
     { id: "placeholder1", name: "Lorem Ipsum", color: "#6366f1", placeholder: true },
     { id: "placeholder2", name: "Dolor Sit", color: "#8b5cf6", placeholder: true },
@@ -29,7 +29,6 @@ export default function ServiceSelectPage() {
     { id: "placeholder6", name: "Tempor Incididunt", color: "#06b6d4", placeholder: true }
   ];
 
-  // Combine real services with placeholders
   const allServices = [...services, ...placeholderServices];
 
   return (

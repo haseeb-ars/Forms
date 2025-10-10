@@ -237,14 +237,14 @@ export default function TravelConsultationPage({ onContinue }) {
 
   // ---------------------- Render ----------------------
   return (
-    <div className="consultation">
+    <div className="consultation1">
       {step === 1 ? (
-        <div className="page">
-          <h2 className="page-title">Travel Vaccination Consultation</h2>
+        <div className="page1">
+          <h2 className="page-title1">Travel Vaccination Consultation</h2>
 
-          <div className="card">
-            <div className="form-group">
-              <label className="label">Destination countries</label>
+          <div className="card1">
+            <div className="form-group1">
+              <label className="label1">Destination countries</label>
               <Select
                 isMulti
                 options={countryOptions}
@@ -262,17 +262,17 @@ export default function TravelConsultationPage({ onContinue }) {
               countryIdMap={countryIdMap}
             />
 
-            <div className="form-row">
-              <div className="form-group">
-                <label className="label">Departure date</label>
+            <div className="form-row1">
+              <div className="form-group1">
+                <label className="label1">Departure date</label>
                 <input
                   type="date"
                   value={travelConsultation.departureDate || ""}
                   onChange={(e) => handleChange("departureDate", e.target.value)}
                 />
               </div>
-              <div className="form-group">
-                <label className="label">Return date</label>
+              <div className="form-group1">
+                <label className="label1">Return date</label>
                 <input
                   type="date"
                   value={travelConsultation.returnDate || ""}
@@ -281,8 +281,8 @@ export default function TravelConsultationPage({ onContinue }) {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="label">Reason for travel</label>
+            <div className="form-group1">
+              <label className="label1">Reason for travel</label>
               <select
                 value={travelConsultation.reason || ""}
                 onChange={(e) => handleChange("reason", e.target.value)}
@@ -297,8 +297,8 @@ export default function TravelConsultationPage({ onContinue }) {
             </div>
 
             {/* allergy/pregnancy/immunosuppression */}
-            <div className="form-row checkboxes">
-              <label className="check">
+            <div className="form-row1 checkboxes1">
+              <label className="check1">
                 <input
                   type="checkbox"
                   checked={!!travelConsultation.eggAllergy}
@@ -306,7 +306,7 @@ export default function TravelConsultationPage({ onContinue }) {
                 />
                 Egg allergy
               </label>
-              <label className="check">
+              <label className="check1">
                 <input
                   type="checkbox"
                   checked={!!travelConsultation.pregnant}
@@ -314,7 +314,7 @@ export default function TravelConsultationPage({ onContinue }) {
                 />
                 Pregnant
               </label>
-              <label className="check">
+              <label className="check1">
                 <input
                   type="checkbox"
                   checked={!!travelConsultation.immunosuppressed}
@@ -325,38 +325,38 @@ export default function TravelConsultationPage({ onContinue }) {
             </div>
 
             {/* ✅ Vaccines Section with Clickable Info */}
-            <div className="cards-3">
-              <div className="card">
-                <h3 className="card-title">💉 Recommended Vaccines</h3>
+            <div className="cards-31">
+              <div className="card1">
+                <h3 className="card-title1">💉 Recommended Vaccines</h3>
                 {travelConsultation.recommendedVaccines?.length
                   ? renderVaccineList(travelConsultation.recommendedVaccines)
-                  : <p className="muted">Select at least one country.</p>}
+                  : <p className="muted1">Select at least one country.</p>}
               </div>
 
-              <div className="card">
-                <h3 className="card-title">⚠️ Caution</h3>
+              <div className="card1">
+                <h3 className="card-title1">⚠️ Caution</h3>
                 {travelConsultation.cautionVaccines?.length
                   ? renderVaccineList(travelConsultation.cautionVaccines)
-                  : <p className="muted">No cautions based on current answers.</p>}
+                  : <p className="muted1">No cautions based on current answers.</p>}
               </div>
 
-              <div className="card">
-                <h3 className="card-title">⛔ Contraindicated</h3>
+              <div className="card1">
+                <h3 className="card-title1">⛔ Contraindicated</h3>
                 {travelConsultation.contraindicatedVaccines?.length
                   ? renderVaccineList(travelConsultation.contraindicatedVaccines)
-                  : <p className="muted">None identified.</p>}
+                  : <p className="muted1">None identified.</p>}
               </div>
             </div>
 
             {(travelConsultation.malariaRisks?.length ||
               travelConsultation.otherRisks?.length) && (
-              <div className="card">
-                <h3 className="card-title">🌡 Other Risks</h3>
-                <div className="two-col">
+              <div className="card1">
+                <h3 className="card-title1">🌡 Other Risks</h3>
+                <div className="two-col1">
                   {travelConsultation.malariaRisks?.length ? (
                     <div>
-                      <h4 className="sub">Malaria</h4>
-                      <ul className="bullets">
+                      <h4 className="sub1">Malaria</h4>
+                      <ul className="bullets1">
                         {travelConsultation.malariaRisks.map((m) => (
                           <li key={m}>{m}</li>
                         ))}
@@ -365,8 +365,8 @@ export default function TravelConsultationPage({ onContinue }) {
                   ) : null}
                   {travelConsultation.otherRisks?.length ? (
                     <div>
-                      <h4 className="sub">General</h4>
-                      <ul className="bullets">
+                      <h4 className="sub1">General</h4>
+                      <ul className="bullets1">
                         {travelConsultation.otherRisks.map((r) => (
                           <li key={r}>{r}</li>
                         ))}
@@ -377,8 +377,8 @@ export default function TravelConsultationPage({ onContinue }) {
               </div>
             )}
 
-            <div className="actions">
-              <button className="btn btn--primary" onClick={() => setStep(2)}>
+            <div className="actions1">
+              <button className="btn1 btn--primary1" onClick={() => setStep(2)}>
                 Next
               </button>
             </div>
@@ -386,20 +386,20 @@ export default function TravelConsultationPage({ onContinue }) {
         </div>
       ) : (
         // ✅ Step 2 - Medical Questions restored
-        <div className="page">
-          <h2 className="page-title">Medical Questions</h2>
+        <div className="page1">
+          <h2 className="page-title1">Medical Questions</h2>
 
           {questions.map((q) => (
-            <div key={q.label} className="form-card">
-              <p className="q-title">{q.label}</p>
+            <div key={q.label} className="form-card1">
+              <p className="q-title1">{q.label}</p>
 
               {q.type === "multi" ? (
-                <div className="grid-2">
+                <div className="grid-21">
                   {q.options.map((opt) => {
                     const checked =
                       (travelConsultation.medical?.[q.label] || []).includes(opt);
                     return (
-                      <label key={opt} className="check">
+                      <label key={opt} className="check1">
                         <input
                           type="checkbox"
                           checked={checked}
@@ -411,8 +411,8 @@ export default function TravelConsultationPage({ onContinue }) {
                   })}
                 </div>
               ) : (
-                <div className="yesno">
-                  <label className="radio">
+                <div className="yesno1">
+                  <label className="radio1">
                     <input
                       type="radio"
                       name={q.label}
@@ -422,7 +422,7 @@ export default function TravelConsultationPage({ onContinue }) {
                     />
                     Yes
                   </label>
-                  <label className="radio">
+                  <label className="radio1">
                     <input
                       type="radio"
                       name={q.label}
@@ -437,8 +437,8 @@ export default function TravelConsultationPage({ onContinue }) {
 
               {q.hasDetails &&
                 travelConsultation.medical?.[q.label] === "Yes" && (
-                  <div className="form-group">
-                    <label className="label">Please provide details</label>
+                  <div className="form-group1">
+                    <label className="label1">Please provide details</label>
                     <textarea
                       value={
                         travelConsultation.medical?.[`${q.label} details`] || ""
@@ -452,11 +452,11 @@ export default function TravelConsultationPage({ onContinue }) {
             </div>
           ))}
 
-          <div className="actions between">
-            <button className="btn" onClick={() => setStep(1)}>
+          <div className="actions between1">
+            <button className="btn1" onClick={() => setStep(1)}>
               Back
             </button>
-            <button className="btn btn--primary" onClick={continueHandler}>
+            <button className="btn1 btn--primary1" onClick={continueHandler}>
               Continue to Form
             </button>
           </div>

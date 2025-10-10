@@ -219,16 +219,54 @@ export default function PreviewPage() {
     for (const tab of serviceTabs) await generatePDF(tab.Comp, tab.pdfName);
   }, [serviceTabs, generatePDF]);
 
-  // ⏱️ Auto download trigger
-  useEffect(() => {
-    if (!autoDownloaded && (patient.fullName || pharm.destinationCountry)) {
-      const timer = setTimeout(() => {
-        downloadPDFs();
-        setAutoDownloaded(true);
-      }, 600);
-      return () => clearTimeout(timer);
+// ⏱️ Auto download trigger — final stable fix for dev + prod
+useEffect(() => {
+  const runAutoDownload = async () => {
+    if (autoDownloaded) return;
+
+    // 🚫 Prevent double trigger across re-mounts
+    if (sessionStorage.getItem("autoDownloadTriggered") === "true") return;
+
+    const ready =
+      patient?.fullName ||
+      pharm?.destinationCountry ||
+      weightLossConsultation?.bmi;
+
+    if (!ready) return;
+
+    // Wait for UI to settle
+    await new Promise((r) => requestAnimationFrame(r));
+    await new Promise((r) => setTimeout(r, 1500));
+
+    // Wait for all images to load
+    const imgs = document.images;
+    const promises = [];
+    for (let i = 0; i < imgs.length; i++) {
+      if (!imgs[i].complete) {
+        promises.push(
+          new Promise((res) => {
+            imgs[i].addEventListener("load", res);
+            imgs[i].addEventListener("error", res);
+          })
+        );
+      }
     }
-  }, [autoDownloaded, downloadPDFs, patient, pharm]);
+    await Promise.all(promises);
+
+    try {
+      await downloadPDFs();
+      setAutoDownloaded(true);
+      sessionStorage.setItem("autoDownloadTriggered", "true"); // ✅ prevents rerun after remount
+    } catch (err) {
+      console.error("Auto PDF download failed:", err);
+    }
+  };
+
+  runAutoDownload();
+}, [autoDownloaded, patient, pharm, weightLossConsultation, downloadPDFs]);
+
+
+
 
   // 📊 Excel Export
   const downloadExcel = () => {

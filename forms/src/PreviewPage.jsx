@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useApp, AppContext } from "./AppContext.jsx";
 import templates from "./templates";
 import jsPDF from "jspdf";
@@ -32,6 +32,7 @@ export default function PreviewPage() {
   } = useApp();
 
   const { id } = useParams();
+  const location = useLocation(); // 🧭 detect query params
   const previewRef = useRef();
   const [activeTab, setActiveTab] = useState("form");
   const [savedOnce, setSavedOnce] = useState(false);
@@ -54,33 +55,6 @@ export default function PreviewPage() {
           { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-form.pdf", xlsxName: "weightloss-form.xlsx" },
           { key: "consult", label: "Consultation", Comp: WeightlossConsultationTemplate, pdfName: "weightloss-consultation.pdf", xlsxName: "weightloss-consultation.xlsx" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf", xlsxName: "weightloss-prescription.xlsx" },
-        ];
-
-      case "b12":
-        return [
-          { key: "admin", label: "Administration", Comp: templates.b12, pdfName: "b12-administration.pdf", xlsxName: "b12-administration.xlsx" },
-          { key: "ref", label: "GP Letter", Comp: templates.b12_referral, pdfName: "b12-gp-letter.pdf", xlsxName: "b12-gp-letter.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "b12-prescription.pdf", xlsxName: "b12-prescription.xlsx" },
-        ];
-
-      case "earwax":
-        return [
-          { key: "ref", label: "GP Referral Letter", Comp: templates.earwax_referral, pdfName: "earwax-gp-referral.pdf", xlsxName: "earwax-gp-referral.xlsx" },
-          { key: "terms", label: "Terms & Conditions", Comp: templates.earwax_terms, pdfName: "earwax-terms.pdf", xlsxName: "earwax-terms.xlsx" },
-          { key: "consent", label: "Consent", Comp: templates.earwax_consent, pdfName: "earwax-consent.pdf", xlsxName: "earwax-consent.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "earwax-prescription.pdf", xlsxName: "earwax-prescription.xlsx" },
-        ];
-
-      case "flu":
-        return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "flu-form.pdf", xlsxName: "flu-form.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "flu-prescription.pdf", xlsxName: "flu-prescription.xlsx" },
-        ];
-
-      case "covid":
-        return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "covid-form.pdf", xlsxName: "covid-form.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "covid-prescription.pdf", xlsxName: "covid-prescription.xlsx" },
         ];
 
       default:
@@ -131,7 +105,7 @@ export default function PreviewPage() {
     }
   }, [id, patient, pharm, branch, travelConsultation, weightLossConsultation]);
 
-  // 🧾 Generate PDF function (FIXED)
+  // 🧾 Generate PDF function
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
       const tempContainer = document.createElement("div");
@@ -169,40 +143,32 @@ export default function PreviewPage() {
 
       tempContainer.innerHTML = htmlString;
       document.body.appendChild(tempContainer);
-
-      // ⏳ Wait a bit to allow layout & fonts to settle
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await new Promise((r) => setTimeout(r, 300));
 
       try {
         const canvas = await html2canvas(tempContainer, {
-          scale: 2.5, // better quality
+          scale: 2.5,
           useCORS: true,
           allowTaint: true,
           backgroundColor: "#ffffff",
-          windowWidth: tempContainer.scrollWidth,
-          windowHeight: tempContainer.scrollHeight,
-          scrollX: 0,
-          scrollY: 0,
         });
 
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
         const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
         const ratio = pdfWidth / canvas.width;
         const scaledHeight = canvas.height * ratio;
-
         let heightLeft = scaledHeight;
         let position = 0;
 
         pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
-        heightLeft -= pdfHeight;
+        heightLeft -= pdf.internal.pageSize.getHeight();
 
         while (heightLeft > 0) {
-          position -= pdfHeight;
+          position -= pdf.internal.pageSize.getHeight();
           pdf.addPage();
           pdf.addImage(imgData, "PNG", 0, position, pdfWidth, scaledHeight);
-          heightLeft -= pdfHeight;
+          heightLeft -= pdf.internal.pageSize.getHeight();
         }
 
         const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
@@ -216,57 +182,28 @@ export default function PreviewPage() {
 
   // 📄 Download all PDFs
   const downloadPDFs = useCallback(async () => {
-    for (const tab of serviceTabs) await generatePDF(tab.Comp, tab.pdfName);
+    for (const tab of serviceTabs) {
+      await generatePDF(tab.Comp, tab.pdfName);
+    }
   }, [serviceTabs, generatePDF]);
 
-// ⏱️ Auto download trigger — final stable fix for dev + prod
-useEffect(() => {
-  const runAutoDownload = async () => {
-    if (autoDownloaded) return;
+  // ✅ Detect ?autoDownload=true and run only once
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldAutoDownload = params.get("autoDownload") === "true";
 
-    // 🚫 Prevent double trigger across re-mounts
-    if (sessionStorage.getItem("autoDownloadTriggered") === "true") return;
-
-    const ready =
-      patient?.fullName ||
-      pharm?.destinationCountry ||
-      weightLossConsultation?.bmi;
-
-    if (!ready) return;
-
-    // Wait for UI to settle
-    await new Promise((r) => requestAnimationFrame(r));
-    await new Promise((r) => setTimeout(r, 1500));
-
-    // Wait for all images to load
-    const imgs = document.images;
-    const promises = [];
-    for (let i = 0; i < imgs.length; i++) {
-      if (!imgs[i].complete) {
-        promises.push(
-          new Promise((res) => {
-            imgs[i].addEventListener("load", res);
-            imgs[i].addEventListener("error", res);
-          })
-        );
-      }
+    if (shouldAutoDownload && !autoDownloaded) {
+      setTimeout(async () => {
+        try {
+          await downloadPDFs();
+        } catch (err) {
+          console.error("Auto PDF download failed:", err);
+        } finally {
+          setAutoDownloaded(true);
+        }
+      }, 800); // short delay to allow rendering
     }
-    await Promise.all(promises);
-
-    try {
-      await downloadPDFs();
-      setAutoDownloaded(true);
-      sessionStorage.setItem("autoDownloadTriggered", "true"); // ✅ prevents rerun after remount
-    } catch (err) {
-      console.error("Auto PDF download failed:", err);
-    }
-  };
-
-  runAutoDownload();
-}, [autoDownloaded, patient, pharm, weightLossConsultation, downloadPDFs]);
-
-
-
+  }, [location.search, autoDownloaded, downloadPDFs]);
 
   // 📊 Excel Export
   const downloadExcel = () => {

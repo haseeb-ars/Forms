@@ -19,14 +19,16 @@ export default function PharmacistFormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/service/${id}/preview`);
+
+    // 🧩 Ensure pharmacist form data is stored and trigger auto download flag
+    navigate(`/service/${id}/preview?autoDownload=true`);
   };
 
   return (
     <form className="pharmacist-form" onSubmit={handleSubmit}>
       <h2>{service.name} – Pharmacist Form</h2>
 
-      {/* Regular pharmacist fields (excluding malaria-related ones) */}
+      {/* Regular pharmacist fields */}
       <div className="grid grid--2">
         {service.pharmacistFields
           .filter((f) => !f.name.startsWith("malaria"))
@@ -49,7 +51,6 @@ export default function PharmacistFormPage() {
                     className="input textarea"
                     value={pharm[f.name] || ""}
                     onChange={(e) => setPharmField(f.name, e.target.value)}
-                    placeholder={f.placeholder || ""}
                   />
                 ) : f.type === "select" ? (
                   <select
@@ -70,8 +71,6 @@ export default function PharmacistFormPage() {
                     type={f.type || "text"}
                     value={pharm[f.name] || ""}
                     onChange={(e) => setPharmField(f.name, e.target.value)}
-                    placeholder={f.placeholder || ""}
-                    required={f.required}
                   />
                 )}
               </LabeledField>
@@ -79,7 +78,7 @@ export default function PharmacistFormPage() {
           })}
       </div>
 
-      {/* 🟩 Malaria Section (full-width, clean layout) */}
+      {/* 🟩 Malaria Section */}
       <div className="malaria-section">
         {service.pharmacistFields
           .filter((f) => f.name.startsWith("malaria"))
@@ -165,12 +164,13 @@ export default function PharmacistFormPage() {
         </div>
       </div>
 
+      {/* ✅ Updated Preview Button */}
       <button
         type="submit"
         className="btn btn--primary"
         style={{ marginTop: 16 }}
       >
-        Preview
+        Preview & Download
       </button>
     </form>
   );

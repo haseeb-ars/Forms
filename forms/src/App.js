@@ -8,9 +8,11 @@ import PharmacistFormPage from "./PharmacistFormPage.jsx";
 import PreviewPage from "./PreviewPage.jsx";
 import LoginPage from "./LoginPage.jsx";
 import PatientsPage from "./PatientsPage.jsx";
-import TravelConsultationPage from "./TravelConsultationPage";
-import WeightlossConsultationPage from "./WeightLossConsultationPage"; // ✅ ADD THIS LINE
 
+// 🧩 Consultation Pages
+import TravelConsultationPage from "./TravelConsultationPage.jsx";
+import WeightlossConsultationPage from "./WeightLossConsultationPage.jsx";
+import ConsultationPage from "./ConsultationPage.jsx"; // ✅ Shared for earwax, flu, covid, b12
 
 import "./App.css";
 
@@ -18,72 +20,107 @@ export default function App() {
   return (
     <AppProvider>
       <div className="shell">
+        {/* Header */}
         <header className="topbar">
           <div className="topbar__brand">
             <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
           </div>
           <nav className="topbar__nav">
-            <Link to="/" className="link-btn">Home</Link>
-            <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>Patients</Link>
+            <Link to="/" className="link-btn">
+              Home
+            </Link>
+            <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>
+              Patients
+            </Link>
             <AuthHeaderControls />
           </nav>
         </header>
 
+        {/* Main Routes */}
         <main className="main">
           <Routes>
-            {/* Login */}
+            {/* 🔐 Login */}
             <Route path="/login" element={<LoginPage />} />
 
-            {/* Home - Service Selection */}
-            <Route path="/" element={
-              <RequireAuth>
-                <ServiceSelectPage />
-              </RequireAuth>
-            } />
+            {/* 🏠 Home - Service Selection */}
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <ServiceSelectPage />
+                </RequireAuth>
+              }
+            />
 
-            {/* 🔹 Travel Consultation (step before form) */}
-            <Route path="/service/travel/consultation" element={
-              <RequireAuth>
-                <TravelConsultationPage />
-              </RequireAuth>
-            } />
+            {/* 🧭 Travel Consultation */}
+            <Route
+              path="/service/travel/consultation"
+              element={
+                <RequireAuth>
+                  <TravelConsultationPage />
+                </RequireAuth>
+              }
+            />
 
+            {/* ⚖️ Weight Loss Consultation */}
+            <Route
+              path="/service/weightloss/consultation"
+              element={
+                <RequireAuth>
+                  <WeightlossConsultationPage />
+                </RequireAuth>
+              }
+            />
 
-            {/* 🔹 Weight Loss Consultation */}
-            <Route path="/service/weightloss/consultation" element={
-              <RequireAuth>
-                <WeightlossConsultationPage />  {/* ✅ NEW ROUTE */}
-              </RequireAuth>
-            } />
+            {/* 🧠 Shared Consultation for: earwax, flu, covid, b12 */}
+            <Route
+              path="/service/:id/consultation"
+              element={
+                <RequireAuth>
+                  <ConsultationPage />
+                </RequireAuth>
+              }
+            />
 
+            {/* 🧍 Patient Form */}
+            <Route
+              path="/service/:id/patient"
+              element={
+                <RequireAuth>
+                  <PatientFormPage />
+                </RequireAuth>
+              }
+            />
 
-            {/* Patient Form */}
-            <Route path="/service/:id/patient" element={
-              <RequireAuth>
-                <PatientFormPage />
-              </RequireAuth>
-            } />
+            {/* 💊 Pharmacist Form */}
+            <Route
+              path="/service/:id/pharmacist"
+              element={
+                <RequireAuth>
+                  <PharmacistFormPage />
+                </RequireAuth>
+              }
+            />
 
-            {/* Pharmacist Form */}
-            <Route path="/service/:id/pharmacist" element={
-              <RequireAuth>
-                <PharmacistFormPage />
-              </RequireAuth>
-            } />
+            {/* 🧾 Preview */}
+            <Route
+              path="/service/:id/preview"
+              element={
+                <RequireAuth>
+                  <PreviewPage />
+                </RequireAuth>
+              }
+            />
 
-            {/* Preview */}
-            <Route path="/service/:id/preview" element={
-              <RequireAuth>
-                <PreviewPage />
-              </RequireAuth>
-            } />
-
-            {/* Patients List */}
-            <Route path="/patients" element={
-              <RequireAuth>
-                <PatientsPage />
-              </RequireAuth>
-            } />
+            {/* 👥 Patients List */}
+            <Route
+              path="/patients"
+              element={
+                <RequireAuth>
+                  <PatientsPage />
+                </RequireAuth>
+              }
+            />
           </Routes>
         </main>
       </div>
@@ -91,24 +128,26 @@ export default function App() {
   );
 }
 
+/* 🔒 Auth Protection */
 function RequireAuth({ children }) {
   const { isAuthenticated, isHydrated } = useApp();
   const location = useLocation();
-  if (!isHydrated) {
-    return null;
-  }
+  if (!isHydrated) return null;
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
 }
 
+/* 🚪 Logout Button */
 function AuthHeaderControls() {
   const { isAuthenticated, logout } = useApp();
   if (!isAuthenticated) return null;
   return (
     <>
-      <button className="btn" onClick={logout}>Logout</button>
+      <button className="btn" onClick={logout}>
+        Logout
+      </button>
     </>
   );
 }

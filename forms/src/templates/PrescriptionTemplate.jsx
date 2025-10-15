@@ -8,9 +8,11 @@ const prescriptionMappings = {
     drug: (d) => d.drug || "Hydroxocobalamin 1000mcg/1ml ampoule",
     quantity: (d) => d.quantity || "One ampoule",
     dose: (d) => d.dose || "1000mcg (1ml) IM injection",
-    prescriber: (d) => d.prescriberName || d.prescriber || "Mr James Pendlebury",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || "Mr James Pendlebury",
     prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "2211954",
-    prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
+    prescriberType: (d) =>
+      d.prescriberType || "Pharmacist Independent Prescriber",
   },
 
   weightloss: {
@@ -31,9 +33,11 @@ const prescriptionMappings = {
     drug: (d) => d.vaccineBrand || "Influenza vaccine",
     quantity: () => "1 dose",
     dose: () => "0.5ml IM injection",
-    prescriber: (d) => d.prescriber || "—",
-    prescriberGPhC: (d) => d.prescriberGPhC || "—",
-    prescriberType: (d) => d.prescriberType || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberType: (d) =>
+      d.prescriberType || "Pharmacist Independent Prescriber",
   },
 
   covid: {
@@ -41,9 +45,11 @@ const prescriptionMappings = {
     drug: (d) => d.vaccineBrand || "COVID-19 Vaccine",
     quantity: () => "1 dose",
     dose: (d) => `Dose ${d.doseNumber || "-"}`,
-    prescriber: (d) => d.prescriber || "—",
-    prescriberGPhC: (d) => d.prescriberGPhC || "—",
-    prescriberType: (d) => d.prescriberType || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberType: (d) =>
+      d.prescriberType || "Pharmacist Independent Prescriber",
   },
 
   travel: {
@@ -83,20 +89,41 @@ const prescriptionMappings = {
       d.prescriberGPhC || d.GPHCnumber || d.gphcNumber || "-",
     prescriberType: (d) => d.prescriberType || "-",
   },
+
+  earwax: {
+    title: "Earwax Removal Prescription",
+    drug: (d) =>
+      d.medication ||
+      d.earMedication ||
+      "Earwax removal drops or treatment as indicated",
+    quantity: (d) => d.quantity || "As required",
+    dose: (d) => d.dose || d.dosage || "Use as directed",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberType: (d) =>
+      d.prescriberType || "Pharmacist Independent Prescriber",
+  },
 };
 
 export default function PrescriptionTemplate({ data = {}, serviceId }) {
   const safe = (v) => (v && String(v).trim() !== "" ? v : "—");
 
-  // Pick mapping or fallback to generic
-  const map = prescriptionMappings[serviceId] || {
-    title: "Private Prescription",
-  };
+  // ✅ Pick mapping or smart fallback
+  const map =
+    prescriptionMappings[serviceId] || {
+      title: "Private Prescription",
+      drug: (d) => d.medication || "—",
+      quantity: (d) => d.quantity || "—",
+      dose: (d) => d.dose || d.dosage || "—",
+      prescriber: (d) =>
+        d.prescriberName || d.prescriber || d.clinicianName || "—",
+      prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+      prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
+    };
 
-  // 🔹 Determine heading and style
   const showGenericHeader = serviceId !== "travel";
 
-  // 🔹 Determine consultation date
   const consultationDate =
     data.consultationDate ||
     data.datePharm ||
@@ -173,9 +200,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
       >
         <div className="row">
           <div className="row__label">DRUG:</div>
-          <div className="row__value">
-            {map.drug ? map.drug(data) : "—"}
-          </div>
+          <div className="row__value">{map.drug ? map.drug(data) : "—"}</div>
         </div>
         <div className="row">
           <div className="row__label">QUANTITY:</div>
@@ -185,9 +210,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         </div>
         <div className="row">
           <div className="row__label">DOSE:</div>
-          <div className="row__value">
-            {map.dose ? map.dose(data) : "—"}
-          </div>
+          <div className="row__value">{map.dose ? map.dose(data) : "—"}</div>
         </div>
       </section>
 

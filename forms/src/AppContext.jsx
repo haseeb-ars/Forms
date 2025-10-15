@@ -109,6 +109,15 @@ export function AppProvider({ children }) {
   const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
   const resetWeightLossConsultation = () => setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
 
+
+  // ✅ Add these new ones:
+  const [earwaxConsultation, setEarwaxConsultation] = useState({});
+  const [covidConsultation, setCovidConsultation] = useState({});
+  const [b12Consultation, setB12Consultation] = useState({});
+  const [fluConsultation, setFluConsultation] = useState({});
+
+
+
   // Load saved auth data
   useEffect(() => {
     try {
@@ -214,6 +223,18 @@ export function AppProvider({ children }) {
         weightLossConsultation,
         setWeightLossConsultation,
         resetWeightLossConsultation,
+
+
+
+      earwaxConsultation,
+        setEarwaxConsultation,
+        covidConsultation,
+        setCovidConsultation,
+        b12Consultation,
+        setB12Consultation,
+        fluConsultation,
+        setFluConsultation,
+
       }}
     >
       {children}

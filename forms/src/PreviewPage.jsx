@@ -20,6 +20,7 @@ import ReactDOMServer from "react-dom/server";
 import TravelConsultationTemplate from "./templates/TravelConsultationTemplate.jsx";
 import WeightlossConsultationTemplate from "./templates/WeightLossConsultationTemplate.jsx";
 import PrescriptionTemplate from "./templates/PrescriptionTemplate.jsx";
+import ConsultationTemplate from "./templates/ConsultationTemplate.jsx";
 
 export default function PreviewPage() {
   const {
@@ -29,10 +30,14 @@ export default function PreviewPage() {
     branch,
     travelConsultation,
     weightLossConsultation,
+    earwaxConsultation,
+    covidConsultation,
+    b12Consultation,
+    fluConsultation,
   } = useApp();
 
   const { id } = useParams();
-  const location = useLocation(); // 🧭 detect query params
+  const location = useLocation();
   const previewRef = useRef();
   const [activeTab, setActiveTab] = useState("form");
   const [savedOnce, setSavedOnce] = useState(false);
@@ -45,27 +50,105 @@ export default function PreviewPage() {
     switch (id) {
       case "travel":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "travel-form.pdf", xlsxName: "travel-form.xlsx" },
-          { key: "consult", label: "Consultation", Comp: TravelConsultationTemplate, pdfName: "travel-consultation.pdf", xlsxName: "travel-consultation.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "travel-prescription.pdf", xlsxName: "travel-prescription.xlsx" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "travel-form.pdf",
+            xlsxName: "travel-form.xlsx",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: TravelConsultationTemplate,
+            pdfName: "travel-consultation.pdf",
+            xlsxName: "travel-consultation.xlsx",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "travel-prescription.pdf",
+            xlsxName: "travel-prescription.xlsx",
+          },
         ];
 
       case "weightloss":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-form.pdf", xlsxName: "weightloss-form.xlsx" },
-          { key: "consult", label: "Consultation", Comp: WeightlossConsultationTemplate, pdfName: "weightloss-consultation.pdf", xlsxName: "weightloss-consultation.xlsx" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf", xlsxName: "weightloss-prescription.xlsx" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "weightloss-form.pdf",
+            xlsxName: "weightloss-form.xlsx",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: WeightlossConsultationTemplate,
+            pdfName: "weightloss-consultation.pdf",
+            xlsxName: "weightloss-consultation.xlsx",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "weightloss-prescription.pdf",
+            xlsxName: "weightloss-prescription.xlsx",
+          },
+        ];
+
+      // ✅ Shared consultation template for Flu, Covid, B12, Earwax
+      case "flu":
+      case "covid":
+      case "b12":
+      case "earwax":
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: `${id}-form.pdf`,
+            xlsxName: `${id}-form.xlsx`,
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: `${id}-consultation.pdf`,
+            xlsxName: `${id}-consultation.xlsx`,
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: `${id}-prescription.pdf`,
+            xlsxName: `${id}-prescription.xlsx`,
+          },
         ];
 
       default:
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: `${id}-form.pdf`, xlsxName: `${id}-form.xlsx` },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: `${id}-prescription.pdf`, xlsxName: `${id}-prescription.xlsx` },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: `${id}-form.pdf`,
+            xlsxName: `${id}-form.xlsx`,
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: `${id}-prescription.pdf`,
+            xlsxName: `${id}-prescription.xlsx`,
+          },
         ];
     }
   }, [id, Template]);
 
-  const activeTabDef = serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
+  const activeTabDef =
+    serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
 
   // 🧾 Auto-save patient row
   useEffect(() => {
@@ -92,20 +175,78 @@ export default function PreviewPage() {
     return () => clearTimeout(timer);
   }, [savedOnce, currentUser, patient, id]);
 
-  // 🧩 Merge all relevant data
+  // 🔀 Select the correct consultation object for the current service
+// 🔀 Select the correct consultation object for the current service
+const currentConsultation = useMemo(() => {
+  switch (id) {
+    case "travel":
+      return travelConsultation;
+    case "weightloss":
+      return weightLossConsultation;
+    case "flu":
+      return fluConsultation;
+    case "covid":
+      return covidConsultation;
+    case "b12":
+      return b12Consultation;
+    case "earwax":
+      return earwaxConsultation;
+    default:
+      return {};
+  }
+}, [
+  id,
+  travelConsultation,
+  weightLossConsultation,
+  fluConsultation,
+  covidConsultation,
+  b12Consultation,
+  earwaxConsultation,
+]);
+
+  // 🧩 Merge all relevant data (used by some templates and Excel)
+  // 🧩 Merge all relevant data (ensures PrescriptionTemplate always has full data)
   const getMergedData = useCallback(() => {
-    const baseData = { ...patient, ...pharm };
+    const baseData = { ...patient, ...pharm, branch };
+
+    const mergeAll = (consultation) => ({
+      ...patient,
+      ...pharm,
+      ...consultation,
+      ...branch,
+    });
+
     switch (id) {
       case "travel":
-        return { ...baseData, ...travelConsultation, consultation: travelConsultation, branch };
+        return mergeAll(travelConsultation);
       case "weightloss":
-        return { ...baseData, ...weightLossConsultation, consultation: weightLossConsultation, branch };
+        return mergeAll(weightLossConsultation);
+      case "flu":
+        return mergeAll(fluConsultation);
+      case "covid":
+        return mergeAll(covidConsultation);
+      case "b12":
+        return mergeAll(b12Consultation);
+      case "earwax":
+        return mergeAll(earwaxConsultation);
       default:
-        return { ...baseData, branch };
+        return baseData;
     }
-  }, [id, patient, pharm, branch, travelConsultation, weightLossConsultation]);
+  }, [
+    id,
+    patient,
+    pharm,
+    branch,
+    travelConsultation,
+    weightLossConsultation,
+    fluConsultation,
+    covidConsultation,
+    b12Consultation,
+    earwaxConsultation,
+  ]);
 
-  // 🧾 Generate PDF function
+
+  // 🧾 Generate PDF (now passes BOTH prop styles so all templates work)
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
       const tempContainer = document.createElement("div");
@@ -130,12 +271,24 @@ export default function PreviewPage() {
             branch,
             travelConsultation,
             weightLossConsultation,
+            fluConsultation,
+            covidConsultation,
+            b12Consultation,
+            earwaxConsultation,
           }}
         >
           <Comp
+            // legacy-style props (Travel / Weight Loss consultation templates)
             data={mergedData}
-            consultation={id === "weightloss" ? weightLossConsultation : travelConsultation}
+            consultation={currentConsultation}
+            pharmacist={pharm}
+            // new shared consultation template props
+            patientForm={patient}
+            pharmacistForm={pharm}
+            consultationData={currentConsultation}
+            // common
             serviceId={id}
+            serviceName={id.toUpperCase()}
             {...extraProps}
           />
         </AppContext.Provider>
@@ -171,13 +324,29 @@ export default function PreviewPage() {
           heightLeft -= pdf.internal.pageSize.getHeight();
         }
 
-        const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
+        const safeName = patient.fullName
+          ? patient.fullName.replace(/\s+/g, "_")
+          : "form";
         pdf.save(`${safeName}-${fileName}`);
       } finally {
         document.body.removeChild(tempContainer);
       }
     },
-    [getMergedData, patient, pharm, currentUser, branch, travelConsultation, weightLossConsultation, id]
+    [
+      getMergedData,
+      patient,
+      pharm,
+      currentUser,
+      branch,
+      travelConsultation,
+      weightLossConsultation,
+      fluConsultation,
+      covidConsultation,
+      b12Consultation,
+      earwaxConsultation,
+      currentConsultation,
+      id,
+    ]
   );
 
   // 📄 Download all PDFs
@@ -187,7 +356,7 @@ export default function PreviewPage() {
     }
   }, [serviceTabs, generatePDF]);
 
-  // ✅ Detect ?autoDownload=true and run only once
+  // ✅ Detect ?autoDownload=true
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const shouldAutoDownload = params.get("autoDownload") === "true";
@@ -201,7 +370,7 @@ export default function PreviewPage() {
         } finally {
           setAutoDownloaded(true);
         }
-      }, 800); // short delay to allow rendering
+      }, 800);
     }
   }, [location.search, autoDownloaded, downloadPDFs]);
 
@@ -212,7 +381,9 @@ export default function PreviewPage() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "FormData");
 
-    const safeName = patient.fullName ? patient.fullName.replace(/\s+/g, "_") : "form";
+    const safeName = patient.fullName
+      ? patient.fullName.replace(/\s+/g, "_")
+      : "form";
     const fname = `${safeName}-${activeTabDef?.xlsxName || "form.xlsx"}`;
     XLSX.writeFile(workbook, fname);
   };
@@ -238,9 +409,17 @@ export default function PreviewPage() {
       <div ref={previewRef} style={{ padding: "20px", background: "#fff" }}>
         {activeTabDef && (
           <activeTabDef.Comp
+            // legacy-style props (Travel / Weight Loss consultation templates)
             data={getMergedData()}
-            consultation={id === "weightloss" ? weightLossConsultation : travelConsultation}
+            consultation={currentConsultation}
+            pharmacist={pharm}
+            // new shared consultation template props
+            patientForm={patient}
+            pharmacistForm={pharm}
+            consultationData={currentConsultation}
+            // common
             serviceId={id}
+            serviceName={id.toUpperCase()}
           />
         )}
       </div>

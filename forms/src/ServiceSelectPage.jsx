@@ -1,3 +1,4 @@
+// src/ServiceSelectPage.jsx
 import { services } from "./servicesConfig";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "./AppContext.jsx";
@@ -11,7 +12,9 @@ export default function ServiceSelectPage() {
     setSelectedFormType(serviceId);
 
     // 🔹 Services that start with a Consultation page
-    if (serviceId === "travel" || serviceId === "weightloss") {
+    const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12"];
+
+    if (withConsultation.includes(serviceId)) {
       navigate(`/service/${serviceId}/consultation`);
     } else {
       // All others go directly to patient form
@@ -26,7 +29,7 @@ export default function ServiceSelectPage() {
     { id: "placeholder3", name: "Amet Consectetur", color: "#f59e0b", placeholder: true },
     { id: "placeholder4", name: "Adipiscing Elit", color: "#10b981", placeholder: true },
     { id: "placeholder5", name: "Sed Do Eiusmod", color: "#ef4444", placeholder: true },
-    { id: "placeholder6", name: "Tempor Incididunt", color: "#06b6d4", placeholder: true }
+    { id: "placeholder6", name: "Tempor Incididunt", color: "#06b6d4", placeholder: true },
   ];
 
   const allServices = [...services, ...placeholderServices];

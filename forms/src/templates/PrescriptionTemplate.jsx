@@ -10,9 +10,17 @@ const prescriptionMappings = {
     dose: (d) => d.dose || "1000mcg (1ml) IM injection",
     prescriber: (d) =>
       d.prescriberName || d.prescriber || "Mr James Pendlebury",
-    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "2211954",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "2211954",
     prescriberType: (d) =>
-      d.prescriberType || "Pharmacist Independent Prescriber",
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 
   weightloss: {
@@ -23,9 +31,19 @@ const prescriptionMappings = {
         : d.medication || "Semaglutide / Tirzepatide",
     quantity: (d) => d.quantity || "As prescribed",
     dose: (d) => d.dosage || "—",
-    prescriber: (d) => d.prescriberName || d.prescriber || "—",
-    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
-    prescriberType: (d) => d.prescriberType || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 
   flu: {
@@ -35,9 +53,17 @@ const prescriptionMappings = {
     dose: () => "0.5ml IM injection",
     prescriber: (d) =>
       d.prescriberName || d.prescriber || d.clinicianName || "—",
-    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
     prescriberType: (d) =>
-      d.prescriberType || "Pharmacist Independent Prescriber",
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 
   covid: {
@@ -47,9 +73,17 @@ const prescriptionMappings = {
     dose: (d) => `Dose ${d.doseNumber || "-"}`,
     prescriber: (d) =>
       d.prescriberName || d.prescriber || d.clinicianName || "—",
-    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
     prescriberType: (d) =>
-      d.prescriberType || "Pharmacist Independent Prescriber",
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 
   travel: {
@@ -84,10 +118,19 @@ const prescriptionMappings = {
       d.Prescriber ||
       d.prescriberName ||
       d.pharmacistName ||
+      d.clinicianName ||
       "-",
     prescriberGPhC: (d) =>
-      d.prescriberGPhC || d.GPHCnumber || d.gphcNumber || "-",
-    prescriberType: (d) => d.prescriberType || "-",
+      d.prescriberGPhC ||
+      d.GPHCnumber ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "-",
+    prescriberType: (d) =>
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 
   earwax: {
@@ -100,35 +143,37 @@ const prescriptionMappings = {
     dose: (d) => d.dose || d.dosage || "Use as directed",
     prescriber: (d) =>
       d.prescriberName || d.prescriber || d.clinicianName || "—",
-    prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
     prescriberType: (d) =>
-      d.prescriberType || "Pharmacist Independent Prescriber",
+      d.prescriberType ||
+      d.clinicianType ||
+      "Pharmacist Independent Prescriber",
   },
 };
 
 export default function PrescriptionTemplate({ data = {}, serviceId }) {
   const safe = (v) => (v && String(v).trim() !== "" ? v : "—");
 
-  // ✅ Pick mapping or smart fallback
-  const map =
-    prescriptionMappings[serviceId] || {
-      title: "Private Prescription",
-      drug: (d) => d.medication || "—",
-      quantity: (d) => d.quantity || "—",
-      dose: (d) => d.dose || d.dosage || "—",
-      prescriber: (d) =>
-        d.prescriberName || d.prescriber || d.clinicianName || "—",
-      prescriberGPhC: (d) => d.GPHCnumber || d.prescriberGPhC || "—",
-      prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
-    };
-
-  const showGenericHeader = serviceId !== "travel";
+  const map = prescriptionMappings[serviceId] || prescriptionMappings.b12;
 
   const consultationDate =
     data.consultationDate ||
     data.datePharm ||
     data.date ||
     new Date().toLocaleDateString();
+
+  const showGenericHeader = serviceId !== "travel";
+
+  const allVaccines = [
+    ...(Array.isArray(data.vaccines) ? data.vaccines : []),
+    ...(Array.isArray(data.malariaVaccines) ? data.malariaVaccines : []),
+  ];
 
   return (
     <div className="formdoc" style={{ pageBreakInside: "avoid" }}>
@@ -169,74 +214,69 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
       )}
 
       {/* Patient details */}
-      <section
-        className="formdoc__section"
-        style={{ textAlign: "left", maxWidth: 520 }}
-      >
-        <div className="row">
-          <div className="row__label">FULL NAME:</div>
-          <div className="row__value">{safe(data.fullName)}</div>
-        </div>
-        <div className="row">
-          <div className="row__label">ADDRESS:</div>
-          <div className="row__value">{safe(data.address)}</div>
-        </div>
-        <div className="row">
-          <div className="row__label">DATE OF BIRTH:</div>
-          <div className="row__value">{safe(data.dob)}</div>
-        </div>
-        {data.surgery && (
-          <div className="row">
-            <div className="row__label">SURGERY NAME:</div>
-            <div className="row__value">{safe(data.surgery)}</div>
-          </div>
-        )}
+      <section className="formdoc__section" style={{ maxWidth: 520 }}>
+        <Row label="FULL NAME" value={data.fullName} />
+        <Row label="ADDRESS" value={data.address} />
+        <Row label="DATE OF BIRTH" value={data.dob} />
+        {data.surgery && <Row label="SURGERY NAME" value={data.surgery} />}
       </section>
 
-      {/* Prescription details */}
-      <section
-        className="formdoc__section"
-        style={{ textAlign: "left", maxWidth: 520 }}
-      >
-        <div className="row">
-          <div className="row__label">DRUG:</div>
-          <div className="row__value">{map.drug ? map.drug(data) : "—"}</div>
-        </div>
-        <div className="row">
-          <div className="row__label">QUANTITY:</div>
-          <div className="row__value">
-            {map.quantity ? map.quantity(data) : "—"}
-          </div>
-        </div>
-        <div className="row">
-          <div className="row__label">DOSE:</div>
-          <div className="row__value">{map.dose ? map.dose(data) : "—"}</div>
-        </div>
-      </section>
+      {/* Prescription details 
+      <section className="formdoc__section" style={{ maxWidth: 520 }}>
+        <Row label="DRUG" value={map.drug(data)} />
+        <Row label="QUANTITY" value={map.quantity(data)} />
+        <Row label="DOSE" value={map.dose(data)} />
+      </section>*/}
+
+      {/* ✅ Vaccine table if vaccines exist */}
+      {allVaccines.length > 0 && (
+        <section className="formdoc__section" style={{ maxWidth: 700 }}>
+          <h3 style={{ marginBottom: "8px" }}>Prescription Details</h3>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "13px",
+              marginTop: "6px",
+            }}
+          >
+            <thead>
+              <tr
+                style={{
+                  background: "#f3f4f6",
+                  textAlign: "left",
+                  borderBottom: "2px solid #ccc",
+                }}
+              >
+                <th style={{ padding: "6px" }}>Drug</th>
+                <th style={{ padding: "6px" }}>Batch No</th>
+                <th style={{ padding: "6px" }}>Date Given</th>
+                <th style={{ padding: "6px" }}>Expiry</th>
+                <th style={{ padding: "6px" }}>Dosage</th>
+                <th style={{ padding: "6px" }}>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allVaccines.map((v, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td style={{ padding: "6px" }}>{safe(v.vaccine)}</td>
+                  <td style={{ padding: "6px" }}>{safe(v.batch)}</td>
+                  <td style={{ padding: "6px" }}>{safe(v.dateGiven)}</td>
+                  <td style={{ padding: "6px" }}>{safe(v.expiry)}</td>
+                  <td style={{ padding: "6px" }}>{safe(v.dosage)}</td>
+                  <td style={{ padding: "6px" }}>{safe(v.quantity)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
 
       {/* Prescriber details */}
-      <section
-        className="formdoc__section"
-        style={{ textAlign: "left", maxWidth: 520 }}
-      >
-        <div className="row">
-          <div className="row__label">PRESCRIBER:</div>
-          <div className="row__value">
-            {map.prescriber ? map.prescriber(data) : "—"}
-          </div>
-        </div>
-        <div className="row">
-          <div className="row__label">PRESCRIBER TYPE:</div>
-          <div className="row__value">
-            {map.prescriberType ? map.prescriberType(data) : "—"}
-          </div>
-        </div>
-        <div className="row">
-          <div className="row__label">GPhC:</div>
-          <div className="row__value">
-            {map.prescriberGPhC ? map.prescriberGPhC(data) : "—"}
-          </div>
-        </div>
+      <section className="formdoc__section" style={{ maxWidth: 520 }}>
+        <Row label="PRESCRIBER" value={map.prescriber(data)} />
+        <Row label="PRESCRIBER TYPE" value={map.prescriberType(data)} />
+        <Row label="GPhC" value={map.prescriberGPhC(data)} />
 
         <div className="row">
           <div className="row__label">SIGNATURE:</div>
@@ -253,13 +293,10 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
           </div>
         </div>
 
-        <div className="row">
-          <div className="row__label">DATE:</div>
-          <div className="row__value">{safe(consultationDate)}</div>
-        </div>
+        <Row label="DATE" value={consultationDate} />
       </section>
 
-      {/* Consent notice */}
+      {/* Consent */}
       <div
         className="formdoc__consent"
         style={{ maxWidth: 520, marginLeft: 0, marginTop: 10 }}
@@ -268,6 +305,17 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         consultation and administration forms in a certified pharmacy
         consultation room under the supervision of a pharmacist or prescriber.
       </div>
+    </div>
+  );
+}
+
+// 🔹 Helper row renderer
+function Row({ label, value }) {
+  const safeValue = value && String(value).trim() !== "" ? value : "—";
+  return (
+    <div className="row">
+      <div className="row__label">{label}:</div>
+      <div className="row__value">{safeValue}</div>
     </div>
   );
 }

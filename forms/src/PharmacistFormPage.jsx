@@ -33,16 +33,20 @@ export default function PharmacistFormPage() {
         {service.pharmacistFields
           .filter((f) => !f.name.startsWith("malaria"))
           .map((f) => {
-            if (f.type === "vaccineRepeater") {
-              return (
-                <div key={f.name} className="field-span">
-                  <VaccineRepeater
-                    value={pharm[f.name] || []}
-                    onChange={(val) => setPharmField(f.name, val)}
-                  />
-                </div>
-              );
-            }
+           if (f.type === "vaccineRepeater") {
+  return (
+    <div
+      key={f.name}
+      className="field-span"
+      style={{ gridColumn: "1 / -1", width: "100%" }}
+    >
+      <VaccineRepeater
+        value={pharm[f.name] || []}
+        onChange={(val) => setPharmField(f.name, val)}
+      />
+    </div>
+  );
+}
 
             return (
               <LabeledField key={f.name} label={f.label} span={f.span}>

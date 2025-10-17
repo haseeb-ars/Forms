@@ -7,7 +7,10 @@ export default function TravelConsultationTemplate({ consultation, data }) {
   const f = data || {}; // pharmacist/patient form data combined
 
   return (
-    <div className="template travel-template" style={{ padding: 20, fontFamily: "sans-serif" }}>
+    <div
+      className="template travel-template"
+      style={{ padding: 20, fontFamily: "sans-serif" }}
+    >
       <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>
         Travel Vaccination Consultation Summary
@@ -16,40 +19,81 @@ export default function TravelConsultationTemplate({ consultation, data }) {
       {/* ---------------- Patient Details ---------------- */}
       <section className="template-section">
         <h2>Patient Details</h2>
-        <p><strong>Full Name:</strong> {f.fullName || "-"}</p>
-        <p><strong>Date of Birth:</strong> {f.dob || "-"}</p>
-        <p><strong>Contact Number:</strong> {f.telephone || "-"}</p>
-        <p><strong>Email:</strong> {f.email || "-"}</p>
-        <p><strong>Surgery Name:</strong> {f.surgery || "-"}</p>
+        <p>
+          <strong>Full Name:</strong> {f.fullName || "-"}
+        </p>
+        <p>
+          <strong>Date of Birth:</strong> {f.dob || "-"}
+        </p>
+        <p>
+          <strong>Contact Number:</strong> {f.telephone || "-"}
+        </p>
+        <p>
+          <strong>Email:</strong> {f.email || "-"}
+        </p>
+        <p>
+          <strong>Surgery Name:</strong> {f.surgery || "-"}
+        </p>
       </section>
 
       {/* ---------------- Trip Details ---------------- */}
       <section className="template-section">
         <h2>Travel Information</h2>
-        <p><strong>Destination Countries:</strong> {tc.countries?.join(", ") || f.destinationCountry || "-"}</p>
-        <p><strong>Departure Date:</strong> {tc.departureDate || f.travelDate || "-"}</p>
-        <p><strong>Return Date:</strong> {tc.returnDate || "-"}</p>
-        <p><strong>Purpose of Travel:</strong> {tc.reason || f.purpose || "-"}</p>
+        <p>
+          <strong>Destination Countries:</strong>{" "}
+          {tc.countries?.join(", ") || f.destinationCountry || "-"}
+        </p>
+        <p>
+          <strong>Departure Date:</strong> {tc.departureDate || f.travelDate || "-"}
+        </p>
+        <p>
+          <strong>Return Date:</strong> {tc.returnDate || "-"}
+        </p>
+        <p>
+          <strong>Purpose of Travel:</strong> {tc.reason || f.purpose || "-"}
+        </p>
       </section>
 
       {/* ---------------- Risk Assessment ---------------- */}
       <section className="template-section">
         <h2>Risk Assessment</h2>
-        <p><strong>Egg Allergy:</strong> {tc.eggAllergy ? "Yes" : "No"}</p>
-        <p><strong>Pregnant:</strong> {tc.pregnant ? "Yes" : "No"}</p>
-        <p><strong>Immunosuppressed:</strong> {tc.immunosuppressed ? "Yes" : "No"}</p>
-        <p><strong>Existing Conditions:</strong> {f.conditions || "-"}</p>
-        <p><strong>Allergies:</strong> {f.allergies || "-"}</p>
-        <p><strong>Malaria Risks:</strong> {tc.malariaRisks?.join(", ") || "-"}</p>
-        <p><strong>Other Risks:</strong> {tc.otherRisks?.join(", ") || "-"}</p>
+        <p>
+          <strong>Egg Allergy:</strong> {tc.eggAllergy ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Pregnant:</strong> {tc.pregnant ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Immunosuppressed:</strong> {tc.immunosuppressed ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Existing Conditions:</strong> {f.conditions || "-"}
+        </p>
+        <p>
+          <strong>Allergies:</strong> {f.allergies || "-"}
+        </p>
+        <p>
+          <strong>Malaria Risks:</strong> {tc.malariaRisks?.join(", ") || "-"}
+        </p>
+        <p>
+          <strong>Other Risks:</strong> {tc.otherRisks?.join(", ") || "-"}
+        </p>
       </section>
 
       {/* ---------------- Recommended Vaccines ---------------- */}
       <section className="template-section">
         <h2>Vaccine Recommendations</h2>
-        <p><strong>Recommended Vaccines:</strong> {tc.recommendedVaccines?.join(", ") || "-"}</p>
-        <p><strong>Caution:</strong> {tc.cautionVaccines?.join(", ") || "-"}</p>
-        <p><strong>Contraindicated:</strong> {tc.contraindicatedVaccines?.join(", ") || "-"}</p>
+        <p>
+          <strong>Recommended Vaccines:</strong>{" "}
+          {tc.recommendedVaccines?.join(", ") || "-"}
+        </p>
+        <p>
+          <strong>Caution:</strong> {tc.cautionVaccines?.join(", ") || "-"}
+        </p>
+        <p>
+          <strong>Contraindicated:</strong>{" "}
+          {tc.contraindicatedVaccines?.join(", ") || "-"}
+        </p>
       </section>
 
       {/* ---------------- Administered Vaccines ---------------- */}
@@ -63,6 +107,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                 <th>Batch No</th>
                 <th>Date Given</th>
                 <th>Expiry Date</th>
+                <th>Dosage</th>
+                <th>Quantity</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +118,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                   <td>{v.batch || "-"}</td>
                   <td>{v.dateGiven || "-"}</td>
                   <td>{v.expiry || "-"}</td>
+                  <td>{v.dosage || "-"}</td>
+                  <td>{v.quantity || "-"}</td>
                 </tr>
               ))}
             </tbody>
@@ -85,10 +133,14 @@ export default function TravelConsultationTemplate({ consultation, data }) {
       {f.malariaGiven && (
         <section className="template-section">
           <h2>Malaria Prevention</h2>
-          <p><strong>Medication Given:</strong> {f.malariaGiven}</p>
+          <p>
+            <strong>Medication Given:</strong> {f.malariaGiven}
+          </p>
           {f.malariaGiven === "Yes" && (
             <>
-              <p><strong>Malaria Notes:</strong> {f.malariaNotes || "-"}</p>
+              <p>
+                <strong>Malaria Notes:</strong> {f.malariaNotes || "-"}
+              </p>
               {Array.isArray(f.malariaVaccines) && f.malariaVaccines.length > 0 && (
                 <>
                   <h3>Malaria Vaccinations Administered</h3>
@@ -99,6 +151,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                         <th>Batch No</th>
                         <th>Date Given</th>
                         <th>Expiry Date</th>
+                        <th>Dosage</th>
+                        <th>Quantity</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -108,6 +162,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                           <td>{v.batch || "-"}</td>
                           <td>{v.dateGiven || "-"}</td>
                           <td>{v.expiry || "-"}</td>
+                          <td>{v.dosage || "-"}</td>
+                          <td>{v.quantity || "-"}</td>
                         </tr>
                       ))}
                     </tbody>

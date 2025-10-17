@@ -253,12 +253,23 @@ export const services = [
     { name: "fullName", label: "Full Name", type: "text" },
     { name: "dob", label: "Date of Birth", type: "date" },
     { name: "telephone", label: "Contact Number", type: "text" },
+    { name: "address", label: "Address", type: "text" },
     { name: "email", label: "Email", type: "email" },
     { name: "surgery", label: "Surgery Name", type: "text" },
   ],
   pharmacistFields: [
+     {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "Doctor",
+        "Independent Prescribing Pharmacist ",
+        "Independent Prescribing Nurse"
+      ]
+    },
     { name: "Prescriber", label: "Prescriber's Name", type: "text" },
-    { name: "GPHCNumber", label: "GPHC Number", type: "text" },
+    { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
 
     // ✅ Keep vaccine repeater (administered)
     { name: "vaccines", label: "Vaccinations Administered", type: "vaccineRepeater" },

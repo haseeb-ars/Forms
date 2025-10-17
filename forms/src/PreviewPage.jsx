@@ -175,40 +175,37 @@ export default function PreviewPage() {
     return () => clearTimeout(timer);
   }, [savedOnce, currentUser, patient, id]);
 
-  // 🔀 Select the correct consultation object for the current service
-// 🔀 Select the correct consultation object for the current service
-const currentConsultation = useMemo(() => {
-  switch (id) {
-    case "travel":
-      return travelConsultation;
-    case "weightloss":
-      return weightLossConsultation;
-    case "flu":
-      return fluConsultation;
-    case "covid":
-      return covidConsultation;
-    case "b12":
-      return b12Consultation;
-    case "earwax":
-      return earwaxConsultation;
-    default:
-      return {};
-  }
-}, [
-  id,
-  travelConsultation,
-  weightLossConsultation,
-  fluConsultation,
-  covidConsultation,
-  b12Consultation,
-  earwaxConsultation,
-]);
+  // 🔀 Select the correct consultation object
+  const currentConsultation = useMemo(() => {
+    switch (id) {
+      case "travel":
+        return travelConsultation;
+      case "weightloss":
+        return weightLossConsultation;
+      case "flu":
+        return fluConsultation;
+      case "covid":
+        return covidConsultation;
+      case "b12":
+        return b12Consultation;
+      case "earwax":
+        return earwaxConsultation;
+      default:
+        return {};
+    }
+  }, [
+    id,
+    travelConsultation,
+    weightLossConsultation,
+    fluConsultation,
+    covidConsultation,
+    b12Consultation,
+    earwaxConsultation,
+  ]);
 
-  // 🧩 Merge all relevant data (used by some templates and Excel)
-  // 🧩 Merge all relevant data (ensures PrescriptionTemplate always has full data)
+  // 🧩 Merge all relevant data
   const getMergedData = useCallback(() => {
     const baseData = { ...patient, ...pharm, branch };
-
     const mergeAll = (consultation) => ({
       ...patient,
       ...pharm,
@@ -245,8 +242,7 @@ const currentConsultation = useMemo(() => {
     earwaxConsultation,
   ]);
 
-
-  // 🧾 Generate PDF (now passes BOTH prop styles so all templates work)
+  // 🧾 Generate PDF (ensures latest TravelConsultationTemplate)
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
       const tempContainer = document.createElement("div");
@@ -262,6 +258,21 @@ const currentConsultation = useMemo(() => {
       });
 
       const mergedData = getMergedData();
+
+      // ✅ Dynamic reload for Travel Consultation template
+      let RenderComponent = Comp;
+      if (id === "travel" && fileName.includes("consultation")) {
+        try {
+          const mod = await import(
+            `./templates/TravelConsultationTemplate.jsx?update=${Date.now()}`
+          );
+          RenderComponent = mod.default;
+          console.log("✅ Loaded latest TravelConsultationTemplate for PDF render");
+        } catch (err) {
+          console.warn("⚠️ Failed to dynamically reload TravelConsultationTemplate:", err);
+        }
+      }
+
       const htmlString = ReactDOMServer.renderToString(
         <AppContext.Provider
           value={{
@@ -277,16 +288,13 @@ const currentConsultation = useMemo(() => {
             earwaxConsultation,
           }}
         >
-          <Comp
-            // legacy-style props (Travel / Weight Loss consultation templates)
+          <RenderComponent
             data={mergedData}
             consultation={currentConsultation}
             pharmacist={pharm}
-            // new shared consultation template props
             patientForm={patient}
             pharmacistForm={pharm}
             consultationData={currentConsultation}
-            // common
             serviceId={id}
             serviceName={id.toUpperCase()}
             {...extraProps}
@@ -409,15 +417,12 @@ const currentConsultation = useMemo(() => {
       <div ref={previewRef} style={{ padding: "20px", background: "#fff" }}>
         {activeTabDef && (
           <activeTabDef.Comp
-            // legacy-style props (Travel / Weight Loss consultation templates)
             data={getMergedData()}
             consultation={currentConsultation}
             pharmacist={pharm}
-            // new shared consultation template props
             patientForm={patient}
             pharmacistForm={pharm}
             consultationData={currentConsultation}
-            // common
             serviceId={id}
             serviceName={id.toUpperCase()}
           />

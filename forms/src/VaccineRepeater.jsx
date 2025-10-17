@@ -3,7 +3,18 @@ import "./VaccineRepeater.css";
 
 const VaccineRepeater = ({ value = [], onChange }) => {
   const [rows, setRows] = useState(
-    value.length ? value : [{ vaccine: "", batch: "", dateGiven: "", expiry: "" }]
+    value.length
+      ? value
+      : [
+          {
+            vaccine: "",
+            batch: "",
+            dateGiven: "",
+            expiry: "",
+            quantity: "",
+            dosage: "",
+          },
+        ]
   );
 
   useEffect(() => {
@@ -17,7 +28,17 @@ const VaccineRepeater = ({ value = [], onChange }) => {
   };
 
   const addRow = () => {
-    setRows([...rows, { vaccine: "", batch: "", dateGiven: "", expiry: "" }]);
+    setRows([
+      ...rows,
+      {
+        vaccine: "",
+        batch: "",
+        dateGiven: "",
+        expiry: "",
+        quantity: "",
+        dosage: "",
+      },
+    ]);
   };
 
   const removeRow = (index) => {
@@ -66,6 +87,27 @@ const VaccineRepeater = ({ value = [], onChange }) => {
               type="date"
               value={row.expiry}
               onChange={(e) => handleChange(i, "expiry", e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label>Quantity</label>
+            <input
+              type="number"
+              min="1"
+              placeholder="e.g. 1"
+              value={row.quantity}
+              onChange={(e) => handleChange(i, "quantity", e.target.value)}
+            />
+          </div>
+
+          <div className="field">
+            <label>Dosage</label>
+            <input
+              type="text"
+              placeholder="e.g. 0.5ml IM"
+              value={row.dosage}
+              onChange={(e) => handleChange(i, "dosage", e.target.value)}
             />
           </div>
 

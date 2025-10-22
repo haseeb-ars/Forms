@@ -53,7 +53,7 @@ const VaccineRepeater = ({ value = [], onChange }) => {
       {rows.map((row, i) => (
         <div key={i} className="vaccine-row">
           <div className="field">
-            <label>Vaccine</label>
+            <label>Drug/Vaccine</label>
             <input
               type="text"
               placeholder="e.g. Hepatitis A"

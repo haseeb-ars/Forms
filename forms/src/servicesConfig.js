@@ -296,7 +296,39 @@ export const services = [
     },
   ],
   template: "TravelTemplate",
+},
+
+{
+  id: "privateprescription",
+  name: "Private Prescription",
+  color: "#8B5CF6",
+  pharmacistFields: [
+    {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "Doctor",
+        "Independent Prescribing Pharmacist ",
+        "Independent Prescribing Nurse"
+      ]
+    },
+    { name: "prescriberName", label: "Prescriber's Name", type: "text" },
+    { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
+
+    // ✅ Keep vaccine repeater (administered)
+    { name: "vaccines", label: "Medications Given", type: "vaccineRepeater" },
+  ],
+  patientFields: [
+    { label: "Full Name", name: "fullName", type: "text" },
+    { label: "Date of Birth", name: "dob", type: "date" },
+    { label: "Address", name: "address", type: "text" },
+    { name: "surgeryName", label: "Surgery Name", type: "text" },
+    { label: "Contact Number", name: "telephone", type: "text" },
+    { label: "Email", name: "email", type: "email" },
+  ],
 }
+
 
 ];
 

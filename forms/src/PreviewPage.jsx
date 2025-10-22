@@ -1,4 +1,3 @@
-// src/PreviewPage.jsx
 import React, {
   useRef,
   useMemo,
@@ -21,6 +20,8 @@ import TravelConsultationTemplate from "./templates/TravelConsultationTemplate.j
 import WeightlossConsultationTemplate from "./templates/WeightLossConsultationTemplate.jsx";
 import PrescriptionTemplate from "./templates/PrescriptionTemplate.jsx";
 import ConsultationTemplate from "./templates/ConsultationTemplate.jsx";
+import PrivatePrescriptionConsultationTemplate from "./templates/PrivatePrescriptionConsultationTemplate.jsx";
+import PrivatePrescriptionTemplate from "./templates/PrivatePrescriptionTemplate.jsx";
 
 export default function PreviewPage() {
   const {
@@ -34,6 +35,7 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     fluConsultation,
+    privatePrescriptionConsultation,
   } = useApp();
 
   const { id } = useParams();
@@ -127,6 +129,32 @@ export default function PreviewPage() {
           },
         ];
 
+      // 🩺 Private Prescription
+      case "privateprescription":
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: PrivatePrescriptionTemplate,
+            pdfName: "privateprescription-form.pdf",
+            xlsxName: "privateprescription-form.xlsx",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: PrivatePrescriptionConsultationTemplate,
+            pdfName: "privateprescription-consultation.pdf",
+            xlsxName: "privateprescription-consultation.xlsx",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "privateprescription-prescription.pdf",
+            xlsxName: "privateprescription-prescription.xlsx",
+          },
+        ];
+
       default:
         return [
           {
@@ -175,7 +203,7 @@ export default function PreviewPage() {
     return () => clearTimeout(timer);
   }, [savedOnce, currentUser, patient, id]);
 
-  // 🔀 Select the correct consultation object
+  // 🔀 Select correct consultation data
   const currentConsultation = useMemo(() => {
     switch (id) {
       case "travel":
@@ -190,6 +218,8 @@ export default function PreviewPage() {
         return b12Consultation;
       case "earwax":
         return earwaxConsultation;
+      case "privateprescription":
+        return privatePrescriptionConsultation;
       default:
         return {};
     }
@@ -201,13 +231,20 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
+    privatePrescriptionConsultation,
   ]);
 
-  // 🧩 Merge all relevant data
+  // 🧩 Merge all relevant data (✅ includes GP name/address explicitly)
   const getMergedData = useCallback(() => {
-    const baseData = { ...patient, ...pharm, branch };
-    const mergeAll = (consultation) => ({
+    const safePatient = {
       ...patient,
+      gpName: patient.gpName || "",
+      gpAddress: patient.gpAddress || "",
+    };
+
+    const baseData = { ...safePatient, ...pharm, branch };
+    const mergeAll = (consultation) => ({
+      ...safePatient,
       ...pharm,
       ...consultation,
       ...branch,
@@ -226,6 +263,8 @@ export default function PreviewPage() {
         return mergeAll(b12Consultation);
       case "earwax":
         return mergeAll(earwaxConsultation);
+      case "privateprescription":
+        return mergeAll(privatePrescriptionConsultation);
       default:
         return baseData;
     }
@@ -240,9 +279,10 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
+    privatePrescriptionConsultation,
   ]);
 
-  // 🧾 Generate PDF (ensures latest TravelConsultationTemplate)
+  // 🧾 Generate PDF
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
       const tempContainer = document.createElement("div");
@@ -259,20 +299,6 @@ export default function PreviewPage() {
 
       const mergedData = getMergedData();
 
-      // ✅ Dynamic reload for Travel Consultation template
-      let RenderComponent = Comp;
-      if (id === "travel" && fileName.includes("consultation")) {
-        try {
-          const mod = await import(
-            `./templates/TravelConsultationTemplate.jsx?update=${Date.now()}`
-          );
-          RenderComponent = mod.default;
-          console.log("✅ Loaded latest TravelConsultationTemplate for PDF render");
-        } catch (err) {
-          console.warn("⚠️ Failed to dynamically reload TravelConsultationTemplate:", err);
-        }
-      }
-
       const htmlString = ReactDOMServer.renderToString(
         <AppContext.Provider
           value={{
@@ -286,9 +312,10 @@ export default function PreviewPage() {
             covidConsultation,
             b12Consultation,
             earwaxConsultation,
+            privatePrescriptionConsultation,
           }}
         >
-          <RenderComponent
+          <Comp
             data={mergedData}
             consultation={currentConsultation}
             pharmacist={pharm}
@@ -352,19 +379,21 @@ export default function PreviewPage() {
       covidConsultation,
       b12Consultation,
       earwaxConsultation,
+      privatePrescriptionConsultation,
       currentConsultation,
       id,
     ]
   );
 
   // 📄 Download all PDFs
-  const downloadPDFs = useCallback(async () => {
-    for (const tab of serviceTabs) {
-      await generatePDF(tab.Comp, tab.pdfName);
-    }
-  }, [serviceTabs, generatePDF]);
+const downloadPDFs = useCallback(async () => {
+  for (const tab of serviceTabs) {
+    await generatePDF(tab.Comp, tab.pdfName, { serviceId: id });
+  }
+}, [serviceTabs, generatePDF, id]);
 
-  // ✅ Detect ?autoDownload=true
+
+  // ✅ Auto-download
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const shouldAutoDownload = params.get("autoDownload") === "true";

@@ -86,4 +86,21 @@ export const consultationQuestions = {
     { id: "allergies", text: "Do you have any allergies?", type: "yesno" },
     { id: "medications", text: "Are you currently taking any medications?", type: "text" },
   ],
+  privateprescription: [
+    {
+      id: "presentingComplaint",
+      text: "Presenting Complaint",
+      type: "textarea",
+    },
+    {
+      id: "medicationHistory",
+      text: "Medication History",
+      type: "textarea",
+    },
+    {
+      id: "allergies",
+      text: "Allergies",
+      type: "textarea",
+    },
+  ],
 };

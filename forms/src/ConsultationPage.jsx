@@ -13,6 +13,7 @@ export default function ConsultationPage() {
     setCovidConsultation,
     setB12Consultation,
     setFluConsultation,
+    setPrivatePrescriptionConsultation,
   } = useApp();
 
   const [answers, setAnswers] = useState({});
@@ -44,6 +45,9 @@ export default function ConsultationPage() {
       case "flu":
         setFluConsultation(answers);
         break;
+        case "privateprescription": // 👈 add this
+      setPrivatePrescriptionConsultation(answers);
+      break;
       default:
         break;
     }

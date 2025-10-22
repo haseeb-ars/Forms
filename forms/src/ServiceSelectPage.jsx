@@ -12,18 +12,27 @@ export default function ServiceSelectPage() {
     setSelectedFormType(serviceId);
 
     // 🔹 Services that start with a Consultation page
-    const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12"];
+    const withConsultation = [
+      "travel",
+      "weightloss",
+      "earwax",
+      "covid",
+      "flu",
+      "b12",
+      "privateprescription",
+    ];
 
     if (withConsultation.includes(serviceId)) {
       navigate(`/service/${serviceId}/consultation`);
     } else {
-      // All others go directly to patient form
       navigate(`/service/${serviceId}/patient`);
     }
   };
 
-  // Placeholder services
-  const placeholderServices = [
+  // ✅ Do NOT add private prescription here — it’s already in servicesConfig.js
+  const allServices = [
+    ...services,
+    // placeholder cards
     { id: "placeholder1", name: "Lorem Ipsum", color: "#6366f1", placeholder: true },
     { id: "placeholder2", name: "Dolor Sit", color: "#8b5cf6", placeholder: true },
     { id: "placeholder3", name: "Amet Consectetur", color: "#f59e0b", placeholder: true },
@@ -31,8 +40,6 @@ export default function ServiceSelectPage() {
     { id: "placeholder5", name: "Sed Do Eiusmod", color: "#ef4444", placeholder: true },
     { id: "placeholder6", name: "Tempor Incididunt", color: "#06b6d4", placeholder: true },
   ];
-
-  const allServices = [...services, ...placeholderServices];
 
   return (
     <div className="bento-grid">

@@ -4,23 +4,23 @@ import "./B12Template.css";
 // 🔹 Service-specific mappings for prescription fields
 const prescriptionMappings = {
   b12: {
-    title: "Vitamin B12 Prescription",
-    drug: (d) => d.drug || "Hydroxocobalamin 1000mcg/1ml ampoule",
-    quantity: (d) => d.quantity || "One ampoule",
-    dose: (d) => d.dose || "1000mcg (1ml) IM injection",
+    title: "B12 Prescription",
+    drug: (d) => d.drug || "-",
+    quantity: (d) => d.quantity || "-",
+    dose: (d) => d.dose || "-",
     prescriber: (d) =>
-      d.prescriberName || d.prescriber || "Mr James Pendlebury",
+      d.prescriberName || d.prescriber || "-",
     prescriberGPhC: (d) =>
       d.GPHCnumber ||
       d.prescriberGPhC ||
       d.gphcNumber ||
       d.pharmacistGPhC ||
       d.clinicianGPhC ||
-      "2211954",
+      "-",
     prescriberType: (d) =>
       d.prescriberType ||
       d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      "-",
   },
 
   weightloss: {
@@ -155,6 +155,28 @@ const prescriptionMappings = {
       d.clinicianType ||
       "Pharmacist Independent Prescriber",
   },
+
+// 🩺 NEW: Private Prescription mapping
+  privateprescription: {
+    title: "Private Prescription",
+    drug: (d) => d.drug || d.medication || "As prescribed",
+    quantity: (d) => d.quantity || "—",
+    dose: (d) => d.dosage || d.dose || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.pharmacistName || d.prescriber || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType ||
+      "Pharmacist Independent Prescriber",
+  },
+
+
+
 };
 
 export default function PrescriptionTemplate({ data = {}, serviceId }) {

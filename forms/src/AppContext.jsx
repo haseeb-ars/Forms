@@ -28,6 +28,7 @@ const BRANCH_CONFIG = {
   },
 };
 
+// 🔹 Default Patient Form
 export const DEFAULT_PATIENT = {
   fullName: "",
   address: "",
@@ -42,6 +43,7 @@ export const DEFAULT_PATIENT = {
   dateSignedPatient: "",
 };
 
+// 🔹 Default Pharmacist Form
 export const DEFAULT_PHARM = {
   pharmacistNameGPhC: "",
   pharmacistSignature: "",
@@ -54,10 +56,10 @@ export const DEFAULT_PHARM = {
   pointOfVariance: "",
   pharmacyName: "",
   pharmacyAddress: "",
-  vaccines: []
+  vaccines: [],
 };
 
-// 🔹 DEFAULT TRAVEL CONSULTATION STATE
+// 🔹 Default Travel Consultation
 export const DEFAULT_TRAVEL_CONSULTATION = {
   countries: [],
   departureDate: "",
@@ -71,10 +73,10 @@ export const DEFAULT_TRAVEL_CONSULTATION = {
   recommendedVaccines: [],
   cautionVaccines: [],
   contraindicatedVaccines: [],
-  otherRisks: []
+  otherRisks: [],
 };
 
-// 🔹 DEFAULT WEIGHT LOSS CONSULTATION STATE
+// 🔹 Default Weight Loss Consultation
 export const DEFAULT_WEIGHTLOSS_CONSULTATION = {
   ageGroup: "",
   medicalConditions: "",
@@ -86,6 +88,14 @@ export const DEFAULT_WEIGHTLOSS_CONSULTATION = {
   lifestyle: "",
   goals: "",
   consent: false,
+};
+
+// 🔹 Default Private Prescription Consultation
+export const DEFAULT_PRIVATE_PRESCRIPTION_CONSULTATION = {
+  presentingComplaint: "",
+  medicationHistory: "",
+  allergies: "",
+  otherNotes: "",
 };
 
 const AppCtx = createContext(null);
@@ -102,23 +112,22 @@ export function AppProvider({ children }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [apiBase] = useState(process.env.REACT_APP_API_BASE || "http://localhost:4000");
 
-  // 🔹 Consultation states
+  // 🔹 Consultation States
   const [travelConsultation, setTravelConsultation] = useState(DEFAULT_TRAVEL_CONSULTATION);
   const [weightLossConsultation, setWeightLossConsultation] = useState(DEFAULT_WEIGHTLOSS_CONSULTATION);
-
-  const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
-  const resetWeightLossConsultation = () => setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
-
-
-  // ✅ Add these new ones:
   const [earwaxConsultation, setEarwaxConsultation] = useState({});
   const [covidConsultation, setCovidConsultation] = useState({});
   const [b12Consultation, setB12Consultation] = useState({});
   const [fluConsultation, setFluConsultation] = useState({});
+  const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] = useState({});
 
 
+  const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
+  const resetWeightLossConsultation = () => setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
+  const resetPrivatePrescriptionConsultation = () =>
+    setPrivatePrescriptionConsultation(DEFAULT_PRIVATE_PRESCRIPTION_CONSULTATION);
 
-  // Load saved auth data
+  // 🔹 Load saved auth data
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
@@ -129,11 +138,12 @@ export function AppProvider({ children }) {
           setCurrentUser(saved.auth.currentUser || null);
 
           if (saved.auth.currentUser?.branchId) {
-            setBranch(BRANCH_CONFIG[saved.auth.currentUser.branchId]);
+            const branchConfig = BRANCH_CONFIG[saved.auth.currentUser.branchId];
+            setBranch(branchConfig);
             setPharm((prev) => ({
               ...prev,
-              pharmacyName: BRANCH_CONFIG[saved.auth.currentUser.branchId].pharmacyName,
-              pharmacyAddress: BRANCH_CONFIG[saved.auth.currentUser.branchId].pharmacyAddress,
+              pharmacyName: branchConfig.pharmacyName,
+              pharmacyAddress: branchConfig.pharmacyAddress,
             }));
           }
         }
@@ -143,7 +153,7 @@ export function AppProvider({ children }) {
     setIsHydrated(true);
   }, []);
 
-  // Persist only auth + form type
+  // 🔹 Persist only auth + form type
   useEffect(() => {
     const id = setTimeout(() => {
       try {
@@ -159,7 +169,7 @@ export function AppProvider({ children }) {
     return () => clearTimeout(id);
   }, [selectedFormType, isAuthenticated, currentUser]);
 
-  // Update formData whenever patient or pharm changes
+  // 🔹 Update formData whenever patient or pharm changes
   const updateFormData = useCallback(() => {
     setFormData({ ...patient, ...pharm });
   }, [patient, pharm]);
@@ -195,6 +205,7 @@ export function AppProvider({ children }) {
     setBranch(null);
     resetTravelConsultation();
     resetWeightLossConsultation();
+    resetPrivatePrescriptionConsultation();
   };
 
   return (
@@ -224,9 +235,7 @@ export function AppProvider({ children }) {
         setWeightLossConsultation,
         resetWeightLossConsultation,
 
-
-
-      earwaxConsultation,
+        earwaxConsultation,
         setEarwaxConsultation,
         covidConsultation,
         setCovidConsultation,
@@ -235,6 +244,8 @@ export function AppProvider({ children }) {
         fluConsultation,
         setFluConsultation,
 
+        privatePrescriptionConsultation,
+    setPrivatePrescriptionConsultation,
       }}
     >
       {children}

@@ -48,7 +48,7 @@ const VaccineRepeater = ({ value = [], onChange }) => {
 
   return (
     <div className="vaccine-repeater">
-      <label className="repeater-title">Vaccinations Administered</label>
+      <label className="repeater-title">Drugs prescribed</label>
 
       {rows.map((row, i) => (
         <div key={i} className="vaccine-row">

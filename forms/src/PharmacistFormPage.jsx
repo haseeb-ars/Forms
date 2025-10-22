@@ -17,12 +17,17 @@ export default function PharmacistFormPage() {
   const setPharmField = (key, value) =>
     setPharm((prev) => ({ ...prev, [key]: value }));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    // 🧩 Ensure pharmacist form data is stored and trigger auto download flag
+  if (id === "privateprescription") {
+    // 🩺 Go to Consultation next for Private Prescription
+    navigate(`/service/${id}/consultation`);
+  } else {
+    // 🧾 All other services go straight to preview
     navigate(`/service/${id}/preview?autoDownload=true`);
-  };
+  }
+};
 
   return (
     <form className="pharmacist-form" onSubmit={handleSubmit}>
@@ -168,14 +173,14 @@ export default function PharmacistFormPage() {
         </div>
       </div>
 
-      {/* ✅ Updated Preview Button */}
-      <button
-        type="submit"
-        className="btn btn--primary"
-        style={{ marginTop: 16 }}
-      >
-        Preview & Download
-      </button>
+<button
+  type="submit"
+  className="btn btn--primary"
+  style={{ marginTop: 16 }}
+>
+  {id === "privateprescription" ? "Continue" : "Preview & Download"}
+</button>
+
     </form>
   );
 }

@@ -52,7 +52,13 @@ export default function ConsultationPage() {
         break;
     }
 
-    navigate(`/service/${id}/patient`);
+    if (id === "privateprescription") {
+  // go directly to Preview Page and trigger auto-download
+  navigate(`/service/${id}/preview?autoDownload=true`);
+} else {
+  navigate(`/service/${id}/patient`);
+}
+
   };
 
   return (
@@ -139,9 +145,10 @@ export default function ConsultationPage() {
         </div>
       ))}
 
-      <button type="submit" className="btn btn--primary continue-btn">
-        Continue
-      </button>
+    <button type="submit" className="btn btn--primary continue-btn">
+  {id === "privateprescription" ? "Preview & Download" : "Continue"}
+</button>
+
     </form>
   );
 }

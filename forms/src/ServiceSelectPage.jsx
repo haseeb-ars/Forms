@@ -8,26 +8,22 @@ export default function ServiceSelectPage() {
   const navigate = useNavigate();
   const { setSelectedFormType } = useApp();
 
-  const handleSelect = (serviceId) => {
-    setSelectedFormType(serviceId);
+const handleSelect = (serviceId) => {
+  setSelectedFormType(serviceId);
 
-    // 🔹 Services that start with a Consultation page
-    const withConsultation = [
-      "travel",
-      "weightloss",
-      "earwax",
-      "covid",
-      "flu",
-      "b12",
-      "privateprescription",
-    ];
+  // 🔹 Services that start with Consultation page
+  const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12"];
 
-    if (withConsultation.includes(serviceId)) {
-      navigate(`/service/${serviceId}/consultation`);
-    } else {
-      navigate(`/service/${serviceId}/patient`);
-    }
-  };
+  if (serviceId === "privateprescription") {
+    // 🩺 Start with the form instead of consultation
+    navigate(`/service/${serviceId}/patient`);
+  } else if (withConsultation.includes(serviceId)) {
+    navigate(`/service/${serviceId}/consultation`);
+  } else {
+    navigate(`/service/${serviceId}/patient`);
+  }
+};
+
 
   // ✅ Do NOT add private prescription here — it’s already in servicesConfig.js
   const allServices = [

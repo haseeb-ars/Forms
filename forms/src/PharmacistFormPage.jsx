@@ -1,9 +1,10 @@
+// src/PharmacistFormPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { services } from "./servicesConfig";
 import { useApp } from "./AppContext.jsx";
 import LabeledField from "./LabeledField.jsx";
 import SignatureBox from "./SignatureBox.jsx";
-import VaccineRepeater from "./VaccineRepeater.jsx";
+import MedicationRepeater from "./MedicationRepeater.jsx"; // ⬅️ generic repeater
 import "./PharmacistFormPage.css";
 
 export default function PharmacistFormPage() {
@@ -17,17 +18,17 @@ export default function PharmacistFormPage() {
   const setPharmField = (key, value) =>
     setPharm((prev) => ({ ...prev, [key]: value }));
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  if (id === "privateprescription") {
-    // 🩺 Go to Consultation next for Private Prescription
-    navigate(`/service/${id}/consultation`);
-  } else {
-    // 🧾 All other services go straight to preview
-    navigate(`/service/${id}/preview?autoDownload=true`);
-  }
-};
+    if (id === "privateprescription") {
+      // 🔶 Private Rx: pharmacist form now goes straight to PREVIEW
+      navigate(`/service/${id}/preview?autoDownload=true`);
+    } else {
+      // 🔶 All others: unchanged (still go to preview)
+      navigate(`/service/${id}/preview?autoDownload=true`);
+    }
+  };
 
   return (
     <form className="pharmacist-form" onSubmit={handleSubmit}>
@@ -38,21 +39,54 @@ const handleSubmit = (e) => {
         {service.pharmacistFields
           .filter((f) => !f.name.startsWith("malaria"))
           .map((f) => {
-           if (f.type === "vaccineRepeater") {
-  return (
-    <div
-      key={f.name}
-      className="field-span"
-      style={{ gridColumn: "1 / -1", width: "100%" }}
-    >
-      <VaccineRepeater
-        value={pharm[f.name] || []}
-        onChange={(val) => setPharmField(f.name, val)}
-      />
-    </div>
-  );
-}
+            // ⬇️ Repeaters
+            if (f.type === "vaccineRepeater") {
+              return (
+                <div
+                  key={f.name}
+                  className="field-span"
+                  style={{ gridColumn: "1 / -1", width: "100%" }}
+                >
+                  <MedicationRepeater
+                    mode="vaccine"
+                    label={f.label || "Vaccines"}
+                    value={pharm[f.name] || []}
+                    onChange={(val) => setPharmField(f.name, val)}
+                    showBatch
+                    showExpiry
+                    showDateGiven
+                    showQuantity
+                    showDosage
+                    showStrength={false}
+                  />
+                </div>
+              );
+            }
 
+            if (f.type === "drugRepeater") {
+              return (
+                <div
+                  key={f.name}
+                  className="field-span"
+                  style={{ gridColumn: "1 / -1", width: "100%" }}
+                >
+                  <MedicationRepeater
+                    mode="drug"
+                    label={f.label || "Drugs prescribed"}
+                    value={pharm[f.name] || []}
+                    onChange={(val) => setPharmField(f.name, val)}
+                    showBatch={false}
+                    showExpiry={false}
+                    showDateGiven
+                    showQuantity
+                    showDosage
+                    showStrength
+                  />
+                </div>
+              );
+            }
+
+            // ⬇️ Standard inputs
             return (
               <LabeledField key={f.name} label={f.label} span={f.span}>
                 {f.type === "textarea" ? (
@@ -60,6 +94,7 @@ const handleSubmit = (e) => {
                     className="input textarea"
                     value={pharm[f.name] || ""}
                     onChange={(e) => setPharmField(f.name, e.target.value)}
+                    placeholder={f.placeholder || ""}
                   />
                 ) : f.type === "select" ? (
                   <select
@@ -80,6 +115,8 @@ const handleSubmit = (e) => {
                     type={f.type || "text"}
                     value={pharm[f.name] || ""}
                     onChange={(e) => setPharmField(f.name, e.target.value)}
+                    placeholder={f.placeholder || ""}
+                    required={f.required}
                   />
                 )}
               </LabeledField>
@@ -87,23 +124,48 @@ const handleSubmit = (e) => {
           })}
       </div>
 
-      {/* 🟩 Malaria Section */}
+      {/* 🟩 Malaria Section (if present) */}
       <div className="malaria-section">
         {service.pharmacistFields
           .filter((f) => f.name.startsWith("malaria"))
           .map((f) => {
             const shouldShow =
               !f.showIf || pharm[f.showIf.field] === f.showIf.equals;
-
             if (!shouldShow) return null;
 
             if (f.type === "vaccineRepeater") {
               return (
                 <div key={f.name} className="field-span">
                   <h3>{f.label}</h3>
-                  <VaccineRepeater
+                  <MedicationRepeater
+                    mode="vaccine"
                     value={pharm[f.name] || []}
                     onChange={(val) => setPharmField(f.name, val)}
+                    showBatch
+                    showExpiry
+                    showDateGiven
+                    showQuantity
+                    showDosage
+                    showStrength={false}
+                  />
+                </div>
+              );
+            }
+
+            if (f.type === "drugRepeater") {
+              return (
+                <div key={f.name} className="field-span">
+                  <h3>{f.label}</h3>
+                  <MedicationRepeater
+                    mode="drug"
+                    value={pharm[f.name] || []}
+                    onChange={(val) => setPharmField(f.name, val)}
+                    showBatch={false}
+                    showExpiry={false}
+                    showDateGiven
+                    showQuantity
+                    showDosage
+                    showStrength
                   />
                 </div>
               );
@@ -173,14 +235,14 @@ const handleSubmit = (e) => {
         </div>
       </div>
 
-<button
-  type="submit"
-  className="btn btn--primary"
-  style={{ marginTop: 16 }}
->
-  {id === "privateprescription" ? "Continue" : "Preview & Download"}
-</button>
-
+      <button
+        type="submit"
+        className="btn btn--primary"
+        style={{ marginTop: 16 }}
+      >
+        {/* We now always go to preview from Pharmacist step */}
+        Preview &amp; Download
+      </button>
     </form>
   );
 }

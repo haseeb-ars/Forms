@@ -1,15 +1,15 @@
+// src/templates/PrescriptionTemplate.jsx
 import React from "react";
 import "./B12Template.css";
 
-// 🔹 Service-specific mappings for prescription fields
+// 🔹 Service-specific mappings for RX header fields (kept)
 const prescriptionMappings = {
   b12: {
     title: "B12 Prescription",
     drug: (d) => d.drug || "-",
     quantity: (d) => d.quantity || "-",
     dose: (d) => d.dose || "-",
-    prescriber: (d) =>
-      d.prescriberName || d.prescriber || "-",
+    prescriber: (d) => d.prescriberName || d.prescriber || "-",
     prescriberGPhC: (d) =>
       d.GPHCnumber ||
       d.prescriberGPhC ||
@@ -17,10 +17,7 @@ const prescriptionMappings = {
       d.pharmacistGPhC ||
       d.clinicianGPhC ||
       "-",
-    prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "-",
+    prescriberType: (d) => d.prescriberType || d.clinicianType || "-",
   },
 
   weightloss: {
@@ -41,9 +38,7 @@ const prescriptionMappings = {
       d.clinicianGPhC ||
       "—",
     prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
   flu: {
@@ -61,9 +56,7 @@ const prescriptionMappings = {
       d.clinicianGPhC ||
       "—",
     prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
   covid: {
@@ -81,38 +74,31 @@ const prescriptionMappings = {
       d.clinicianGPhC ||
       "—",
     prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
   travel: {
     title: "Travel Vaccination Prescription",
     drug: (d) => {
       let vaccines = [];
-
       if (Array.isArray(d.vaccines) && d.vaccines.length > 0) {
         vaccines = d.vaccines.map((v) => v.vaccine).filter(Boolean);
       }
-
       if (
         d.malariaGiven === "Yes" &&
         Array.isArray(d.malariaVaccines) &&
         d.malariaVaccines.length > 0
       ) {
-        const malariaNames = d.malariaVaccines
-          .map((v) => v.vaccine)
-          .filter(Boolean);
-        vaccines.push(...malariaNames);
+        vaccines.push(
+          ...d.malariaVaccines.map((v) => v.vaccine).filter(Boolean)
+        );
       }
-
       if (vaccines.length === 0)
         return "Travel vaccines as per consultation form";
-
       return vaccines.join(", ");
     },
-    quantity: (d) => "-",
-    dose: (d) => "-",
+    quantity: () => "-",
+    dose: () => "-",
     prescriber: (d) =>
       d.prescriber ||
       d.Prescriber ||
@@ -128,9 +114,7 @@ const prescriptionMappings = {
       d.clinicianGPhC ||
       "-",
     prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
   earwax: {
@@ -151,12 +135,9 @@ const prescriptionMappings = {
       d.clinicianGPhC ||
       "—",
     prescriberType: (d) =>
-      d.prescriberType ||
-      d.clinicianType ||
-      "Pharmacist Independent Prescriber",
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
-// 🩺 NEW: Private Prescription mapping
   privateprescription: {
     title: "Private Prescription",
     drug: (d) => d.drug || d.medication || "As prescribed",
@@ -170,32 +151,122 @@ const prescriptionMappings = {
       d.gphcNumber ||
       d.pharmacistGPhC ||
       "—",
-    prescriberType: (d) =>
-      d.prescriberType ||
-      "Pharmacist Independent Prescriber",
+    prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
   },
-
-
-
 };
+
+// 🔧 Normalise ALL possible medication/vaccine sources to one array
+function normaliseItems(data, serviceId) {
+  const items = [];
+  const asArray = (x) => (Array.isArray(x) ? x : []);
+
+  const pushItem = (src) => {
+    items.push({
+      name: src.name || src.vaccine || src.drug || "-",
+      strength: src.strength || "",
+      dosage: src.dosage || src.dose || "",
+      quantity: src.quantity || "",
+      batchNumber: src.batchNumber || src.batch || "",
+      expiry: src.expiry || src.dateExpiry || "",
+      dateGiven: src.dateGiven || src.datePharm || "",
+    });
+  };
+
+  // 1) Repeaters
+  asArray(data.prescribedDrugs).forEach(pushItem);     // MedicationRepeater in "drug" mode
+  asArray(data.vaccines).forEach(pushItem);           // VaccineRepeater
+  asArray(data.malariaVaccines).forEach(pushItem);    // VaccineRepeater (malaria)
+
+  // 2) Service-specific singles
+
+  // B12 (single fields)
+  if (
+    serviceId === "b12" &&
+    (data.drug || data.dose || data.quantity || data.batchNumber || data.expiry || data.datePharm)
+  ) {
+    pushItem({
+      drug: data.drug,
+      dose: data.dose,
+      quantity: data.quantity,
+      batchNumber: data.batchNumber,
+      expiry: data.expiry,
+      datePharm: data.datePharm,
+    });
+  }
+
+  // Flu (single fields)
+  if (
+    serviceId === "flu" &&
+    (data.vaccineBrand || data.batchNumber || data.dateGiven)
+  ) {
+    pushItem({
+      name: data.vaccineBrand || "Influenza vaccine",
+      dose: "0.5ml IM injection",
+      quantity: "1",
+      batchNumber: data.batchNumber,
+      expiry: "",
+      dateGiven: data.dateGiven,
+    });
+  }
+
+  // Covid (single fields)
+  if (
+    serviceId === "covid" &&
+    (data.vaccineBrand || data.batchNumber || data.dateGiven || data.dateExpiry)
+  ) {
+    pushItem({
+      name: data.vaccineBrand || "COVID-19 vaccine",
+      dose: data.doseNumber ? `Dose ${data.doseNumber}` : "",
+      quantity: "1",
+      batchNumber: data.batchNumber,
+      expiry: data.dateExpiry,
+      dateGiven: data.dateGiven,
+    });
+  }
+
+  // Weightloss (single fields)
+  if (
+    serviceId === "weightloss" &&
+    (data.medication || data.otherMedication || data.dosage || data.batchNumber || data.startDate)
+  ) {
+    pushItem({
+      name:
+        data.medication === "Other"
+          ? data.otherMedication || "Other Medication"
+          : data.medication,
+      dose: data.dosage,
+      quantity: data.quantity,
+      batchNumber: data.batchNumber,
+      expiry: "",
+      dateGiven: data.startDate,
+    });
+  }
+
+  return items;
+}
+
+// 🔹 Helper row renderer
+function Row({ label, value }) {
+  const safeValue = value && String(value).trim() !== "" ? value : "—";
+  return (
+    <div className="row">
+      <div className="row__label">{label}:</div>
+      <div className="row__value">{safeValue}</div>
+    </div>
+  );
+}
 
 export default function PrescriptionTemplate({ data = {}, serviceId }) {
   const safe = (v) => (v && String(v).trim() !== "" ? v : "—");
-
   const map = prescriptionMappings[serviceId] || prescriptionMappings.b12;
 
   const consultationDate =
-    data.consultationDate ||
-    data.datePharm ||
-    data.date ||
-    new Date().toLocaleDateString();
+    data.consultationDate || data.datePharm || data.date || new Date().toLocaleDateString();
 
   const showGenericHeader = serviceId !== "travel";
 
-  const allVaccines = [
-    ...(Array.isArray(data.vaccines) ? data.vaccines : []),
-    ...(Array.isArray(data.malariaVaccines) ? data.malariaVaccines : []),
-  ];
+  const items = normaliseItems(data, serviceId);
+  const hasItems = items.length > 0;
 
   return (
     <div className="formdoc" style={{ pageBreakInside: "avoid" }}>
@@ -243,15 +314,8 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         {data.surgery && <Row label="SURGERY NAME" value={data.surgery} />}
       </section>
 
-      {/* Prescription details 
-      <section className="formdoc__section" style={{ maxWidth: 520 }}>
-        <Row label="DRUG" value={map.drug(data)} />
-        <Row label="QUANTITY" value={map.quantity(data)} />
-        <Row label="DOSE" value={map.dose(data)} />
-      </section>*/}
-
-      {/* ✅ Vaccine table if vaccines exist */}
-      {allVaccines.length > 0 && (
+      {/* ✅ Unified prescription items table */}
+      {hasItems && (
         <section className="formdoc__section" style={{ maxWidth: 700 }}>
           <h3 style={{ marginBottom: "8px" }}>Prescription Details</h3>
           <table
@@ -270,23 +334,25 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
                   borderBottom: "2px solid #ccc",
                 }}
               >
-                <th style={{ padding: "6px" }}>Drug</th>
-                <th style={{ padding: "6px" }}>Batch No</th>
-                <th style={{ padding: "6px" }}>Date Given</th>
-                <th style={{ padding: "6px" }}>Expiry</th>
+                <th style={{ padding: "6px" }}>Drug / Vaccine</th>
+                <th style={{ padding: "6px" }}>Strength</th>
                 <th style={{ padding: "6px" }}>Dosage</th>
                 <th style={{ padding: "6px" }}>Quantity</th>
+                <th style={{ padding: "6px" }}>Batch No</th>
+                <th style={{ padding: "6px" }}>Expiry</th>
+                <th style={{ padding: "6px" }}>Date Given</th>
               </tr>
             </thead>
             <tbody>
-              {allVaccines.map((v, i) => (
+              {items.map((it, i) => (
                 <tr key={i} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={{ padding: "6px" }}>{safe(v.vaccine)}</td>
-                  <td style={{ padding: "6px" }}>{safe(v.batch)}</td>
-                  <td style={{ padding: "6px" }}>{safe(v.dateGiven)}</td>
-                  <td style={{ padding: "6px" }}>{safe(v.expiry)}</td>
-                  <td style={{ padding: "6px" }}>{safe(v.dosage)}</td>
-                  <td style={{ padding: "6px" }}>{safe(v.quantity)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.name)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.strength)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.dosage)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.quantity)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.batchNumber)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.expiry)}</td>
+                  <td style={{ padding: "6px" }}>{safe(it.dateGiven)}</td>
                 </tr>
               ))}
             </tbody>
@@ -304,11 +370,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
           <div className="row__label">SIGNATURE:</div>
           <div className="row__value row__value--sig">
             {data.prescriberSignature ? (
-              <img
-                src={data.prescriberSignature}
-                alt="Signature"
-                className="sigimg"
-              />
+              <img src={data.prescriberSignature} alt="Signature" className="sigimg" />
             ) : (
               <span className="placeholder">No signature</span>
             )}
@@ -327,17 +389,6 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
         consultation and administration forms in a certified pharmacy
         consultation room under the supervision of a pharmacist or prescriber.
       </div>
-    </div>
-  );
-}
-
-// 🔹 Helper row renderer
-function Row({ label, value }) {
-  const safeValue = value && String(value).trim() !== "" ? value : "—";
-  return (
-    <div className="row">
-      <div className="row__label">{label}:</div>
-      <div className="row__value">{safeValue}</div>
     </div>
   );
 }

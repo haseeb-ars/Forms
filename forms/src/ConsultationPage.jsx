@@ -45,20 +45,21 @@ export default function ConsultationPage() {
       case "flu":
         setFluConsultation(answers);
         break;
-        case "privateprescription": // 👈 add this
-      setPrivatePrescriptionConsultation(answers);
-      break;
+      case "privateprescription":
+        setPrivatePrescriptionConsultation(answers);
+        break;
       default:
         break;
     }
 
+    // ✅ Navigation logic
     if (id === "privateprescription") {
-  // go directly to Preview Page and trigger auto-download
-  navigate(`/service/${id}/preview?autoDownload=true`);
-} else {
-  navigate(`/service/${id}/patient`);
-}
-
+      // 🟩 Go to pharmacist form next
+      navigate(`/service/${id}/pharmacist`);
+    } else {
+      // 🟦 All other services go back to patient form as usual
+      navigate(`/service/${id}/patient`);
+    }
   };
 
   return (
@@ -107,7 +108,6 @@ export default function ConsultationPage() {
             </>
           ) : q.type === "checkbox" ? (
             <>
-              {/* ✅ Checkbox Questions (no textarea) */}
               <div className="checkbox-group">
                 {q.options.map((option) => (
                   <label key={option} className="checkbox-option">
@@ -145,10 +145,9 @@ export default function ConsultationPage() {
         </div>
       ))}
 
-    <button type="submit" className="btn btn--primary continue-btn">
-  {id === "privateprescription" ? "Preview & Download" : "Continue"}
-</button>
-
+      <button type="submit" className="btn btn--primary continue-btn">
+        {id === "privateprescription" ? "Continue to Pharmacist Form" : "Continue"}
+      </button>
     </form>
   );
 }

@@ -19,7 +19,13 @@ export default function PatientFormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/service/${id}/pharmacist`);
+    if (id === "privateprescription") {
+      // 🧭 Private Rx: Patient → Consultation
+      navigate(`/service/${id}/consultation`);
+    } else {
+      // 🧭 Others: Patient → Pharmacist
+      navigate(`/service/${id}/pharmacist`);
+    }
   };
 
   return (
@@ -65,7 +71,7 @@ export default function PatientFormPage() {
         ))}
       </div>
 
-      {/* Patient Signature (optional per service) */}
+      {/* Patient Signature */}
       <div className="grid grid--2 mt items-end">
         <div>
           <div className="label">Patient Signature</div>
@@ -84,7 +90,9 @@ export default function PatientFormPage() {
         </LabeledField>
       </div>
 
-      <button type="submit" className="btn btn--primary" style={{ marginTop: 16 }}>Next</button>
+      <button type="submit" className="btn btn--primary" style={{ marginTop: 16 }}>
+        Next
+      </button>
     </form>
   );
 }

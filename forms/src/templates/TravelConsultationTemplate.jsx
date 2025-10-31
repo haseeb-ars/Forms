@@ -114,8 +114,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
             <tbody>
               {f.vaccines.map((v, i) => (
                 <tr key={i}>
-                  <td>{v.vaccine || "-"}</td>
-                  <td>{v.batch || "-"}</td>
+                  <td>{v.name || "-"}</td>
+                  <td>{v.batchNumber || "-"}</td>
                   <td>{v.dateGiven || "-"}</td>
                   <td>{v.expiry || "-"}</td>
                   <td>{v.dosage || "-"}</td>
@@ -158,8 +158,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                     <tbody>
                       {f.malariaVaccines.map((v, i) => (
                         <tr key={i}>
-                          <td>{v.vaccine || "-"}</td>
-                          <td>{v.batch || "-"}</td>
+                          <td>{v.name || "-"}</td>
+                          <td>{v.batchNumber || "-"}</td>
                           <td>{v.dateGiven || "-"}</td>
                           <td>{v.expiry || "-"}</td>
                           <td>{v.dosage || "-"}</td>

@@ -1,9 +1,11 @@
-
+// src/templates/PrivatePrescriptionTemplate.jsx
 import React from "react";
-import "./WeightlossTemplate.css"; // you can reuse WeightlossTemplate.css if you like
+import "./WeightlossTemplate.css"; // reuse existing styles
 
 export default function PrivatePrescriptionTemplate({ data = {} }) {
-  const safe = (v) => (v && v !== "" ? v : "—");
+  const safe = (v) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : "—");
+
+  const drugs = Array.isArray(data.prescribedDrugs) ? data.prescribedDrugs : [];
 
   return (
     <div className="template privateprescription-template">
@@ -28,35 +30,31 @@ export default function PrivatePrescriptionTemplate({ data = {} }) {
         <div>
           <p><strong>Address:</strong> {safe(data.address)}</p>
           <p><strong>Surgery Name:</strong> {safe(data.surgeryName)}</p>
-         
         </div>
       </section>
 
-      {/* ---------- Medication Details ---------- */}
+      {/* ---------- Drugs Prescribed (from MedicationRepeater) ---------- */}
       <section className="template-section">
-        <h2>Medication Details</h2>
-
-        {Array.isArray(data.vaccines) && data.vaccines.length > 0 ? (
+        <h2>Drugs Prescribed</h2>
+        {drugs.length > 0 ? (
           <table className="template-table">
             <thead>
               <tr>
-                <th>Medication</th>
-                <th>Batch No</th>
-                <th>Date Given</th>
-                <th>Expiry Date</th>
-                <th>Dosage</th>
+                <th>Drug Name</th>
+                <th>Strength</th>
+                <th>Dosage / Directions</th>
                 <th>Quantity</th>
+                <th>Date Given</th>
               </tr>
             </thead>
             <tbody>
-              {data.vaccines.map((v, i) => (
+              {drugs.map((d, i) => (
                 <tr key={i}>
-                  <td>{safe(v.vaccine)}</td>
-                  <td>{safe(v.batch)}</td>
-                  <td>{safe(v.dateGiven)}</td>
-                  <td>{safe(v.expiry)}</td>
-                  <td>{safe(v.dosage)}</td>
-                  <td>{safe(v.quantity)}</td>
+                  <td>{safe(d.name)}</td>
+                  <td>{safe(d.strength)}</td>
+                  <td>{safe(d.dosage)}</td>
+                  <td>{safe(d.quantity)}</td>
+                  <td>{safe(d.dateGiven)}</td>
                 </tr>
               ))}
             </tbody>
@@ -76,7 +74,7 @@ export default function PrivatePrescriptionTemplate({ data = {} }) {
         <p><strong>Pharmacy Address:</strong> {safe(data.pharmacyAddress)}</p>
       </section>
 
-      {/* ---------- Notes (if any) ---------- */}
+      {/* ---------- Notes ---------- */}
       {data.notes && (
         <section className="template-section">
           <h2>Notes / Additional Comments</h2>

@@ -17,6 +17,10 @@ export default function PrivatePrescriptionConsultationTemplate({
   const isBase64Image = (val) =>
     typeof val === "string" && val.startsWith("data:image");
 
+
+
+  
+
   return (
     <div
       className="template travel-template"
@@ -71,38 +75,37 @@ export default function PrivatePrescriptionConsultationTemplate({
         </section>
       )}
 
-      {/* ---------------- Medications Table ---------------- */}
+      {/* ---------------- Drugs Prescribed ---------------- */}
       <section className="template-section">
-        <h2>Medications Administered</h2>
-        {Array.isArray(f.vaccines) && f.vaccines.length > 0 ? (
+        <h2>Drugs Prescribed</h2>
+        {Array.isArray(f.prescribedDrugs) && f.prescribedDrugs.length > 0 ? (
           <table className="template-table">
             <thead>
               <tr>
-                <th>Drug</th>
-                <th>Batch No</th>
-                <th>Date Given</th>
-                <th>Expiry Date</th>
-                <th>Dosage</th>
+                <th>Drug Name</th>
+                <th>Strength</th>
+                <th>Dosage / Directions</th>
                 <th>Quantity</th>
+                <th>Date Given</th>
               </tr>
             </thead>
             <tbody>
-              {f.vaccines.map((v, i) => (
+              {f.prescribedDrugs.map((d, i) => (
                 <tr key={i}>
-                  <td>{v.vaccine || "-"}</td>
-                  <td>{v.batch || "-"}</td>
-                  <td>{v.dateGiven || "-"}</td>
-                  <td>{v.expiry || "-"}</td>
-                  <td>{v.dosage || "-"}</td>
-                  <td>{v.quantity || "-"}</td>
+                  <td>{d.name || "-"}</td>
+                  <td>{d.strength || "-"}</td>
+                  <td>{d.dosage || "-"}</td>
+                  <td>{d.quantity || "-"}</td>
+                  <td>{d.dateGiven || "-"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p>No vaccinations recorded.</p>
+          <p>No drugs prescribed.</p>
         )}
       </section>
+
 
       {/* ---------------- Prescriber Info ---------------- */}
       <section className="template-section">

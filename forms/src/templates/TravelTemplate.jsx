@@ -80,8 +80,8 @@ export default function TravelTemplate() {
             <tbody>
               {merged.vaccines.map((v, i) => (
                 <tr key={i}>
-                  <td>{v.vaccine}</td>
-                  <td>{v.batch}</td>
+                  <td>{v.name}</td>
+                  <td>{v.batchNumber}</td>
                   <td>{v.dateGiven}</td>
                   <td>{v.expiry}</td>
                   <td>{v.dosage || "-"}</td>
@@ -127,8 +127,8 @@ export default function TravelTemplate() {
                       <tbody>
                         {merged.malariaVaccines.map((v, i) => (
                           <tr key={i}>
-                            <td>{v.vaccine}</td>
-                            <td>{v.batch}</td>
+                            <td>{v.name}</td>
+                            <td>{v.batchNumber}</td>
                             <td>{v.dateGiven}</td>
                             <td>{v.expiry}</td>
                             <td>{v.dosage || "-"}</td>

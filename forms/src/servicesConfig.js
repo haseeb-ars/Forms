@@ -313,11 +313,12 @@ export const services = [
         "Independent Prescribing Nurse"
       ]
     },
+    
     { name: "prescriberName", label: "Prescriber's Name", type: "text" },
     { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
 
     // ✅ Keep vaccine repeater (administered)
-    { name: "vaccines", label: "Medications Given", type: "vaccineRepeater" },
+     { name: "prescribedDrugs", label: "Drugs prescribed", type: "drugRepeater" },
   ],
   patientFields: [
     { label: "Full Name", name: "fullName", type: "text" },

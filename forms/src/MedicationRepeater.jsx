@@ -68,6 +68,21 @@ export default function MedicationRepeater({
             </div>
           )}
 
+        {/* Expiry (vaccines only) */}
+          {showExpiry && (
+            <div className="field">
+              <div className="label">Expiry</div>
+              <input
+                className="input"
+                type="date"
+                value={it.expiry || ""}
+                onChange={(e) => update(idx, { expiry: e.target.value })}
+              />
+            </div>
+          )}
+
+
+
           {/* Date Given */}
           {showDateGiven && (
             <div className="field">
@@ -81,18 +96,7 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Expiry (vaccines only) */}
-          {showExpiry && (
-            <div className="field">
-              <div className="label">Expiry</div>
-              <input
-                className="input"
-                type="date"
-                value={it.expiry || ""}
-                onChange={(e) => update(idx, { expiry: e.target.value })}
-              />
-            </div>
-          )}
+          
 
           {/* Strength (drugs) */}
           {showStrength && (

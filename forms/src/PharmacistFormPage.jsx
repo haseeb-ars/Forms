@@ -20,14 +20,11 @@ export default function PharmacistFormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (id === "privateprescription") {
-      // 🔶 Private Rx: pharmacist form now goes straight to PREVIEW
-      navigate(`/service/${id}/preview?autoDownload=true`);
-    } else {
-      // 🔶 All others: unchanged (still go to preview)
-      navigate(`/service/${id}/preview?autoDownload=true`);
-    }
+    // ✅ Always navigate to Preview with autoDownload query
+    navigate({
+      pathname: `/service/${id}/preview`,
+      search: `?autoDownload=true`,
+    });
   };
 
   return (
@@ -240,7 +237,6 @@ export default function PharmacistFormPage() {
         className="btn btn--primary"
         style={{ marginTop: 16 }}
       >
-        {/* We now always go to preview from Pharmacist step */}
         Preview &amp; Download
       </button>
     </form>

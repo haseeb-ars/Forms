@@ -41,6 +41,27 @@ const prescriptionMappings = {
       d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
+  weightlossFollowup: {
+    title: "Weight Loss Follow-up Prescription",
+    drug: (d) =>
+      d.medication === "Other"
+        ? d.otherMedication || "Other Medication"
+        : d.medication || "Semaglutide / Tirzepatide",
+    quantity: (d) => d.quantity || "As prescribed",
+    dose: (d) => d.dosage || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
+  },
+
   flu: {
     title: "Flu Vaccine Prescription",
     drug: (d) => d.vaccineBrand || "Influenza vaccine",
@@ -169,13 +190,16 @@ function normaliseItems(data, serviceId) {
       batchNumber: src.batchNumber || src.batch || "",
       expiry: src.expiry || src.dateExpiry || "",
       dateGiven: src.dateGiven || src.datePharm || "",
+      // 🔹 new fields for display
+      brand: src.brand || src.vaccineBrand || "",
+      indication: src.indication || src.reason || "",
     });
   };
 
   // 1) Repeaters
-  asArray(data.prescribedDrugs).forEach(pushItem);     // MedicationRepeater in "drug" mode
-  asArray(data.vaccines).forEach(pushItem);           // VaccineRepeater
-  asArray(data.malariaVaccines).forEach(pushItem);    // VaccineRepeater (malaria)
+  asArray(data.prescribedDrugs).forEach(pushItem); // MedicationRepeater in "drug" mode
+  asArray(data.vaccines).forEach(pushItem);        // Vaccine/MedicationRepeater in "vaccine" mode
+  asArray(data.malariaVaccines).forEach(pushItem); // VaccineRepeater (malaria)
 
   // 2) Service-specific singles
 
@@ -201,6 +225,7 @@ function normaliseItems(data, serviceId) {
   ) {
     pushItem({
       name: data.vaccineBrand || "Influenza vaccine",
+      vaccineBrand: data.vaccineBrand,
       dose: "0.5ml IM injection",
       quantity: "1",
       batchNumber: data.batchNumber,
@@ -216,6 +241,7 @@ function normaliseItems(data, serviceId) {
   ) {
     pushItem({
       name: data.vaccineBrand || "COVID-19 vaccine",
+      vaccineBrand: data.vaccineBrand,
       dose: data.doseNumber ? `Dose ${data.doseNumber}` : "",
       quantity: "1",
       batchNumber: data.batchNumber,
@@ -238,7 +264,7 @@ function normaliseItems(data, serviceId) {
       quantity: data.quantity,
       batchNumber: data.batchNumber,
       expiry: "",
-      dateGiven: data.startDate,
+      datePharm: data.startDate,
     });
   }
 
@@ -345,15 +371,43 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
             </thead>
             <tbody>
               {items.map((it, i) => (
-                <tr key={i} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={{ padding: "6px" }}>{safe(it.name)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.strength)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.dosage)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.quantity)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.batchNumber)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.expiry)}</td>
-                  <td style={{ padding: "6px" }}>{safe(it.dateGiven)}</td>
-                </tr>
+                <React.Fragment key={i}>
+                  {/* main row (unchanged fields) */}
+                  <tr style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={{ padding: "6px" }}>{safe(it.name)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.strength)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.dosage)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.quantity)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.batchNumber)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.expiry)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.dateGiven)}</td>
+                  </tr>
+
+                  {/* second line with Brand + Indication */}
+                  {(it.brand || it.indication) && (
+                    <tr className="sub-row">
+                      <td
+                        colSpan={7}
+                        style={{
+                          padding: "4px 6px 6px",
+                          fontSize: "11px",
+                          background: "#f9fafb",
+                        }}
+                      >
+                        {it.brand && (
+                          <span>
+                            <strong>Brand:</strong> {safe(it.brand)}
+                          </span>
+                        )}
+                        {it.indication && (
+                          <span style={{ marginLeft: "1.5rem" }}>
+                            <strong>Indication:</strong> {safe(it.indication)}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

@@ -4,6 +4,8 @@ import "./PharmacistFormPage.css"; // re-use your existing styles
 
 const blankItem = (mode) => ({
   name: "",
+  brand: "",
+  indication: "",
   batchNumber: "",
   expiry: "",
   dateGiven: "",
@@ -25,6 +27,8 @@ export default function MedicationRepeater({
   showStrength = mode === "drug",
   showQuantity = true,
   showDosage = true,
+  showBrand = mode === "vaccine",
+  showIndication = mode === "vaccine",
   // optional placeholders
   placeholders = {},
 }) {
@@ -51,11 +55,30 @@ export default function MedicationRepeater({
               className="input"
               value={it.name || ""}
               onChange={(e) => update(idx, { name: e.target.value })}
-              placeholder={placeholders.name || (mode === "vaccine" ? "e.g. MMR" : "e.g. Amoxicillin")}
+              placeholder={
+                placeholders.name ||
+                (mode === "vaccine" ? "e.g. MMR" : "e.g. Amoxicillin")
+              }
             />
           </div>
 
-          {/* Batch No (vaccines only) */}
+          {/* Brand name (vaccines typically have a brand) */}
+          {showBrand && (
+            <div className="field">
+              <div className="label">Brand Name</div>
+              <input
+                className="input"
+                value={it.brand || ""}
+                onChange={(e) => update(idx, { brand: e.target.value })}
+                placeholder={
+                  placeholders.brand ||
+                  (mode === "vaccine" ? "e.g. Pfizer Comirnaty" : "Brand (optional)")
+                }
+              />
+            </div>
+          )}
+
+          {/* Batch No (vaccines only by default) */}
           {showBatch && (
             <div className="field">
               <div className="label">Batch No</div>
@@ -68,7 +91,7 @@ export default function MedicationRepeater({
             </div>
           )}
 
-        {/* Expiry (vaccines only) */}
+          {/* Expiry (vaccines only by default) */}
           {showExpiry && (
             <div className="field">
               <div className="label">Expiry</div>
@@ -80,8 +103,6 @@ export default function MedicationRepeater({
               />
             </div>
           )}
-
-
 
           {/* Date Given */}
           {showDateGiven && (
@@ -95,8 +116,6 @@ export default function MedicationRepeater({
               />
             </div>
           )}
-
-          
 
           {/* Strength (drugs) */}
           {showStrength && (
@@ -133,12 +152,37 @@ export default function MedicationRepeater({
                 className="input"
                 value={it.dosage || ""}
                 onChange={(e) => update(idx, { dosage: e.target.value })}
-                placeholder={placeholders.dosage || (mode === "vaccine" ? "e.g. 0.5ml IM" : "e.g. 1 cap TDS 5 days")}
+                placeholder={
+                  placeholders.dosage ||
+                  (mode === "vaccine"
+                    ? "e.g. 0.5ml IM"
+                    : "e.g. 1 cap TDS 5 days")
+                }
               />
             </div>
           )}
 
-          <button type="button" className="link danger" onClick={() => remove(idx)}>
+          {/* Indication / What it's treating (especially useful for vaccines) */}
+          {showIndication && (
+            <div className="field">
+              <div className="label">Indication / What it is treating</div>
+              <input
+                className="input"
+                value={it.indication || ""}
+                onChange={(e) => update(idx, { indication: e.target.value })}
+                placeholder={
+                  placeholders.indication ||
+                  "e.g. Flu prevention, Travel to India – Typhoid"
+                }
+              />
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="link danger"
+            onClick={() => remove(idx)}
+          >
             Remove
           </button>
         </div>

@@ -102,5 +102,29 @@ export const consultationQuestions = {
       text: "Allergies",
       type: "textarea",
     },
+
+  ],
+    weightlossFollowup: [
+    {
+      id: "Changes",
+      text: "Changes from last consult",
+      type: "textarea",
+    },
+    {
+      id: "LastWeight",
+      text: "Last weight",
+      type: "text",
+    },
+     {
+      id: "currentWeight",
+      text: "current weight",
+      type: "text",
+    },
+    {
+      id: "Advice",
+      text: "Advice given",
+      type: "textarea",
+    },
+    
   ],
 };

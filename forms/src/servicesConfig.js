@@ -147,6 +147,111 @@ export const services = [
   template: "WeightLossTemplate"
 }
 ,
+{
+  id: "weightlossFollowup",
+  name: "Weight Loss Followup",
+  color: "#F03D1A",
+
+  patientFields: [
+    { name: "fullName", label: "Full Name", type: "text" },
+    { name: "dob", label: "Date of Birth", type: "date" },
+    { name: "telephone", label: "Contact Number", type: "text" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "address", label: "Address", type: "text", span: true },
+    { name: "surgery", label: "Surgery Name", type: "text" },
+
+    // Lifestyle + program-level inputs
+    
+    
+    {
+      name: "followUpPreference",
+      label: "Preferred Follow-up Method",
+      type: "select",
+      options: ["In-person", "Video Call", "Phone Call", "Email"]
+    },
+    {
+      name: "additionalNotes",
+      label: "Additional Notes",
+      type: "textarea",
+      span: true
+    }
+  ],
+
+  pharmacistFields: [
+       {
+      name: "medication",
+      label: "Dispensed Medication",
+      type: "select",
+      options: [
+        "Wegovy (Semaglutide)",
+        "Ozempic (Semaglutide)",
+        "Mounjaro (Tirzepatide)",
+        "Saxenda (Liraglutide)",
+        "Rybelsus (Semaglutide Oral)",
+        "Trulicity (Dulaglutide)",
+        "Other"
+      ]
+    },
+    {
+      name: "otherMedication",
+      label: "If Other, Specify Medication",
+      type: "text",
+      conditional: { field: "medication", value: "Other" } // optional if your form renderer supports it
+    },
+
+    {
+      name: "dosage",
+      label: "Dosage",
+      type: "text"
+    },
+    {
+      name: "startDate",
+      label: "Start Date",
+      type: "date"
+    },
+    {
+      name: "followUpDate",
+      label: "Follow-up Date",
+      type: "date"
+    },
+    {
+      name: "batchNumber",
+      label: "Batch Number",
+      type: "text"
+    },
+    {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "GP",
+        "Pharmacist Independent Prescriber",
+        "Nurse Prescriber",
+        "Doctor (Specialist)",
+        "Other"
+      ]
+    },
+     {
+      name: "prescriberName",
+      label: "Prescriber Name",
+      type: "text"
+    },
+     {
+      name: "GPHCnumber",
+      label: "GPHC Number",
+      type: "text"
+    },
+    {
+      name: "notes",
+      label: "Pharmacist Notes",
+      type: "textarea",
+      span: true
+    }
+  ],
+
+  template: "WeightLossFollowupTemplate"
+}
+,
   {
     id: "earwax",
     name: "Earwax",

@@ -12,7 +12,7 @@ const handleSelect = (serviceId) => {
   setSelectedFormType(serviceId);
 
   // 🔹 Services that start with Consultation page
-  const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12"];
+  const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12", "weightlossFollowup"];
 
   if (serviceId === "privateprescription") {
     // 🩺 Start with the form instead of consultation

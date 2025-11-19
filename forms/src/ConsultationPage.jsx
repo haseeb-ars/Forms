@@ -14,6 +14,7 @@ export default function ConsultationPage() {
     setB12Consultation,
     setFluConsultation,
     setPrivatePrescriptionConsultation,
+    setWeightLossFollowupConsultation,
   } = useApp();
 
   const [answers, setAnswers] = useState({});
@@ -47,6 +48,9 @@ export default function ConsultationPage() {
         break;
       case "privateprescription":
         setPrivatePrescriptionConsultation(answers);
+        break;
+        case "weightlossFollowup":
+        setWeightLossFollowupConsultation(answers);
         break;
       default:
         break;

@@ -10,6 +10,7 @@ import EarwaxTerms from "./EarwaxTerms.jsx";
 import WeightlossTemplate from "./WeightlossTemplate.jsx";
 import CovidTemplate from "./CovidTemplate.jsx";
 import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx"; // ✅ new import
+import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate";
 
 const templates = {
   travel: TravelTemplate,
@@ -24,6 +25,7 @@ const templates = {
   weightloss: WeightlossTemplate,
   covid: CovidTemplate,
   weightloss_consultation: WeightlossConsultationTemplate, // ✅ new template export
+  weightlossFollowup:  WeightLossFollowupTemplate
 };
 
 export default templates;

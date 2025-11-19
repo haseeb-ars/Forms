@@ -120,6 +120,8 @@ export function AppProvider({ children }) {
   const [b12Consultation, setB12Consultation] = useState({});
   const [fluConsultation, setFluConsultation] = useState({});
   const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] = useState({});
+  const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] = useState({});
+
 
 
   const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
@@ -234,6 +236,10 @@ export function AppProvider({ children }) {
         weightLossConsultation,
         setWeightLossConsultation,
         resetWeightLossConsultation,
+        
+    weightLossFollowupConsultation,
+    setWeightLossFollowupConsultation,
+    
 
         earwaxConsultation,
         setEarwaxConsultation,

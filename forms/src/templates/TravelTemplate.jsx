@@ -38,6 +38,9 @@ export default function TravelTemplate() {
     malariaVaccines: pharm?.malariaVaccines || [],
   };
 
+  const safe = (v) =>
+    v && String(v).trim() !== "" ? v : "—";
+
   return (
     <div className="template travel-template">
       <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
@@ -62,8 +65,6 @@ export default function TravelTemplate() {
 
       {/* ---------------- Medical & Vaccination ---------------- */}
       <section className="template-section">
-        
-
         <h3>Vaccinations Administered</h3>
         {merged.vaccines && merged.vaccines.length > 0 ? (
           <table className="template-table">
@@ -74,19 +75,47 @@ export default function TravelTemplate() {
                 <th>Date Given</th>
                 <th>Expiry</th>
                 <th>Dosage</th>
-                        <th>Quantity</th>
+                <th>Quantity</th>
               </tr>
             </thead>
             <tbody>
               {merged.vaccines.map((v, i) => (
-                <tr key={i}>
-                  <td>{v.name}</td>
-                  <td>{v.batchNumber}</td>
-                  <td>{v.dateGiven}</td>
-                  <td>{v.expiry}</td>
-                  <td>{v.dosage || "-"}</td>
-                          <td>{v.quantity || "-"}</td>
-                </tr>
+                <React.Fragment key={i}>
+                  {/* main row */}
+                  <tr>
+                    <td>{safe(v.name)}</td>
+                    <td>{safe(v.batchNumber)}</td>
+                    <td>{safe(v.dateGiven)}</td>
+                    <td>{safe(v.expiry)}</td>
+                    <td>{safe(v.dosage)}</td>
+                    <td>{safe(v.quantity)}</td>
+                  </tr>
+
+                  {/* second line: brand + indication */}
+                  {(v.brand || v.indication) && (
+                    <tr className="sub-row">
+                      <td
+                        colSpan={6}
+                        style={{
+                          fontSize: "0.85rem",
+                          padding: "4px 6px 6px",
+                          background: "#f9fafb",
+                        }}
+                      >
+                        {v.brand && (
+                          <span>
+                            <strong>Brand:</strong> {safe(v.brand)}
+                          </span>
+                        )}
+                        {v.indication && (
+                          <span style={{ marginLeft: "1.5rem" }}>
+                            <strong>Indication:</strong> {safe(v.indication)}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
@@ -121,19 +150,47 @@ export default function TravelTemplate() {
                           <th>Date Given</th>
                           <th>Expiry</th>
                           <th>Dosage</th>
-                        <th>Quantity</th>
+                          <th>Quantity</th>
                         </tr>
                       </thead>
                       <tbody>
                         {merged.malariaVaccines.map((v, i) => (
-                          <tr key={i}>
-                            <td>{v.name}</td>
-                            <td>{v.batchNumber}</td>
-                            <td>{v.dateGiven}</td>
-                            <td>{v.expiry}</td>
-                            <td>{v.dosage || "-"}</td>
-                          <td>{v.quantity || "-"}</td>
-                          </tr>
+                          <React.Fragment key={i}>
+                            {/* main row */}
+                            <tr>
+                              <td>{safe(v.name)}</td>
+                              <td>{safe(v.batchNumber)}</td>
+                              <td>{safe(v.dateGiven)}</td>
+                              <td>{safe(v.expiry)}</td>
+                              <td>{safe(v.dosage)}</td>
+                              <td>{safe(v.quantity)}</td>
+                            </tr>
+
+                            {/* second line: brand + indication */}
+                            {(v.brand || v.indication) && (
+                              <tr className="sub-row">
+                                <td
+                                  colSpan={6}
+                                  style={{
+                                    fontSize: "0.85rem",
+                                    padding: "4px 6px 6px",
+                                    background: "#f9fafb",
+                                  }}
+                                >
+                                  {v.brand && (
+                                    <span>
+                                      <strong>Brand:</strong> {safe(v.brand)}
+                                    </span>
+                                  )}
+                                  {v.indication && (
+                                    <span style={{ marginLeft: "1.5rem" }}>
+                                      <strong>Indication:</strong> {safe(v.indication)}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
                         ))}
                       </tbody>
                     </table>

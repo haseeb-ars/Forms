@@ -72,6 +72,9 @@ export default function App() {
               }
             />
 
+           
+
+
             {/* 🧠 Shared Consultation for: earwax, flu, covid, b12 */}
             <Route
               path="/service/:id/consultation"

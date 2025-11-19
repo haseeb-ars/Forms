@@ -107,6 +107,7 @@ export default function PreviewPage() {
     b12Consultation,
     fluConsultation,
     privatePrescriptionConsultation,
+     weightLossFollowupConsultation,
   } = useApp();
 
   const { id } = useParams();
@@ -121,6 +122,8 @@ export default function PreviewPage() {
   // 🧭 Define service-specific tabs
   const serviceTabs = useMemo(() => {
     switch (id) {
+
+
       case "travel":
         return [
           { key: "form", label: "Form", Comp: Template, pdfName: "travel-form.pdf" },
@@ -133,6 +136,14 @@ export default function PreviewPage() {
           { key: "consult", label: "Consultation", Comp: WeightlossConsultationTemplate, pdfName: "weightloss-consultation.pdf" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf" },
         ];
+
+      case "weightlossFollowup":
+        return [
+          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-followup-form.pdf" },
+          { key: "consult", label: "Consultation", Comp: ConsultationTemplate, pdfName: "weightloss-followup-consultation.pdf" },
+          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-followup-prescription.pdf" },
+        ];
+
       case "flu":
       case "covid":
       case "b12":
@@ -193,17 +204,20 @@ export default function PreviewPage() {
       case "b12": return b12Consultation;
       case "earwax": return earwaxConsultation;
       case "privateprescription": return privatePrescriptionConsultation;
+       case "weightlossFollowup": return weightLossFollowupConsultation;
       default: return {};
     }
   }, [
     id,
     travelConsultation,
     weightLossConsultation,
+    weightLossFollowupConsultation,
     fluConsultation,
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
     privatePrescriptionConsultation,
+    
   ]);
 
   // 🧩 Merge all relevant data + FORMAT DATES

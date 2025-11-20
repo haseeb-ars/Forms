@@ -13,7 +13,7 @@ import templates from "./templates";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./PreviewPage.css";
-import { savePatientRow } from "./api";
+import { savePatientRow, saveFullSubmission } from "./api";
 
 // 🧩 Template Imports
 import TravelConsultationTemplate from "./templates/TravelConsultationTemplate.jsx";
@@ -107,7 +107,7 @@ export default function PreviewPage() {
     b12Consultation,
     fluConsultation,
     privatePrescriptionConsultation,
-     weightLossFollowupConsultation,
+    weightLossFollowupConsultation,
   } = useApp();
 
   const { id } = useParams();
@@ -122,90 +122,156 @@ export default function PreviewPage() {
   // 🧭 Define service-specific tabs
   const serviceTabs = useMemo(() => {
     switch (id) {
-
-
       case "travel":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "travel-form.pdf" },
-          { key: "consult", label: "Consultation", Comp: TravelConsultationTemplate, pdfName: "travel-consultation.pdf" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "travel-prescription.pdf" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "travel-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: TravelConsultationTemplate,
+            pdfName: "travel-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "travel-prescription.pdf",
+          },
         ];
       case "weightloss":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-form.pdf" },
-          { key: "consult", label: "Consultation", Comp: WeightlossConsultationTemplate, pdfName: "weightloss-consultation.pdf" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-prescription.pdf" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "weightloss-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: WeightlossConsultationTemplate,
+            pdfName: "weightloss-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "weightloss-prescription.pdf",
+          },
         ];
-
       case "weightlossFollowup":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: "weightloss-followup-form.pdf" },
-          { key: "consult", label: "Consultation", Comp: ConsultationTemplate, pdfName: "weightloss-followup-consultation.pdf" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "weightloss-followup-prescription.pdf" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "weightloss-followup-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: "weightloss-followup-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "weightloss-followup-prescription.pdf",
+          },
         ];
-
       case "flu":
       case "covid":
       case "b12":
       case "earwax":
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: `${id}-form.pdf` },
-          { key: "consult", label: "Consultation", Comp: ConsultationTemplate, pdfName: `${id}-consultation.pdf` },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: `${id}-prescription.pdf` },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: `${id}-form.pdf`,
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: `${id}-consultation.pdf`,
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: `${id}-prescription.pdf`,
+          },
         ];
       case "privateprescription":
         return [
-          { key: "form", label: "Form", Comp: PrivatePrescriptionTemplate, pdfName: "privateprescription-form.pdf" },
-          { key: "consult", label: "Consultation", Comp: PrivatePrescriptionConsultationTemplate, pdfName: "privateprescription-consultation.pdf" },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "privateprescription-prescription.pdf" },
+          {
+            key: "form",
+            label: "Form",
+            Comp: PrivatePrescriptionTemplate,
+            pdfName: "privateprescription-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: PrivatePrescriptionConsultationTemplate,
+            pdfName: "privateprescription-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "privateprescription-prescription.pdf",
+          },
         ];
       default:
         return [
-          { key: "form", label: "Form", Comp: Template, pdfName: `${id}-form.pdf` },
-          { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: `${id}-prescription.pdf` },
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: `${id}-form.pdf`,
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: `${id}-prescription.pdf`,
+          },
         ];
     }
   }, [id, Template]);
 
-  const activeTabDef = serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
-
-  // 🧾 Auto-save to backend sheet/db
-  useEffect(() => {
-    if (savedOnce) return;
-    const row = {
-      tenant: (currentUser?.name || "").toUpperCase().includes("WILMSLOW")
-        ? "WRP"
-        : (currentUser?.name || "").toUpperCase().includes("CAREPLUS")
-        ? "CPC"
-        : (currentUser?.name || "").toUpperCase().includes("247")
-        ? "247"
-        : "",
-      name: patient.fullName || "",
-      dob: patient.dob || "",
-      address: patient.address || "",
-      contactNo: patient.telephone || "",
-      email: patient.email || "",
-      service: id,
-      date: new Date().toISOString(),
-    };
-    const timer = setTimeout(() => {
-      savePatientRow(row).then(() => setSavedOnce(true)).catch(() => {});
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [savedOnce, currentUser, patient, id]);
+  const activeTabDef =
+    serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
 
   // 🔀 Select correct consultation data
   const currentConsultation = useMemo(() => {
     switch (id) {
-      case "travel": return travelConsultation;
-      case "weightloss": return weightLossConsultation;
-      case "flu": return fluConsultation;
-      case "covid": return covidConsultation;
-      case "b12": return b12Consultation;
-      case "earwax": return earwaxConsultation;
-      case "privateprescription": return privatePrescriptionConsultation;
-       case "weightlossFollowup": return weightLossFollowupConsultation;
-      default: return {};
+      case "travel":
+        return travelConsultation;
+      case "weightloss":
+        return weightLossConsultation;
+      case "weightlossFollowup":
+        return weightLossFollowupConsultation;
+      case "flu":
+        return fluConsultation;
+      case "covid":
+        return covidConsultation;
+      case "b12":
+        return b12Consultation;
+      case "earwax":
+        return earwaxConsultation;
+      case "privateprescription":
+        return privatePrescriptionConsultation;
+      default:
+        return {};
     }
   }, [
     id,
@@ -217,7 +283,6 @@ export default function PreviewPage() {
     b12Consultation,
     earwaxConsultation,
     privatePrescriptionConsultation,
-    
   ]);
 
   // 🧩 Merge all relevant data + FORMAT DATES
@@ -232,14 +297,24 @@ export default function PreviewPage() {
       deepFormatDates({ ...safePatient, ...pharm, ...consultation, ...branch });
 
     switch (id) {
-      case "travel": return mergeAll(travelConsultation);
-      case "weightloss": return mergeAll(weightLossConsultation);
-      case "flu": return mergeAll(fluConsultation);
-      case "covid": return mergeAll(covidConsultation);
-      case "b12": return mergeAll(b12Consultation);
-      case "earwax": return mergeAll(earwaxConsultation);
-      case "privateprescription": return mergeAll(privatePrescriptionConsultation);
-      default: return deepFormatDates(baseData);
+      case "travel":
+        return mergeAll(travelConsultation);
+      case "weightloss":
+        return mergeAll(weightLossConsultation);
+      case "weightlossFollowup":
+        return mergeAll(weightLossFollowupConsultation);
+      case "flu":
+        return mergeAll(fluConsultation);
+      case "covid":
+        return mergeAll(covidConsultation);
+      case "b12":
+        return mergeAll(b12Consultation);
+      case "earwax":
+        return mergeAll(earwaxConsultation);
+      case "privateprescription":
+        return mergeAll(privatePrescriptionConsultation);
+      default:
+        return deepFormatDates(baseData);
     }
   }, [
     id,
@@ -248,11 +323,79 @@ export default function PreviewPage() {
     branch,
     travelConsultation,
     weightLossConsultation,
+    weightLossFollowupConsultation,
     fluConsultation,
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
     privatePrescriptionConsultation,
+  ]);
+
+  // 🧾 Auto-save to backend sheet/db + full submission
+  useEffect(() => {
+    if (savedOnce) return;
+
+    const tenant =
+      (currentUser?.name || "").toUpperCase().includes("WILMSLOW")
+        ? "WRP"
+        : (currentUser?.name || "").toUpperCase().includes("CAREPLUS")
+        ? "CPC"
+        : (currentUser?.name || "").toUpperCase().includes("247")
+        ? "247"
+        : "";
+
+    const row = {
+      tenant,
+      name: patient.fullName || "",
+      dob: patient.dob || "",
+      address: patient.address || "",
+      contactNo: patient.telephone || "",
+      email: patient.email || "",
+      service: id,
+      date: new Date().toISOString(),
+    };
+
+    const fullPayload = {
+      tenant,
+      service: id,
+      patient,
+      pharm,
+      consultation: currentConsultation || {},
+      branch,
+      extraMeta: {
+        // 👈 renamed from `meta` to `extraMeta` to match server
+        currentUserName: currentUser?.name || "",
+        createdAt: new Date().toISOString(),
+      },
+      // helpful top-level fields for quick filtering (server also derives these from `patient`)
+      patient_name: patient.fullName || "",
+      dob: patient.dob || null,
+      email: patient.email || "",
+    };
+
+    const timer = setTimeout(() => {
+      (async () => {
+        try {
+          await Promise.all([
+            savePatientRow(row),
+            saveFullSubmission(fullPayload),
+          ]);
+          setSavedOnce(true);
+        } catch (e) {
+          console.error("autosave error", e);
+        }
+      })();
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [
+    savedOnce,
+    currentUser,
+    patient,
+    id,
+    pharm,
+    branch,
+    currentConsultation,
   ]);
 
   // 🛠 helper: wait for images (signatures/logos) to load
@@ -310,6 +453,7 @@ export default function PreviewPage() {
             b12Consultation,
             earwaxConsultation,
             privatePrescriptionConsultation,
+            weightLossFollowupConsultation,
           }}
         >
           <Comp
@@ -343,7 +487,12 @@ export default function PreviewPage() {
         const imgData = canvas.toDataURL("image/jpeg", 0.72);
 
         // Enable PDF stream compression
-        const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4", compress: true });
+        const pdf = new jsPDF({
+          orientation: "p",
+          unit: "pt",
+          format: "a4",
+          compress: true,
+        });
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -368,7 +517,9 @@ export default function PreviewPage() {
           : "form";
         pdf.save(`${safeName}-${fileName}`);
       } finally {
-        try { root.unmount(); } catch {}
+        try {
+          root.unmount();
+        } catch {}
         document.body.removeChild(host);
       }
     },
@@ -386,6 +537,7 @@ export default function PreviewPage() {
       b12Consultation,
       earwaxConsultation,
       privatePrescriptionConsultation,
+      weightLossFollowupConsultation,
       id,
     ]
   );
@@ -416,7 +568,10 @@ export default function PreviewPage() {
     }
   }, [location, autoDownloaded, downloadPDFs]);
 
-  const getMergedDataMemo = useCallback(() => getMergedData(), [getMergedData]);
+  const getMergedDataMemo = useCallback(
+    () => getMergedData(),
+    [getMergedData]
+  );
   const formatted = useMemo(
     () => formatSlices(patient, pharm, currentConsultation, branch),
     [patient, pharm, currentConsultation, branch]

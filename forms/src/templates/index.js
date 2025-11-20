@@ -1,3 +1,4 @@
+// src/templates/index.js
 import TravelTemplate from "./TravelTemplate.jsx";
 import FluTemplate from "./FluTemplate.jsx";
 import B12Template from "./B12Template.jsx";
@@ -9,10 +10,18 @@ import EarwaxConsent from "./EarwaxConsent.jsx";
 import EarwaxTerms from "./EarwaxTerms.jsx";
 import WeightlossTemplate from "./WeightlossTemplate.jsx";
 import CovidTemplate from "./CovidTemplate.jsx";
-import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx"; // ✅ new import
-import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate";
+import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx";
+import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate.jsx";
+
+// ⭐ NEW shared templates
+import ConsultationTemplate from "./ConsultationTemplate.jsx";
+import PrescriptionTemplate from "./PrescriptionTemplate.jsx";
+import TravelConsultationTemplate from "./TravelConsultationTemplate.jsx";
+import PrivatePrescriptionTemplate from "./PrivatePrescriptionTemplate.jsx";
+import PrivatePrescriptionConsultationTemplate from "./PrivatePrescriptionConsultationTemplate.jsx";
 
 const templates = {
+  // main “form” templates keyed by service id
   travel: TravelTemplate,
   flu: FluTemplate,
   b12: B12Template,
@@ -24,8 +33,15 @@ const templates = {
   earwax_terms: EarwaxTerms,
   weightloss: WeightlossTemplate,
   covid: CovidTemplate,
-  weightloss_consultation: WeightlossConsultationTemplate, // ✅ new template export
-  weightlossFollowup:  WeightLossFollowupTemplate
+  weightlossFollowup: WeightLossFollowupTemplate,
+
+  // shared / extra templates
+  consultation: ConsultationTemplate,
+  prescription: PrescriptionTemplate,
+  travelConsultation: TravelConsultationTemplate,
+  weightlossConsultation: WeightlossConsultationTemplate,
+  privatePrescriptionForm: PrivatePrescriptionTemplate,
+  privatePrescriptionConsultation: PrivatePrescriptionConsultationTemplate,
 };
 
 export default templates;

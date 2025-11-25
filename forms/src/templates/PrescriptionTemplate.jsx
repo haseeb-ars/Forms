@@ -174,6 +174,21 @@ const prescriptionMappings = {
       "—",
     prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
   },
+    followupprescription: {
+    title: "Follow-up Prescription",
+    drug: (d) => d.drug || d.medication || "As prescribed",
+    quantity: (d) => d.quantity || "—",
+    dose: (d) => d.dosage || d.dose || "—",
+    prescriber: (d) =>
+      d.prescriberName || d.pharmacistName || d.prescriber || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      "—",
+    prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
+  },
 };
 
 // 🔧 Normalise ALL possible medication/vaccine sources to one array

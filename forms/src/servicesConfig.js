@@ -433,6 +433,38 @@ export const services = [
     { label: "Contact Number", name: "telephone", type: "text" },
     { label: "Email", name: "email", type: "email" },
   ],
+},
+
+{
+  id: "followupprescription",
+  name: "Follow-up Prescription",
+  color: "#ff006e",
+  pharmacistFields: [
+    {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "Doctor",
+        "Independent Prescribing Pharmacist ",
+        "Independent Prescribing Nurse"
+      ]
+    },
+    
+    { name: "prescriberName", label: "Prescriber's Name", type: "text" },
+    { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
+
+    // ✅ Keep vaccine repeater (administered)
+     { name: "prescribedDrugs", label: "Drugs prescribed", type: "drugRepeater" },
+  ],
+  patientFields: [
+    { label: "Full Name", name: "fullName", type: "text" },
+    { label: "Date of Birth", name: "dob", type: "date" },
+    { label: "Address", name: "address", type: "text" },
+    { name: "surgeryName", label: "Surgery Name", type: "text" },
+    { label: "Contact Number", name: "telephone", type: "text" },
+    { label: "Email", name: "email", type: "email" },
+  ],
 }
 
 

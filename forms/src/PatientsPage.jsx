@@ -182,6 +182,18 @@ export default function PatientsPage() {
           ];
           break;
 
+        /* ✅ NEW: follow-up prescription service
+           Only generates a Prescription PDF using PrescriptionTemplate */
+        case "followupprescription":
+          serviceTabs = [
+            {
+              key: "rx",
+              Comp: templates.prescription,
+              pdfName: "followupprescription-prescription.pdf",
+            },
+          ];
+          break;
+
         default: {
           const formTemplate = templates[submission.service];
           if (!formTemplate) {

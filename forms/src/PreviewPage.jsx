@@ -245,6 +245,15 @@ export default function PreviewPage() {
             pdfName: `${id}-prescription.pdf`,
           },
         ];
+        case "followupprescription":
+  return [
+    {
+      key: "rx",
+      label: "Prescription",
+      Comp: PrescriptionTemplate,
+      pdfName: "follow-up-prescription.pdf",
+    },
+  ];
     }
   }, [id, Template]);
 

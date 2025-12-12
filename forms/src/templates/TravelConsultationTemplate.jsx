@@ -110,8 +110,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                 <th>Batch No</th>
                 <th>Date Given</th>
                 <th>Expiry Date</th>
-                <th>Dosage</th>
-                <th>Quantity</th>
+                <th>Administered Site</th>
+            
               </tr>
             </thead>
             <tbody>
@@ -123,8 +123,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                     <td>{safe(v.batchNumber)}</td>
                     <td>{safe(v.dateGiven)}</td>
                     <td>{safe(v.expiry)}</td>
-                    <td>{safe(v.dosage)}</td>
-                    <td>{safe(v.quantity)}</td>
+                    <td>{safe(v.site)}</td>
+            
                   </tr>
 
                   {/* brand + indication second line */}
@@ -182,8 +182,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                         <th>Batch No</th>
                         <th>Date Given</th>
                         <th>Expiry Date</th>
-                        <th>Dosage</th>
-                        <th>Quantity</th>
+                        <th>Administered Site</th>
+                       
                       </tr>
                     </thead>
                     <tbody>
@@ -195,8 +195,8 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                             <td>{safe(v.batchNumber)}</td>
                             <td>{safe(v.dateGiven)}</td>
                             <td>{safe(v.expiry)}</td>
-                            <td>{safe(v.dosage)}</td>
-                            <td>{safe(v.quantity)}</td>
+                            <td>{safe(v.site)}</td>
+                         
                           </tr>
 
                           {/* brand + indication second line */}

@@ -208,6 +208,7 @@ function normaliseItems(data, serviceId) {
       // 🔹 new fields for display
       brand: src.brand || src.vaccineBrand || "",
       indication: src.indication || src.reason || "",
+      site: src.site || src.administrationSite || "",
     });
   };
 
@@ -379,9 +380,11 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
                 <th style={{ padding: "6px" }}>Strength</th>
                 <th style={{ padding: "6px" }}>Dosage</th>
                 <th style={{ padding: "6px" }}>Quantity</th>
+                 <th style={{ padding: "6px" }}>Site</th> 
                 <th style={{ padding: "6px" }}>Batch No</th>
                 <th style={{ padding: "6px" }}>Expiry</th>
                 <th style={{ padding: "6px" }}>Date Given</th>
+
               </tr>
             </thead>
             <tbody>
@@ -393,6 +396,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
                     <td style={{ padding: "6px" }}>{safe(it.strength)}</td>
                     <td style={{ padding: "6px" }}>{safe(it.dosage)}</td>
                     <td style={{ padding: "6px" }}>{safe(it.quantity)}</td>
+                    <td style={{ padding: "6px" }}>{safe(it.site)}</td>
                     <td style={{ padding: "6px" }}>{safe(it.batchNumber)}</td>
                     <td style={{ padding: "6px" }}>{safe(it.expiry)}</td>
                     <td style={{ padding: "6px" }}>{safe(it.dateGiven)}</td>
@@ -402,7 +406,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
                   {(it.brand || it.indication) && (
                     <tr className="sub-row">
                       <td
-                        colSpan={7}
+                        colSpan={8}
                         style={{
                           padding: "4px 6px 6px",
                           fontSize: "11px",

@@ -12,6 +12,7 @@ const blankItem = (mode) => ({
   quantity: "",
   dosage: "",
   strength: "",
+  site: "", // Administration site
   _mode: mode || "vaccine",
 });
 
@@ -20,7 +21,7 @@ export default function MedicationRepeater({
   onChange,
   mode = "vaccine", // "vaccine" | "drug"
   label = "Drugs prescribed",
-  // visibility toggles (override defaults per mode)
+  // visibility toggles (these are *suggestions*, we’ll enforce logic below)
   showBatch = mode === "vaccine",
   showExpiry = mode === "vaccine",
   showDateGiven = true,
@@ -29,10 +30,16 @@ export default function MedicationRepeater({
   showDosage = true,
   showBrand = mode === "vaccine",
   showIndication = mode === "vaccine",
-  // optional placeholders
+  showSite = mode === "vaccine",
   placeholders = {},
 }) {
   const items = Array.isArray(value) ? value : [];
+
+  // 🔒 Enforce behaviour based on mode
+  const isVaccine = mode === "vaccine";
+  const effectiveShowQuantity = isVaccine ? false : showQuantity;
+  const effectiveShowDosage = isVaccine ? false : showDosage;
+  const effectiveShowSite = isVaccine ? true : showSite;
 
   const update = (idx, patch) => {
     const next = items.map((it, i) => (i === idx ? { ...it, ...patch } : it));
@@ -57,12 +64,11 @@ export default function MedicationRepeater({
               onChange={(e) => update(idx, { name: e.target.value })}
               placeholder={
                 placeholders.name ||
-                (mode === "vaccine" ? "e.g. MMR" : "e.g. Amoxicillin")
+                (isVaccine ? "e.g. MMR" : "e.g. Amoxicillin")
               }
             />
           </div>
 
-          {/* Brand name (vaccines typically have a brand) */}
           {showBrand && (
             <div className="field">
               <div className="label">Brand Name</div>
@@ -72,13 +78,12 @@ export default function MedicationRepeater({
                 onChange={(e) => update(idx, { brand: e.target.value })}
                 placeholder={
                   placeholders.brand ||
-                  (mode === "vaccine" ? "e.g. Pfizer Comirnaty" : "Brand (optional)")
+                  (isVaccine ? "e.g. Pfizer Comirnaty" : "Brand (optional)")
                 }
               />
             </div>
           )}
 
-          {/* Batch No (vaccines only by default) */}
           {showBatch && (
             <div className="field">
               <div className="label">Batch No</div>
@@ -91,7 +96,6 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Expiry (vaccines only by default) */}
           {showExpiry && (
             <div className="field">
               <div className="label">Expiry</div>
@@ -104,7 +108,6 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Date Given */}
           {showDateGiven && (
             <div className="field">
               <div className="label">Date Given</div>
@@ -117,8 +120,7 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Strength (drugs) */}
-          {showStrength && (
+          {showStrength && !isVaccine && (
             <div className="field">
               <div className="label">Strength</div>
               <input
@@ -130,8 +132,24 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Quantity */}
-          {showQuantity && (
+          {/* Administration site (vaccines) */}
+          {effectiveShowSite && (
+            <div className="field">
+              <div className="label">Administration site</div>
+              <select
+                className="input"
+                value={it.site || ""}
+                onChange={(e) => update(idx, { site: e.target.value })}
+              >
+                <option value="">Select site</option>
+                <option value="Right deltoid">Right deltoid</option>
+                <option value="Left deltoid">Left deltoid</option>
+              </select>
+            </div>
+          )}
+
+          {/* Quantity – forced OFF for vaccines */}
+          {effectiveShowQuantity && (
             <div className="field">
               <div className="label">Quantity</div>
               <input
@@ -144,8 +162,8 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Dosage */}
-          {showDosage && (
+          {/* Dosage – forced OFF for vaccines */}
+          {effectiveShowDosage && (
             <div className="field">
               <div className="label">Dosage</div>
               <input
@@ -154,7 +172,7 @@ export default function MedicationRepeater({
                 onChange={(e) => update(idx, { dosage: e.target.value })}
                 placeholder={
                   placeholders.dosage ||
-                  (mode === "vaccine"
+                  (isVaccine
                     ? "e.g. 0.5ml IM"
                     : "e.g. 1 cap TDS 5 days")
                 }
@@ -162,7 +180,6 @@ export default function MedicationRepeater({
             </div>
           )}
 
-          {/* Indication / What it's treating (especially useful for vaccines) */}
           {showIndication && (
             <div className="field">
               <div className="label">Indication / What it is treating</div>

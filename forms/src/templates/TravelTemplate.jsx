@@ -74,8 +74,8 @@ export default function TravelTemplate() {
                 <th>Batch</th>
                 <th>Date Given</th>
                 <th>Expiry</th>
-                <th>Dosage</th>
-                <th>Quantity</th>
+                <th>Administered Site</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -87,8 +87,8 @@ export default function TravelTemplate() {
                     <td>{safe(v.batchNumber)}</td>
                     <td>{safe(v.dateGiven)}</td>
                     <td>{safe(v.expiry)}</td>
-                    <td>{safe(v.dosage)}</td>
-                    <td>{safe(v.quantity)}</td>
+                    <td>{safe(v.site)}</td>
+               
                   </tr>
 
                   {/* second line: brand + indication */}
@@ -149,8 +149,8 @@ export default function TravelTemplate() {
                           <th>Batch</th>
                           <th>Date Given</th>
                           <th>Expiry</th>
-                          <th>Dosage</th>
-                          <th>Quantity</th>
+                          <th>Administered Site</th>
+                          
                         </tr>
                       </thead>
                       <tbody>
@@ -162,8 +162,8 @@ export default function TravelTemplate() {
                               <td>{safe(v.batchNumber)}</td>
                               <td>{safe(v.dateGiven)}</td>
                               <td>{safe(v.expiry)}</td>
-                              <td>{safe(v.dosage)}</td>
-                              <td>{safe(v.quantity)}</td>
+                              <td>{safe(v.site)}</td>
+                              
                             </tr>
 
                             {/* second line: brand + indication */}

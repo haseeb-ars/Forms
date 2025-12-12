@@ -142,8 +142,10 @@ export default function MedicationRepeater({
                 onChange={(e) => update(idx, { site: e.target.value })}
               >
                 <option value="">Select site</option>
+                <option value="oral">Oral</option>
                 <option value="Right deltoid">Right deltoid</option>
                 <option value="Left deltoid">Left deltoid</option>
+                <option value="oral">Oral</option>
               </select>
             </div>
           )}

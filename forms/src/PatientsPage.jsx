@@ -133,6 +133,15 @@ export default function PatientsPage() {
           ];
           break;
 
+      case "mmr":
+  serviceTabs = [
+    { key: "form", Comp: templates.mmr, pdfName: "mmr-form.pdf" },
+    { key: "consult", Comp: templates.consultation, pdfName: "mmr-consultation.pdf" },
+    { key: "rx", Comp: templates.prescription, pdfName: "mmr-prescription.pdf" },
+  ];
+  break;
+
+
         case "flu":
         case "covid":
         case "b12":

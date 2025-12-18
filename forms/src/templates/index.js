@@ -12,6 +12,8 @@ import WeightlossTemplate from "./WeightlossTemplate.jsx";
 import CovidTemplate from "./CovidTemplate.jsx";
 import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx";
 import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate.jsx";
+import MMRTemplate from "./MMRTemplate.jsx";
+
 
 // ⭐ NEW shared templates
 import ConsultationTemplate from "./ConsultationTemplate.jsx";
@@ -34,6 +36,9 @@ const templates = {
   weightloss: WeightlossTemplate,
   covid: CovidTemplate,
   weightlossFollowup: WeightLossFollowupTemplate,
+    mmr: MMRTemplate,
+
+
 
   // shared / extra templates
   consultation: ConsultationTemplate,

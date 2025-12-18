@@ -15,6 +15,7 @@ import html2canvas from "html2canvas";
 import "./PreviewPage.css";
 import { savePatientRow, saveFullSubmission } from "./api";
 
+
 // 🧩 Template Imports
 import TravelConsultationTemplate from "./templates/TravelConsultationTemplate.jsx";
 import WeightlossConsultationTemplate from "./templates/WeightLossConsultationTemplate.jsx";
@@ -22,6 +23,8 @@ import PrescriptionTemplate from "./templates/PrescriptionTemplate.jsx";
 import ConsultationTemplate from "./templates/ConsultationTemplate.jsx";
 import PrivatePrescriptionConsultationTemplate from "./templates/PrivatePrescriptionConsultationTemplate.jsx";
 import PrivatePrescriptionTemplate from "./templates/PrivatePrescriptionTemplate.jsx";
+import MMRTemplate from "./templates/MMRTemplate.jsx";
+
 
 /* -------------------------------
    Date helpers
@@ -106,6 +109,7 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     fluConsultation,
+    mmrConsultation,
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
   } = useApp();
@@ -230,6 +234,29 @@ export default function PreviewPage() {
             pdfName: "privateprescription-prescription.pdf",
           },
         ];
+      case "mmr":
+  return [
+    {
+      key: "form",
+      label: "Form",
+      Comp: MMRTemplate,
+      pdfName: "mmr-form.pdf",
+    },
+    {
+      key: "consult",
+      label: "Consultation",
+      Comp: ConsultationTemplate,
+      pdfName: "mmr-consultation.pdf",
+    },
+    {
+      key: "rx",
+      label: "Prescription",
+      Comp: PrescriptionTemplate,
+      pdfName: "mmr-prescription.pdf",
+    },
+  ];
+
+
       default:
         return [
           {
@@ -279,7 +306,10 @@ export default function PreviewPage() {
         return earwaxConsultation;
       case "privateprescription":
         return privatePrescriptionConsultation;
+          case "mmr":
+  return mmrConsultation;
       default:
+
         return {};
     }
   }, [
@@ -291,6 +321,7 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
+    mmrConsultation,
     privatePrescriptionConsultation,
   ]);
 
@@ -322,6 +353,9 @@ export default function PreviewPage() {
         return mergeAll(earwaxConsultation);
       case "privateprescription":
         return mergeAll(privatePrescriptionConsultation);
+        case "mmr":
+  return mergeAll(mmrConsultation);
+
       default:
         return deepFormatDates(baseData);
     }
@@ -337,6 +371,8 @@ export default function PreviewPage() {
     covidConsultation,
     b12Consultation,
     earwaxConsultation,
+    mmrConsultation,
+
     privatePrescriptionConsultation,
   ]);
 
@@ -461,6 +497,7 @@ export default function PreviewPage() {
             covidConsultation,
             b12Consultation,
             earwaxConsultation,
+            mmrConsultation,
             privatePrescriptionConsultation,
             weightLossFollowupConsultation,
           }}
@@ -545,6 +582,8 @@ export default function PreviewPage() {
       covidConsultation,
       b12Consultation,
       earwaxConsultation,
+      mmrConsultation,
+
       privatePrescriptionConsultation,
       weightLossFollowupConsultation,
       id,

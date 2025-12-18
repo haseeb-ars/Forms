@@ -465,8 +465,43 @@ export const services = [
     { label: "Contact Number", name: "telephone", type: "text" },
     { label: "Email", name: "email", type: "email" },
   ],
-}
+},
 
+  {
+    id: "mmr",
+    name: "MMR Vaccine",
+    color: "#6A0066",
+    patientFields: [
+      { name: "fullName", label: "Full Name", type: "text" },
+      { name: "dob", label: "Date of Birth", type: "date" },
+      { name: "telephone", label: "Contact Number", type: "text" },
+      { name: "address", label: "Address", type: "text", span: true },
+      { name: "surgeryName", label: "Surgery Name", type: "text" },
+      { name: "nhsNumber", label: "NHS Number", type: "text" }
+    ],
+    pharmacistFields: [
+      { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },
+      { name: "doseNumber", label: "Dose Number", type: "select", options: ["1", "2", "3", "Booster"] },
+      { name: "dateGiven", label: "Date Given", type: "date" },
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
+      { name: "batchNumber", label: "Batch Number", type: "text" },
+      { name: "site", label: "Injection Site", type: "select", options: ["Oral", "Right Deltoid", "Left Deltoid"] },
+      {
+      name: "prescriberType",
+      label: "Prescriber Type",
+      type: "select",
+      options: [
+        "Doctor",
+        "Independent Prescribing Pharmacist ",
+        "Independent Prescribing Nurse"
+      ]
+    },
+    
+    { name: "prescriberName", label: "Prescriber's Name", type: "text" },
+    { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
+    ],
+    template: "MMRTemplate"
+  },
 
 ];
 

@@ -1,11 +1,27 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 
 const STORAGE_KEY = "prefilled-form-app-v2";
 
 // 🔹 Auth users mapped to branch IDs
 const AUTH_USERS = [
-  { username: "WRP1", password: "wrp5678!", name: "Wilmslow Road Pharmacy", branchId: "wilmslow" },
-  { username: "CPC1", password: "cpc5678!", name: "CarePlus Chemist", branchId: "southport" },
+  {
+    username: "WRP1",
+    password: "wrp5678!",
+    name: "Wilmslow Road Pharmacy",
+    branchId: "wilmslow",
+  },
+  {
+    username: "CPC1",
+    password: "cpc5678!",
+    name: "CarePlus Chemist",
+    branchId: "southport",
+  },
   { username: "2471", password: "2475678!", name: "247 Pharmacy", branchId: "liverpool" },
 ];
 
@@ -110,24 +126,36 @@ export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [branch, setBranch] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [apiBase] = useState(process.env.REACT_APP_API_BASE || "http://localhost:4000");
+  const [apiBase] = useState(
+    process.env.REACT_APP_API_BASE || "http://localhost:4000"
+  );
 
   // 🔹 Consultation States
-  const [travelConsultation, setTravelConsultation] = useState(DEFAULT_TRAVEL_CONSULTATION);
-  const [weightLossConsultation, setWeightLossConsultation] = useState(DEFAULT_WEIGHTLOSS_CONSULTATION);
+  const [travelConsultation, setTravelConsultation] = useState(
+    DEFAULT_TRAVEL_CONSULTATION
+  );
+  const [weightLossConsultation, setWeightLossConsultation] = useState(
+    DEFAULT_WEIGHTLOSS_CONSULTATION
+  );
+
   const [earwaxConsultation, setEarwaxConsultation] = useState({});
   const [covidConsultation, setCovidConsultation] = useState({});
   const [b12Consultation, setB12Consultation] = useState({});
   const [fluConsultation, setFluConsultation] = useState({});
-  const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] = useState({});
-  const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] = useState({});
+  const [mmrConsultation, setMmrConsultation] = useState({}); // ✅ ADDED
+  const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] =
+    useState({});
+  const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
+    useState({});
 
-
-
-  const resetTravelConsultation = () => setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
-  const resetWeightLossConsultation = () => setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
+  const resetTravelConsultation = () =>
+    setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
+  const resetWeightLossConsultation = () =>
+    setWeightLossConsultation(DEFAULT_WEIGHTLOSS_CONSULTATION);
   const resetPrivatePrescriptionConsultation = () =>
-    setPrivatePrescriptionConsultation(DEFAULT_PRIVATE_PRESCRIPTION_CONSULTATION);
+    setPrivatePrescriptionConsultation(
+      DEFAULT_PRIVATE_PRESCRIPTION_CONSULTATION
+    );
 
   // 🔹 Load saved auth data
   useEffect(() => {
@@ -182,10 +210,16 @@ export function AppProvider({ children }) {
 
   // 🔹 Login
   const login = (username, password) => {
-    const found = AUTH_USERS.find((u) => u.username === username && u.password === password);
+    const found = AUTH_USERS.find(
+      (u) => u.username === username && u.password === password
+    );
     if (found) {
       setIsAuthenticated(true);
-      setCurrentUser({ username: found.username, name: found.name, branchId: found.branchId });
+      setCurrentUser({
+        username: found.username,
+        name: found.name,
+        branchId: found.branchId,
+      });
 
       const branchConfig = BRANCH_CONFIG[found.branchId];
       setBranch(branchConfig);
@@ -208,6 +242,7 @@ export function AppProvider({ children }) {
     resetTravelConsultation();
     resetWeightLossConsultation();
     resetPrivatePrescriptionConsultation();
+    setMmrConsultation({}); // ✅ ADDED (clear on logout)
   };
 
   return (
@@ -233,13 +268,13 @@ export function AppProvider({ children }) {
         travelConsultation,
         setTravelConsultation,
         resetTravelConsultation,
+
         weightLossConsultation,
         setWeightLossConsultation,
         resetWeightLossConsultation,
-        
-    weightLossFollowupConsultation,
-    setWeightLossFollowupConsultation,
-    
+
+        weightLossFollowupConsultation,
+        setWeightLossFollowupConsultation,
 
         earwaxConsultation,
         setEarwaxConsultation,
@@ -250,8 +285,12 @@ export function AppProvider({ children }) {
         fluConsultation,
         setFluConsultation,
 
+        // ✅ MMR
+        mmrConsultation,
+        setMmrConsultation,
+
         privatePrescriptionConsultation,
-    setPrivatePrescriptionConsultation,
+        setPrivatePrescriptionConsultation,
       }}
     >
       {children}

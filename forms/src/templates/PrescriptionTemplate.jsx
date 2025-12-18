@@ -189,6 +189,29 @@ const prescriptionMappings = {
       "—",
     prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
   },
+
+
+
+    mmr: {
+    title: "MMR Vaccine Prescription",
+    drug: (d) => d.vaccineBrand || "COVID-19 Vaccine",
+    quantity: () => "1 dose",
+    dose: (d) => `Dose ${d.doseNumber || "-"}`,
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
+  },
+
+
+
 };
 
 // 🔧 Normalise ALL possible medication/vaccine sources to one array

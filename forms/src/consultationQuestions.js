@@ -127,4 +127,43 @@ export const consultationQuestions = {
     },
     
   ],
+
+  mmr: [
+    {
+      id: "previousMMR",
+      text: "Have you previously received the MMR (Measles, Mumps & Rubella) vaccine?",
+      type: "checkbox",
+      options: [
+        "No, I have never had it",
+        "Yes, I have had 1 dose",
+        "Yes, I have had 2 doses",
+        "I am not sure",
+      ],
+    },
+    {
+      id: "allergyReaction",
+      text: "Have you ever had a severe allergic reaction (anaphylaxis) to an MMR vaccine, gelatine, neomycin, or eggs?",
+      type: "yesno",
+    },
+    {
+      id: "pregnancy",
+      text: "Are you currently pregnant, or planning to become pregnant within the next 1 month?",
+      type: "yesno",
+    },
+    {
+      id: "immunosuppression",
+      text: "Do you have a weakened immune system or are you receiving treatment such as chemotherapy/radiotherapy, biologic therapy, or high-dose steroids?",
+      type: "yesno",
+    },
+    {
+      id: "currentIllness",
+      text: "Do you currently have a fever or acute illness?",
+      type: "yesno",
+    },
+  ],
+
+
+
+
+
 };

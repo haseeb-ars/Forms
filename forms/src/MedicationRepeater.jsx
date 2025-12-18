@@ -2,6 +2,35 @@
 import React from "react";
 import "./PharmacistFormPage.css"; // re-use your existing styles
 
+const VACCINE_OPTIONS = [
+  "Chickenpox Vaccine",
+  "Cholera Vaccine",
+  "Diptheria, Polio, Tetanus Vaccine",
+  "Hep A Adult Vaccine",
+  "Hep A Paediatric Vaccine",
+  "Hep B Paediatric Vaccine",
+  "Hep B Vaccine",
+  "Japanese Encephalitis Vaccine",
+  "Meningitis ACWY Vaccine",
+  "Rabies Vaccine",
+  "Tick Bourne Encephalitis",
+  "Twinrix (Hep A&B)",
+  "Typhoid",
+  "Typhoid Caps",
+  "Yellow Fever",
+  "Pneumonia",
+  "Shingles",
+  "HPV",
+  "Men B",
+  "Atovaquone/ Proguanil",
+  "Malarone (12)",
+  "Lariam",
+  "Doxycycline (50)",
+  "dengue vaccine",
+  "Chickengunya",
+  "MMR vaccine",
+];
+
 const blankItem = (mode) => ({
   name: "",
   brand: "",
@@ -58,15 +87,28 @@ export default function MedicationRepeater({
           {/* Drug/Vaccine name */}
           <div className="field">
             <div className="label">Drug/Vaccine</div>
-            <input
-              className="input"
-              value={it.name || ""}
-              onChange={(e) => update(idx, { name: e.target.value })}
-              placeholder={
-                placeholders.name ||
-                (isVaccine ? "e.g. MMR" : "e.g. Amoxicillin")
-              }
-            />
+
+            {isVaccine ? (
+              <select
+                className="input"
+                value={it.name || ""}
+                onChange={(e) => update(idx, { name: e.target.value })}
+              >
+                <option value="">Select vaccine</option>
+                {VACCINE_OPTIONS.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                className="input"
+                value={it.name || ""}
+                onChange={(e) => update(idx, { name: e.target.value })}
+                placeholder={placeholders.name || "e.g. Amoxicillin"}
+              />
+            )}
           </div>
 
           {showBrand && (
@@ -171,12 +213,7 @@ export default function MedicationRepeater({
                 className="input"
                 value={it.dosage || ""}
                 onChange={(e) => update(idx, { dosage: e.target.value })}
-                placeholder={
-                  placeholders.dosage ||
-                  (isVaccine
-                    ? "e.g. 0.5ml IM"
-                    : "e.g. 1 cap TDS 5 days")
-                }
+                placeholder={placeholders.dosage || "e.g. 1 cap TDS 5 days"}
               />
             </div>
           )}

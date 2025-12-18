@@ -377,7 +377,7 @@ export const services = [
     { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
 
     // ✅ Keep vaccine repeater (administered)
-    { name: "vaccines", mode:"vaccine" ,label: "Vaccinations Administered", type: "vaccineRepeater" },
+    { name: "vaccines" ,label: "Vaccinations Administered", type: "vaccineRepeater" },
 
     // ✅ Malaria fields
     {

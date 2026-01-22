@@ -87,7 +87,7 @@
   background-color: #FF5C00;
       color: white;
       padding: 16px 39px;
-      border-radius: 6px;
+      border-radius: 26px;
       text-decoration: none;
       display: inline-block;
 }
@@ -95,10 +95,33 @@
    background-color: #7ebf41;
       color: white;
       padding: 16px 39px;
-      border-radius: 6px;
+      border-radius: 26px;
       text-decoration: none;
       display: inline-block;
 }
+.link-btn3{
+   background-color: #9149D4;
+      color: white;
+      padding: 16px 39px;
+      border-radius: 26px;
+      text-decoration: none;
+      display: inline-block;
+}
+
+.main {
+  max-width: 1200px; /* or whatever you had */
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* 🚀 Full screen override for Holidays */
+.main--full {
+  max-width: none;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 
 /* Responsive Design - Mobile First */
 @media (max-width: 768px) {

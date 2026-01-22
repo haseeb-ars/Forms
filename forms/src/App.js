@@ -13,121 +13,148 @@ import PatientsPage from "./PatientsPage.jsx";
 import TravelConsultationPage from "./TravelConsultationPage.jsx";
 import WeightlossConsultationPage from "./WeightLossConsultationPage.jsx";
 import ConsultationPage from "./ConsultationPage.jsx"; // ✅ Shared for earwax, flu, covid, b12
+import HolidaysPage from "./HolidaysPage.jsx";
 
 import "./App.css";
 
 export default function App() {
   return (
     <AppProvider>
-      <div className="shell">
-        {/* Header */}
-        <header className="topbar">
-          <div className="topbar__brand">
-            <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
-          </div>
-          <nav className="topbar__nav">
-            <Link to="/" className="link-btn">
-              Home
-            </Link>
-            <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>
-              Patients
-            </Link>
-            <AuthHeaderControls />
-          </nav>
-        </header>
-
-        {/* Main Routes */}
-        <main className="main">
-          <Routes>
-            {/* 🔐 Login */}
-            <Route path="/login" element={<LoginPage />} />
-
-            {/* 🏠 Home - Service Selection */}
-            <Route
-              path="/"
-              element={
-                <RequireAuth>
-                  <ServiceSelectPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* 🧭 Travel Consultation */}
-            <Route
-              path="/service/travel/consultation"
-              element={
-                <RequireAuth>
-                  <TravelConsultationPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* ⚖️ Weight Loss Consultation */}
-            <Route
-              path="/service/weightloss/consultation"
-              element={
-                <RequireAuth>
-                  <WeightlossConsultationPage />
-                </RequireAuth>
-              }
-            />
-
-           
-
-
-            {/* 🧠 Shared Consultation for: earwax, flu, covid, b12 */}
-            <Route
-              path="/service/:id/consultation"
-              element={
-                <RequireAuth>
-                  <ConsultationPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* 🧍 Patient Form */}
-            <Route
-              path="/service/:id/patient"
-              element={
-                <RequireAuth>
-                  <PatientFormPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* 💊 Pharmacist Form */}
-            <Route
-              path="/service/:id/pharmacist"
-              element={
-                <RequireAuth>
-                  <PharmacistFormPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* 🧾 Preview */}
-            <Route
-              path="/service/:id/preview"
-              element={
-                <RequireAuth>
-                  <PreviewPage />
-                </RequireAuth>
-              }
-            />
-
-            {/* 👥 Patients List */}
-            <Route
-              path="/patients"
-              element={
-                <RequireAuth>
-                  <PatientsPage />
-                </RequireAuth>
-              }
-            />
-          </Routes>
-        </main>
-      </div>
+      <AppShell />
     </AppProvider>
+  );
+}
+
+/* 🧱 App Shell (allows full-width pages like Holidays) */
+function AppShell() {
+  const location = useLocation();
+  const isFullWidthPage =
+  location.pathname === "/holidays" ||
+  location.pathname === "/patients";
+
+  return (
+    <div className="shell">
+      {/* Header */}
+      <header className="topbar">
+        <div className="topbar__brand">
+          <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
+        </div>
+
+        <nav className="topbar__nav">
+          <Link to="/" className="link-btn">
+            Home
+          </Link>
+
+          <Link to="/holidays" className="link-btn3" style={{ marginLeft: 8 }}>
+            Holidays
+          </Link>
+
+          <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>
+            Patients
+          </Link>
+
+          <AuthHeaderControls />
+        </nav>
+      </header>
+
+      {/* Main Routes */}
+      <main className={`main ${isFullWidthPage ? "main--full" : ""}`}>
+        <Routes>
+          {/* 🔐 Login */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* 🏠 Home - Service Selection */}
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <ServiceSelectPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 🌴 Holidays (embedded app) */}
+          <Route
+            path="/holidays"
+            element={
+              <RequireAuth>
+                <HolidaysPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 🧭 Travel Consultation */}
+          <Route
+            path="/service/travel/consultation"
+            element={
+              <RequireAuth>
+                <TravelConsultationPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* ⚖️ Weight Loss Consultation */}
+          <Route
+            path="/service/weightloss/consultation"
+            element={
+              <RequireAuth>
+                <WeightlossConsultationPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 🧠 Shared Consultation for: earwax, flu, covid, b12 */}
+          <Route
+            path="/service/:id/consultation"
+            element={
+              <RequireAuth>
+                <ConsultationPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 🧍 Patient Form */}
+          <Route
+            path="/service/:id/patient"
+            element={
+              <RequireAuth>
+                <PatientFormPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 💊 Pharmacist Form */}
+          <Route
+            path="/service/:id/pharmacist"
+            element={
+              <RequireAuth>
+                <PharmacistFormPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 🧾 Preview */}
+          <Route
+            path="/service/:id/preview"
+            element={
+              <RequireAuth>
+                <PreviewPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 👥 Patients List */}
+          <Route
+            path="/patients"
+            element={
+              <RequireAuth>
+                <PatientsPage />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </main>
+    </div>
   );
 }
 
@@ -135,10 +162,13 @@ export default function App() {
 function RequireAuth({ children }) {
   const { isAuthenticated, isHydrated } = useApp();
   const location = useLocation();
+
   if (!isHydrated) return null;
+
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+
   return children;
 }
 
@@ -146,11 +176,10 @@ function RequireAuth({ children }) {
 function AuthHeaderControls() {
   const { isAuthenticated, logout } = useApp();
   if (!isAuthenticated) return null;
+
   return (
-    <>
-      <button className="btn" onClick={logout}>
-        Logout
-      </button>
-    </>
+    <button className="btn" onClick={logout}>
+      Logout
+    </button>
   );
 }

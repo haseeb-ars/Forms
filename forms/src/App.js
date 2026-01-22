@@ -178,7 +178,7 @@ function AuthHeaderControls() {
   if (!isAuthenticated) return null;
 
   return (
-    <button className="btn" onClick={logout}>
+    <button className="link-btn4" onClick={logout}>
       Logout
     </button>
   );

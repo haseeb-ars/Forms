@@ -107,6 +107,14 @@
       text-decoration: none;
       display: inline-block;
 }
+.link-btn4{
+   background-color: #cc0e0e;
+      color: white;
+      padding: 16px 39px;
+      border-radius: 26px;
+      text-decoration: none;
+      display: inline-block;
+}
 
 .main {
   max-width: 1200px; /* or whatever you had */

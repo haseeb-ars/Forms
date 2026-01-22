@@ -2,7 +2,50 @@ import React from "react";
 import "./WeightlossTemplate.css";
 
 export default function WeightlossTemplate({ data = {} }) {
-  const safe = (v) => (v && v !== "" ? v : "—");
+  const safe = (v) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : "—");
+
+  // Build display strings from either unit set
+  const getHeightDisplay = () => {
+    const cm = data.heightCm;
+    const feet = data.heightFeet;
+    const inches = data.heightInches;
+
+    // Prefer cm if present
+    if (cm !== undefined && cm !== null && String(cm).trim() !== "") {
+      return `${safe(cm)} cm`;
+    }
+
+    // Otherwise show feet/inches if present
+    const hasFeet = feet !== undefined && feet !== null && String(feet).trim() !== "";
+    const hasInches = inches !== undefined && inches !== null && String(inches).trim() !== "";
+
+    if (hasFeet || hasInches) {
+      return `${hasFeet ? safe(feet) : "—"} ft ${hasInches ? safe(inches) : "—"} in`;
+    }
+
+    return "—";
+  };
+
+  const getWeightDisplay = () => {
+    const kg = data.weightKg;
+    const stones = data.weightStones;
+    const pounds = data.weightPounds;
+
+    // Prefer kg if present
+    if (kg !== undefined && kg !== null && String(kg).trim() !== "") {
+      return `${safe(kg)} kg`;
+    }
+
+    // Otherwise show stones/pounds if present
+    const hasStones = stones !== undefined && stones !== null && String(stones).trim() !== "";
+    const hasPounds = pounds !== undefined && pounds !== null && String(pounds).trim() !== "";
+
+    if (hasStones || hasPounds) {
+      return `${hasStones ? safe(stones) : "—"} st ${hasPounds ? safe(pounds) : "—"} lb`;
+    }
+
+    return "—";
+  };
 
   return (
     <div className="template weightloss-template">
@@ -34,8 +77,8 @@ export default function WeightlossTemplate({ data = {} }) {
       {/* Measurements */}
       <section className="template-section">
         <h2>Measurements</h2>
-        <p><strong>Height:</strong> {safe(data.heightCm)} cm</p>
-        <p><strong>Weight:</strong> {safe(data.weightKg)} kg</p>
+        <p><strong>Height:</strong> {getHeightDisplay()}</p>
+        <p><strong>Weight:</strong> {getWeightDisplay()}</p>
         <p><strong>BMI:</strong> {safe(data.bmi)}</p>
       </section>
 

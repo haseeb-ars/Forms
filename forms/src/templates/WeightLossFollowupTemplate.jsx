@@ -42,6 +42,7 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
         <p><strong>Start Date:</strong> {safe(data.startDate)}</p>
         <p><strong>Follow-up Date:</strong> {safe(data.followUpDate)}</p>
         <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
+        <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
         <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
         <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
         <p><strong>Prescriber Address:</strong> {safe(data.prescriberAddress)}</p>

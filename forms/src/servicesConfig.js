@@ -214,6 +214,11 @@ export const services = [
       label: "Follow-up Date",
       type: "date"
     },
+     {
+      name: "dateExpiry",
+      label: "Expiry Date",
+      type: "date"
+    },
     {
       name: "batchNumber",
       label: "Batch Number",

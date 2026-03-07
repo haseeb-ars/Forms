@@ -302,7 +302,7 @@ function normaliseItems(data, serviceId) {
       dose: data.dosage,
       quantity: data.quantity,
       batchNumber: data.batchNumber,
-      expiry: "",
+      expiry: data.dateExpiry || "",
       datePharm: data.startDate,
     });
   }

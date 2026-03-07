@@ -10,7 +10,7 @@ import "./PharmacistFormPage.css";
 export default function PharmacistFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { pharm, setPharm } = useApp();
+  const { pharm, setPharm, travelFollowUpOriginalData } = useApp();
   const service = services.find((s) => s.id === id);
 
   if (!service) return <div>Service not found</div>;
@@ -37,6 +37,37 @@ export default function PharmacistFormPage() {
           .filter((f) => !f.name.startsWith("malaria"))
           .map((f) => {
             // ⬇️ Repeaters
+
+            if (f.type === "followUpVaccineRepeater") {
+              const rxData = travelFollowUpOriginalData?.pharmacist_data || {};
+              const pastVaccines = Array.isArray(rxData.vaccines) ? rxData.vaccines : [];
+              const pastMalaria = Array.isArray(rxData.malariaVaccines) ? rxData.malariaVaccines : [];
+              const uniqueNames = Array.from(new Set([...pastVaccines, ...pastMalaria].map(v => v.name).filter(Boolean)));
+
+              return (
+                <div
+                  key={f.name}
+                  className="field-span"
+                  style={{ gridColumn: "1 / -1", width: "100%" }}
+                >
+                  <MedicationRepeater
+                    mode="vaccine"
+                    label={f.label || "Follow-Up Doses"}
+                    value={pharm[f.name] || []}
+                    onChange={(val) => setPharmField(f.name, val)}
+                    showBatch
+                    showExpiry
+                    showDateGiven
+                    showQuantity={false}
+                    showDosage={false}
+                    showStrength={false}
+                    showDoseNumber
+                    options={uniqueNames.length > 0 ? uniqueNames : ["No previous vaccines found"]}
+                  />
+                </div>
+              );
+            }
+
             if (f.type === "vaccineRepeater") {
               return (
                 <div

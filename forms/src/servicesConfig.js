@@ -15,7 +15,7 @@ export const services = [
       { name: "gpAddress", label: "GP Address", type: "text", span: true },
     ],
     pharmacistFields: [
-      
+
       {
         name: "medication",
         label: "Medication Supplied",
@@ -446,6 +446,20 @@ export const services = [
       },
     ],
     template: "TravelTemplate",
+  },
+  {
+    id: "travelFollowUp",
+    name: "Travel Follow Up",
+    color: "#118AB2",
+    patientFields: [], // Intentionally empty; handled by FollowupTravelSearch component
+    pharmacistFields: [
+      { name: "followUpVaccines", type: "followUpVaccineRepeater", label: "Follow-Up Doses" },
+      { name: "prescriberType", label: "Prescriber Type", type: "select", options: ["Pharmacist Independent Prescriber", "GP", "Nurse Prescriber", "Doctor (Specialist)", "Other"] },
+      { name: "prescriberName", label: "Prescriber Name", type: "text" },
+      { name: "prescriberGPhC", label: "GPhC Number", type: "text" },
+      { name: "notes", label: "Pharmacist Notes", type: "textarea", span: true }
+    ],
+    template: "FollowupTravelPrescriptionTemplate"
   },
 
   {

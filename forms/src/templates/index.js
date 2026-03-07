@@ -21,8 +21,8 @@ import PrescriptionTemplate from "./PrescriptionTemplate.jsx";
 import TravelConsultationTemplate from "./TravelConsultationTemplate.jsx";
 import PrivatePrescriptionTemplate from "./PrivatePrescriptionTemplate.jsx";
 import PrivatePrescriptionConsultationTemplate from "./PrivatePrescriptionConsultationTemplate.jsx";
-
 import PeriodDelayTemplate from "./PeriodDelayTemplate.jsx";
+import FollowupTravelPrescriptionTemplate from "./FollowupTravelPrescriptionTemplate.jsx";
 
 const templates = {
   // main “form” templates keyed by service id
@@ -40,6 +40,7 @@ const templates = {
   weightlossFollowup: WeightLossFollowupTemplate,
   mmr: MMRTemplate,
   perioddelay: PeriodDelayTemplate,
+  travelFollowUp: FollowupTravelPrescriptionTemplate,
 
 
 

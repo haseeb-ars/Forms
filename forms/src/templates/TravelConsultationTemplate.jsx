@@ -2,9 +2,16 @@
 import React from "react";
 import "./TravelTemplate.css"; // reuse same styling
 
-export default function TravelConsultationTemplate({ consultation, data }) {
-  const tc = consultation || {};
-  const f = data || {}; // pharmacist/patient form data combined
+import { useApp } from "../AppContext.jsx";
+
+export default function TravelConsultationTemplate({ consultation, data, serviceId }) {
+  const { patient, pharm, travelConsultation, travelFollowUpOriginalData } = useApp();
+
+  const activePharm = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.pharmacist_data || {} : pharm;
+  const activeConsultation = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.consultation_data || {} : travelConsultation;
+
+  const tc = serviceId === "travelFollowUp" ? activeConsultation : (consultation || {});
+  const f = serviceId === "travelFollowUp" ? { ...travelFollowUpOriginalData?.patient_data, ...activePharm } : (data || {}); // pharmacist/patient form data combined
 
   const safe = (v) =>
     v && String(v).trim() !== "" ? v : "—";
@@ -44,7 +51,7 @@ export default function TravelConsultationTemplate({ consultation, data }) {
         <h2>Travel Information</h2>
         <p>
           <strong>Destination Countries:</strong>{" "}
-          {tc.countries?.join(", ") || f.destinationCountry || "-"}
+          {Array.isArray(tc.countries) ? tc.countries.join(", ") : (tc.countries || f.destinationCountry || "-")}
         </p>
         <p>
           <strong>Departure Date:</strong> {tc.departureDate || f.travelDate || "-"}
@@ -111,7 +118,7 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                 <th>Date Given</th>
                 <th>Expiry Date</th>
                 <th>Administered Site</th>
-            
+
               </tr>
             </thead>
             <tbody>
@@ -124,7 +131,7 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                     <td>{safe(v.dateGiven)}</td>
                     <td>{safe(v.expiry)}</td>
                     <td>{safe(v.site)}</td>
-            
+
                   </tr>
 
                   {/* brand + indication second line */}
@@ -183,7 +190,7 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                         <th>Date Given</th>
                         <th>Expiry Date</th>
                         <th>Administered Site</th>
-                       
+
                       </tr>
                     </thead>
                     <tbody>
@@ -196,7 +203,7 @@ export default function TravelConsultationTemplate({ consultation, data }) {
                             <td>{safe(v.dateGiven)}</td>
                             <td>{safe(v.expiry)}</td>
                             <td>{safe(v.site)}</td>
-                         
+
                           </tr>
 
                           {/* brand + indication second line */}

@@ -41,6 +41,7 @@ const blankItem = (mode) => ({
   quantity: "",
   dosage: "",
   strength: "",
+  doseNumber: "",
   site: "", // Administration site
   _mode: mode || "vaccine",
 });
@@ -60,9 +61,12 @@ export default function MedicationRepeater({
   showBrand = mode === "vaccine",
   showIndication = mode === "vaccine",
   showSite = mode === "vaccine",
+  showDoseNumber = false,
+  options = null,
   placeholders = {},
 }) {
   const items = Array.isArray(value) ? value : [];
+  const dropdownOptions = options || VACCINE_OPTIONS;
 
   // 🔒 Enforce behaviour based on mode
   const isVaccine = mode === "vaccine";
@@ -95,7 +99,7 @@ export default function MedicationRepeater({
                 onChange={(e) => update(idx, { name: e.target.value })}
               >
                 <option value="">Select vaccine</option>
-                {VACCINE_OPTIONS.map((v) => (
+                {dropdownOptions.map((v) => (
                   <option key={v} value={v}>
                     {v}
                   </option>
@@ -122,6 +126,18 @@ export default function MedicationRepeater({
                   placeholders.brand ||
                   (isVaccine ? "e.g. Pfizer Comirnaty" : "Brand (optional)")
                 }
+              />
+            </div>
+          )}
+
+          {showDoseNumber && (
+            <div className="field">
+              <div className="label">Dose Number</div>
+              <input
+                className="input"
+                value={it.doseNumber || ""}
+                onChange={(e) => update(idx, { doseNumber: e.target.value })}
+                placeholder={placeholders.doseNumber || "e.g. Dose 2, Booster"}
               />
             </div>
           )}

@@ -3,39 +3,44 @@ import React from "react";
 import "./TravelTemplate.css";
 import { useApp } from "../AppContext.jsx"; // ✅ fixed path
 
-export default function TravelTemplate() {
-  const { patient, pharm, travelConsultation } = useApp();
+export default function TravelTemplate({ serviceId }) {
+  const { patient, pharm, travelConsultation, travelFollowUpOriginalData } = useApp();
+
+  const activePatient = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.patient_data || {} : patient;
+  const activePharm = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.pharmacist_data || {} : pharm;
+  const activeConsultation = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.consultation_data || {} : travelConsultation;
 
   // 🧠 Merge pharmacist + consultation data
   const merged = {
-    ...pharm,
+    ...activePharm,
     destinationCountry:
-      pharm?.destinationCountry ||
-      (travelConsultation?.countries || []).join(", "),
-    travelDate:
-      pharm?.travelDate ||
-      travelConsultation?.departureDate ||
+      activePharm?.destinationCountry ||
+      (Array.isArray(activeConsultation?.countries) ? activeConsultation.countries.join(", ") : activeConsultation?.countries) ||
       "",
-    purpose: pharm?.purpose || travelConsultation?.reason || "",
+    travelDate:
+      activePharm?.travelDate ||
+      activeConsultation?.departureDate ||
+      "",
+    purpose: activePharm?.purpose || activeConsultation?.reason || "",
     conditions:
-      pharm?.conditions ||
-      (travelConsultation?.medical
-        ? Object.entries(travelConsultation.medical)
-            .map(([k, v]) => {
-              if (Array.isArray(v)) return `${k}: ${v.join(", ")}`;
-              if (typeof v === "string" && v !== "No") return `${k}: ${v}`;
-              return null;
-            })
-            .filter(Boolean)
-            .join("; ")
+      activePharm?.conditions ||
+      (activeConsultation?.medical
+        ? Object.entries(activeConsultation.medical)
+          .map(([k, v]) => {
+            if (Array.isArray(v)) return `${k}: ${v.join(", ")}`;
+            if (typeof v === "string" && v !== "No") return `${k}: ${v}`;
+            return null;
+          })
+          .filter(Boolean)
+          .join("; ")
         : ""),
     allergies:
-      pharm?.allergies ||
-      (travelConsultation?.eggAllergy ? "Egg Allergy" : "None"),
-    vaccines: pharm?.vaccines || [],
-    malariaGiven: pharm?.malariaGiven || "",
-    malariaNotes: pharm?.malariaNotes || "",
-    malariaVaccines: pharm?.malariaVaccines || [],
+      activePharm?.allergies ||
+      (activeConsultation?.eggAllergy ? "Egg Allergy" : "None"),
+    vaccines: activePharm?.vaccines || [],
+    malariaGiven: activePharm?.malariaGiven || "",
+    malariaNotes: activePharm?.malariaNotes || "",
+    malariaVaccines: activePharm?.malariaVaccines || [],
   };
 
   const safe = (v) =>
@@ -49,10 +54,10 @@ export default function TravelTemplate() {
       {/* ---------------- Patient Details ---------------- */}
       <section className="template-section">
         <h2>Patient Details</h2>
-        <p><strong>Full Name:</strong> {patient?.fullName || merged.fullName || "—"}</p>
-        <p><strong>Date of Birth:</strong> {patient?.dob || merged.dob || "—"}</p>
-        <p><strong>Contact Number:</strong> {patient?.telephone || "—"}</p>
-        <p><strong>Surgery Name:</strong> {patient?.surgery || "—"}</p>
+        <p><strong>Full Name:</strong> {activePatient?.fullName || merged.fullName || "—"}</p>
+        <p><strong>Date of Birth:</strong> {activePatient?.dob || merged.dob || "—"}</p>
+        <p><strong>Contact Number:</strong> {activePatient?.telephone || "—"}</p>
+        <p><strong>Surgery Name:</strong> {activePatient?.surgery || "—"}</p>
       </section>
 
       {/* ---------------- Travel Info ---------------- */}
@@ -75,7 +80,7 @@ export default function TravelTemplate() {
                 <th>Date Given</th>
                 <th>Expiry</th>
                 <th>Administered Site</th>
-                
+
               </tr>
             </thead>
             <tbody>
@@ -88,7 +93,7 @@ export default function TravelTemplate() {
                     <td>{safe(v.dateGiven)}</td>
                     <td>{safe(v.expiry)}</td>
                     <td>{safe(v.site)}</td>
-               
+
                   </tr>
 
                   {/* second line: brand + indication */}
@@ -150,7 +155,7 @@ export default function TravelTemplate() {
                           <th>Date Given</th>
                           <th>Expiry</th>
                           <th>Administered Site</th>
-                          
+
                         </tr>
                       </thead>
                       <tbody>
@@ -163,7 +168,7 @@ export default function TravelTemplate() {
                               <td>{safe(v.dateGiven)}</td>
                               <td>{safe(v.expiry)}</td>
                               <td>{safe(v.site)}</td>
-                              
+
                             </tr>
 
                             {/* second line: brand + indication */}
@@ -206,9 +211,9 @@ export default function TravelTemplate() {
       <section className="template-section signature-section">
         <div>
           <h3>Patient Signature</h3>
-          {patient?.signaturePatient || merged.signaturePatient ? (
+          {activePatient?.signaturePatient || merged.signaturePatient ? (
             <img
-              src={patient?.signaturePatient || merged.signaturePatient}
+              src={activePatient?.signaturePatient || merged.signaturePatient}
               alt="Patient Signature"
               className="signature-img"
             />
@@ -219,9 +224,9 @@ export default function TravelTemplate() {
 
         <div>
           <h3>Pharmacist Signature</h3>
-          {pharm?.pharmacistSignature || merged.pharmacistSignature ? (
+          {activePharm?.pharmacistSignature || merged.pharmacistSignature ? (
             <img
-              src={pharm?.pharmacistSignature || merged.pharmacistSignature}
+              src={activePharm?.pharmacistSignature || merged.pharmacistSignature}
               alt="Pharmacist Signature"
               className="signature-img"
             />

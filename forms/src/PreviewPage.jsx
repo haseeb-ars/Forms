@@ -113,6 +113,7 @@ export default function PreviewPage() {
     perioddelayConsultation,
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
+    travelFollowUpOriginalData,
   } = useApp();
 
   const { id } = useParams();
@@ -146,6 +147,27 @@ export default function PreviewPage() {
             label: "Prescription",
             Comp: PrescriptionTemplate,
             pdfName: "travel-prescription.pdf",
+          },
+        ];
+      case "travelFollowUp":
+        return [
+          {
+            key: "form",
+            label: "Original Form",
+            Comp: templates.travel,
+            pdfName: "travel-follow-up-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Original Consultation",
+            Comp: templates.travelConsultation,
+            pdfName: "travel-follow-up-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Travel Follow Up Prescription",
+            Comp: templates.travelFollowUp,
+            pdfName: "travel-follow-up-prescription.pdf",
           },
         ];
       case "weightloss":
@@ -334,8 +356,9 @@ export default function PreviewPage() {
         return mmrConsultation;
       case "perioddelay":
         return perioddelayConsultation;
+      case "travelFollowUp":
+        return travelFollowUpOriginalData?.consultation_data || {};
       default:
-
         return {};
     }
   }, [
@@ -384,6 +407,19 @@ export default function PreviewPage() {
         return mergeAll(mmrConsultation);
       case "perioddelay":
         return mergeAll(perioddelayConsultation);
+      case "travelFollowUp": {
+        const pData = travelFollowUpOriginalData?.patient_data || {};
+        const rxData = travelFollowUpOriginalData?.pharmacist_data || {};
+        const cData = travelFollowUpOriginalData?.consultation_data || {};
+        return deepFormatDates({
+          ...pData,
+          ...cData,
+          ...rxData,
+          ...pharm, // apply the active follow-up dose details
+          original_consultation_id: pData.id,
+          branch,
+        });
+      }
       default:
         return deepFormatDates(baseData);
     }
@@ -529,6 +565,7 @@ export default function PreviewPage() {
             perioddelayConsultation,
             privatePrescriptionConsultation,
             weightLossFollowupConsultation,
+            travelFollowUpOriginalData, // ✅ Added missing state for Follow-up templates
           }}
         >
           <Comp

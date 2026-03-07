@@ -4,6 +4,7 @@ import { useApp } from "./AppContext.jsx";
 import LabeledField from "./LabeledField.jsx";
 import SignatureBox from "./SignatureBox.jsx";
 import ImageUploader from "./ImageUploader.jsx";
+import FollowupTravelSearch from "./FollowupTravelSearch.jsx";
 import "./PatientFormPage.css";
 
 export default function PatientFormPage() {
@@ -34,6 +35,11 @@ export default function PatientFormPage() {
       navigate(`/service/${id}/pharmacist`);
     }
   };
+
+  // 🔹 Intercept specific services that don't need a normal Patient Form
+  if (id === "travelFollowUp") {
+    return <FollowupTravelSearch />;
+  }
 
   return (
     <form className="patient-form" onSubmit={handleSubmit}>

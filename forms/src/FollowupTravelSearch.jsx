@@ -88,50 +88,59 @@ export default function FollowupTravelSearch() {
         }
     };
 
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "—";
+        try {
+            return new Date(dateStr).toLocaleDateString("en-GB");
+        } catch {
+            return dateStr;
+        }
+    };
+
     return (
-        <div className="patients-page" style={{ padding: 24 }}>
-            <h2>Search Previous Travel Consultation</h2>
-            <p style={{ marginBottom: 20 }}>Select an existing travel patient to register their follow-up vaccine dose.</p>
+        <div className="patients-page patients" style={{ padding: 24 }}>
+            <h2 style={{ marginBottom: 8 }}>Search Previous Travel Consultation</h2>
+            <p style={{ marginBottom: 20, color: '#6b7280' }}>Select an existing travel patient to register their follow-up vaccine dose.</p>
 
             {error && <div className="error-message">{error}</div>}
 
-            <div className="filters-container">
-                <label className="filter-item">
-                    Search Name
+            <div className="patients__filters">
+                <div className="patients__filter-group">
+                    <label>Search Name</label>
                     <input
                         type="text"
-                        className="input"
+                        className="patients__filter-input"
                         placeholder="John Doe..."
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
                     />
-                </label>
-                <label className="filter-item">
-                    Date of Birth
+                </div>
+                <div className="patients__filter-group">
+                    <label>Date of Birth</label>
                     <input
                         type="date"
-                        className="input"
+                        className="patients__filter-input"
                         value={searchDob}
                         onChange={(e) => setSearchDob(e.target.value)}
                     />
-                </label>
-                <label className="filter-item">
-                    Email
+                </div>
+                <div className="patients__filter-group">
+                    <label>Email</label>
                     <input
                         type="text"
-                        className="input"
+                        className="patients__filter-input"
                         placeholder="email@..."
                         value={searchEmail}
                         onChange={(e) => setSearchEmail(e.target.value)}
                     />
-                </label>
+                </div>
             </div>
 
             {loading ? (
                 <p>Loading travel patients...</p>
             ) : (
-                <div className="table-wrapper">
-                    <table className="patients-table">
+                <div className="tablewrap">
+                    <table className="table patients-table">
                         <thead>
                             <tr>
                                 <th>Patient Name</th>
@@ -144,18 +153,20 @@ export default function FollowupTravelSearch() {
                         <tbody>
                             {filteredPatients.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5">No previous travel patients found matching your search.</td>
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                                        No previous travel patients found matching your search.
+                                    </td>
                                 </tr>
                             ) : (
                                 filteredPatients.map((p) => (
                                     <tr key={p.id}>
-                                        <td>{p.name}</td>
-                                        <td>{p.dob}</td>
-                                        <td>{p.email}</td>
-                                        <td>{p.created_at ? new Date(p.created_at).toLocaleDateString() : p.date}</td>
+                                        <td style={{ fontWeight: 500, color: '#111827' }}>{p.name}</td>
+                                        <td>{formatDate(p.dob)}</td>
+                                        <td>{p.email || "—"}</td>
+                                        <td>{formatDate(p.created_at || p.date)}</td>
                                         <td>
                                             <button
-                                                className="btn btn--secondary"
+                                                className="btn btn--primary"
                                                 style={{ padding: '6px 12px', fontSize: '0.85rem' }}
                                                 onClick={() => handleSelectPatient(p)}
                                             >

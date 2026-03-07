@@ -1,14 +1,23 @@
 import React from "react";
 import "./WeightlossTemplate.css";
+import { useApp } from "../AppContext.jsx";
 
-export default function WeightlossTemplate({ data = {} }) {
+export default function WeightlossTemplate({ data = {}, serviceId }) {
+  const { weightLossFollowupOriginalData } = useApp();
+  const f = serviceId === "weightlossFollowup"
+    ? {
+      ...(weightLossFollowupOriginalData?.patient_data || {}),
+      ...(weightLossFollowupOriginalData?.consultation_data || {}),
+      ...(weightLossFollowupOriginalData?.pharmacist_data || {})
+    }
+    : data;
   const safe = (v) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : "—");
 
   // Build display strings from either unit set
   const getHeightDisplay = () => {
-    const cm = data.heightCm;
-    const feet = data.heightFeet;
-    const inches = data.heightInches;
+    const cm = f.heightCm;
+    const feet = f.heightFeet;
+    const inches = f.heightInches;
 
     // Prefer cm if present
     if (cm !== undefined && cm !== null && String(cm).trim() !== "") {
@@ -27,9 +36,9 @@ export default function WeightlossTemplate({ data = {} }) {
   };
 
   const getWeightDisplay = () => {
-    const kg = data.weightKg;
-    const stones = data.weightStones;
-    const pounds = data.weightPounds;
+    const kg = f.weightKg;
+    const stones = f.weightStones;
+    const pounds = f.weightPounds;
 
     // Prefer kg if present
     if (kg !== undefined && kg !== null && String(kg).trim() !== "") {
@@ -62,15 +71,15 @@ export default function WeightlossTemplate({ data = {} }) {
       {/* Patient Details */}
       <section className="template-section two-column">
         <div>
-          <p><strong>Full Name:</strong> {safe(data.fullName)}</p>
-          <p><strong>Date of Birth:</strong> {safe(data.dob)}</p>
-          <p><strong>Contact Number:</strong> {safe(data.telephone)}</p>
-          <p><strong>Email:</strong> {safe(data.email)}</p>
+          <p><strong>Full Name:</strong> {safe(f.fullName)}</p>
+          <p><strong>Date of Birth:</strong> {safe(f.dob)}</p>
+          <p><strong>Contact Number:</strong> {safe(f.telephone)}</p>
+          <p><strong>Email:</strong> {safe(f.email)}</p>
         </div>
         <div>
-          <p><strong>Address:</strong> {safe(data.address)}</p>
-          <p><strong>Surgery:</strong> {safe(data.surgery)}</p>
-          <p><strong>Preferred Follow-Up:</strong> {safe(data.followUpPreference)}</p>
+          <p><strong>Address:</strong> {safe(f.address)}</p>
+          <p><strong>Surgery:</strong> {safe(f.surgery)}</p>
+          <p><strong>Preferred Follow-Up:</strong> {safe(f.followUpPreference)}</p>
         </div>
       </section>
 
@@ -79,35 +88,61 @@ export default function WeightlossTemplate({ data = {} }) {
         <h2>Measurements</h2>
         <p><strong>Height:</strong> {getHeightDisplay()}</p>
         <p><strong>Weight:</strong> {getWeightDisplay()}</p>
-        <p><strong>BMI:</strong> {safe(data.bmi)}</p>
+        <p><strong>BMI:</strong> {safe(f.bmi)}</p>
       </section>
 
       {/* Medication Plan */}
       <section className="template-section">
-        <h2>Medication Plan</h2>
-        <p><strong>Medication:</strong> {safe(data.medication)}</p>
-        {data.medication === "Other" && (
-          <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
+        {serviceId === "weightlossFollowup" ? (
+          <>
+            <h2>Original Medication Plan</h2>
+            <p><strong>Medication:</strong> {safe(f.medication)}</p>
+            {f.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(f.otherMedication)}</p>
+            )}
+            <p><strong>Dosage:</strong> {safe(f.dosage)}</p>
+            <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
+            <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+
+            <h2 style={{ marginTop: "16px" }}>Follow-Up Medication Plan (Current Session)</h2>
+            <p><strong>Dispensed Medication:</strong> {safe(data.medication)}</p>
+            {data.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
+            )}
+            <p><strong>Strength:</strong> {safe(data.strength)}</p>
+            <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
+            <p><strong>Date Given:</strong> {safe(data.dateGiven)}</p>
+            <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
+            <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+          </>
+        ) : (
+          <>
+            <h2>Medication Plan</h2>
+            <p><strong>Medication:</strong> {safe(f.medication)}</p>
+            {f.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(f.otherMedication)}</p>
+            )}
+            <p><strong>Dosage:</strong> {safe(f.dosage)}</p>
+            <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
+            <p><strong>Follow-up Date:</strong> {safe(f.followUpDate)}</p>
+            <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+          </>
         )}
-        <p><strong>Dosage:</strong> {safe(data.dosage)}</p>
-        <p><strong>Start Date:</strong> {safe(data.startDate)}</p>
-        <p><strong>Follow-up Date:</strong> {safe(data.followUpDate)}</p>
-        <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
       </section>
 
       {/* Prescriber Info */}
       <section className="template-section">
         <h2>Prescriber Details</h2>
-        <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
-        <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
-        <p><strong>GPhC Number:</strong> {safe(data.GPHCnumber)}</p>
+        <p><strong>Prescriber Type:</strong> {safe(f.prescriberType)}</p>
+        <p><strong>Prescriber Name:</strong> {safe(f.prescriberName)}</p>
+        <p><strong>GPhC Number:</strong> {safe(f.GPHCnumber)}</p>
       </section>
 
       {/* Pharmacist Notes */}
-      {data.notes && (
+      {f.notes && (
         <section className="template-section">
           <h2>Pharmacist Notes</h2>
-          <p>{data.notes}</p>
+          <p>{f.notes}</p>
         </section>
       )}
 
@@ -124,8 +159,8 @@ export default function WeightlossTemplate({ data = {} }) {
       <section className="template-section signature-section">
         <div>
           <h3>Patient Signature</h3>
-          {data.signaturePatient ? (
-            <img src={data.signaturePatient} alt="Patient Signature" className="signature-img" />
+          {f.signaturePatient ? (
+            <img src={f.signaturePatient} alt="Patient Signature" className="signature-img" />
           ) : (
             <div className="signature-placeholder">Signature</div>
           )}
@@ -133,8 +168,8 @@ export default function WeightlossTemplate({ data = {} }) {
 
         <div>
           <h3>Pharmacist Signature</h3>
-          {data.pharmacistSignature ? (
-            <img src={data.pharmacistSignature} alt="Pharmacist Signature" className="signature-img" />
+          {f.pharmacistSignature ? (
+            <img src={f.pharmacistSignature} alt="Pharmacist Signature" className="signature-img" />
           ) : (
             <div className="signature-placeholder">Signature</div>
           )}

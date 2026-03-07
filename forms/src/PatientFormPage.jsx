@@ -5,6 +5,7 @@ import LabeledField from "./LabeledField.jsx";
 import SignatureBox from "./SignatureBox.jsx";
 import ImageUploader from "./ImageUploader.jsx";
 import FollowupTravelSearch from "./FollowupTravelSearch.jsx";
+import FollowupWeightLossSearch from "./FollowupWeightLossSearch.jsx";
 import "./PatientFormPage.css";
 
 export default function PatientFormPage() {
@@ -21,7 +22,7 @@ export default function PatientFormPage() {
   // 🔹 Services that have a consultation step
   const withConsultation = [
     "travel", "weightloss", "earwax", "covid", "flu",
-    "b12", "weightlossFollowup", "mmr", "privateprescription",
+    "b12", "mmr", "privateprescription",
     "perioddelay" // ✅ ADDED
   ];
 
@@ -39,6 +40,9 @@ export default function PatientFormPage() {
   // 🔹 Intercept specific services that don't need a normal Patient Form
   if (id === "travelFollowUp") {
     return <FollowupTravelSearch />;
+  }
+  if (id === "weightlossFollowup") {
+    return <FollowupWeightLossSearch />;
   }
 
   return (

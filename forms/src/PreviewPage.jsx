@@ -114,6 +114,7 @@ export default function PreviewPage() {
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
     travelFollowUpOriginalData,
+    weightLossFollowupOriginalData,
   } = useApp();
 
   const { id } = useParams();
@@ -195,20 +196,20 @@ export default function PreviewPage() {
         return [
           {
             key: "form",
-            label: "Form",
-            Comp: Template,
+            label: "Original Form",
+            Comp: templates.weightloss,
             pdfName: "weightloss-followup-form.pdf",
           },
           {
             key: "consult",
-            label: "Consultation",
-            Comp: ConsultationTemplate,
+            label: "Original Consultation",
+            Comp: templates.weightlossConsultation,
             pdfName: "weightloss-followup-consultation.pdf",
           },
           {
             key: "rx",
-            label: "Prescription",
-            Comp: PrescriptionTemplate,
+            label: "Weight Loss Follow Up Prescription",
+            Comp: templates.weightlossFollowup,
             pdfName: "weightloss-followup-prescription.pdf",
           },
         ];
@@ -570,6 +571,7 @@ export default function PreviewPage() {
             privatePrescriptionConsultation,
             weightLossFollowupConsultation,
             travelFollowUpOriginalData, // ✅ Added missing state for Follow-up templates
+            weightLossFollowupOriginalData,
           }}
         >
           <Comp
@@ -657,6 +659,7 @@ export default function PreviewPage() {
       privatePrescriptionConsultation,
       weightLossFollowupConsultation,
       travelFollowUpOriginalData,
+      weightLossFollowupOriginalData,
       id,
     ]
   );

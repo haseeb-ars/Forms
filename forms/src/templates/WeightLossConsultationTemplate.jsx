@@ -1,23 +1,33 @@
 import React from "react";
 import "./WeightLossConsultationTemplate.css";
+import { useApp } from "../AppContext.jsx";
 
 export default function WeightLossConsultationTemplate({
   data = {},
   consultation = {},
   pharmacist = {},
+  serviceId
 }) {
+  const { weightLossFollowupOriginalData } = useApp();
+
+  const f = serviceId === "weightlossFollowup"
+    ? { ...(weightLossFollowupOriginalData?.patient_data || {}), ...(weightLossFollowupOriginalData?.pharmacist_data || {}) }
+    : data;
+  const c = serviceId === "weightlossFollowup"
+    ? (weightLossFollowupOriginalData?.consultation_data || {})
+    : consultation;
   const safe = (val) => (val && val !== "" ? val : "—");
 
   // --- BMI Fallback Calculation ---
   const bmi =
-    consultation.bmi ||
-    (consultation.heightFeet && consultation.weightStones
+    c.bmi ||
+    (c.heightFeet && c.weightStones
       ? calculateBMI(
-          consultation.heightFeet,
-          consultation.heightInches,
-          consultation.weightStones,
-          consultation.weightPounds
-        )
+        c.heightFeet,
+        c.heightInches,
+        c.weightStones,
+        c.weightPounds
+      )
       : "—");
 
   function calculateBMI(feet, inches, stones, pounds) {
@@ -39,12 +49,12 @@ export default function WeightLossConsultationTemplate({
       {/* Patient Details */}
       <section className="template-section">
         <h2>Patient Details</h2>
-        <p><strong>Full Name:</strong> {safe(data.fullName)}</p>
-        <p><strong>Date of Birth:</strong> {safe(data.dob)}</p>
-        <p><strong>Contact Number:</strong> {safe(data.telephone)}</p>
-        <p><strong>Email:</strong> {safe(data.email)}</p>
-        <p><strong>Address:</strong> {safe(data.address)}</p>
-        <p><strong>Surgery Name:</strong> {safe(data.surgery)}</p>
+        <p><strong>Full Name:</strong> {safe(f.fullName)}</p>
+        <p><strong>Date of Birth:</strong> {safe(f.dob)}</p>
+        <p><strong>Contact Number:</strong> {safe(f.telephone)}</p>
+        <p><strong>Email:</strong> {safe(f.email)}</p>
+        <p><strong>Address:</strong> {safe(f.address)}</p>
+        <p><strong>Surgery Name:</strong> {safe(f.surgery)}</p>
       </section>
 
       {/* Measurements */}
@@ -52,36 +62,36 @@ export default function WeightLossConsultationTemplate({
         <h2>Measurements</h2>
         <p>
           <strong>Height:</strong>{" "}
-          {consultation.heightCm
-            ? `${consultation.heightCm} cm`
-            : `${safe(consultation.heightFeet)} ft ${safe(
-                consultation.heightInches
-              )} in`}
+          {c.heightCm
+            ? `${c.heightCm} cm`
+            : `${safe(c.heightFeet)} ft ${safe(
+              c.heightInches
+            )} in`}
         </p>
         <p>
           <strong>Current Weight:</strong>{" "}
-          {consultation.weightKg
-            ? `${consultation.weightKg} kg`
-            : `${safe(consultation.weightStones)} st ${safe(
-                consultation.weightPounds
-              )} lb`}
+          {c.weightKg
+            ? `${c.weightKg} kg`
+            : `${safe(c.weightStones)} st ${safe(
+              c.weightPounds
+            )} lb`}
         </p>
         <p>
           <strong>Target Weight:</strong>{" "}
-          {consultation.targetWeightKg
-            ? `${consultation.targetWeightKg} kg`
-            : `${safe(consultation.targetWeightStones)} st ${safe(
-                consultation.targetWeightPounds
-              )} lb`}
+          {c.targetWeightKg
+            ? `${c.targetWeightKg} kg`
+            : `${safe(c.targetWeightStones)} st ${safe(
+              c.targetWeightPounds
+            )} lb`}
         </p>
         <p>
           <strong>Waist Circumference:</strong>{" "}
-          {safe(consultation.waist)} {consultation.waistUnit || "cm"}
+          {safe(c.waist)} {c.waistUnit || "cm"}
         </p>
         <p>
           <strong>Blood Pressure:</strong>{" "}
-          {consultation.bpSystolic && consultation.bpDiastolic
-            ? `${consultation.bpSystolic}/${consultation.bpDiastolic} mmHg`
+          {c.bpSystolic && c.bpDiastolic
+            ? `${c.bpSystolic}/${c.bpDiastolic} mmHg`
             : "—"}
         </p>
         <p><strong>BMI:</strong> {bmi}</p>
@@ -90,9 +100,9 @@ export default function WeightLossConsultationTemplate({
       {/* Lifestyle */}
       <section className="template-section">
         <h2>Lifestyle & Habits</h2>
-        <p><strong>Lifestyle Summary:</strong> {safe(consultation.lifestyle || data.lifestyle)}</p>
-        <p><strong>Currently taking contraception pills:</strong> {consultation.onContraception ? "Yes" : "No"}</p>
-        <p><strong>Follow-up Preference:</strong> {safe(data.followUpPreference)}</p>
+        <p><strong>Lifestyle Summary:</strong> {safe(c.lifestyle || f.lifestyle)}</p>
+        <p><strong>Currently taking contraception pills:</strong> {c.onContraception ? "Yes" : "No"}</p>
+        <p><strong>Follow-up Preference:</strong> {safe(f.followUpPreference)}</p>
       </section>
 
       {/* Medical Screening */}
@@ -109,57 +119,57 @@ export default function WeightLossConsultationTemplate({
           <tbody>
             <tr>
               <td>High cholesterol (dyslipidaemia)</td>
-              <td>{safe(consultation.cholesterol)}</td>
-              <td>{safe(consultation.cholesterolDetails)}</td>
+              <td>{safe(c.cholesterol)}</td>
+              <td>{safe(c.cholesterolDetails)}</td>
             </tr>
             <tr>
               <td>Sleep apnoea</td>
-              <td>{safe(consultation.sleepApnoea)}</td>
-              <td>{safe(consultation.sleepApnoeaDetails)}</td>
+              <td>{safe(c.sleepApnoea)}</td>
+              <td>{safe(c.sleepApnoeaDetails)}</td>
             </tr>
             <tr>
               <td>Taking medication for blood pressure</td>
-              <td>{safe(consultation.bpMeds)}</td>
-              <td>{safe(consultation.bpMedsDetails)}</td>
+              <td>{safe(c.bpMeds)}</td>
+              <td>{safe(c.bpMedsDetails)}</td>
             </tr>
             <tr>
               <td>Diabetes</td>
-              <td>{safe(consultation.diabetes)}</td>
-              <td>{safe(consultation.diabetesDetails)}</td>
+              <td>{safe(c.diabetes)}</td>
+              <td>{safe(c.diabetesDetails)}</td>
             </tr>
             <tr>
               <td>Allergies</td>
-              <td>{safe(consultation.allergies)}</td>
-              <td>{safe(consultation.allergiesDetails)}</td>
+              <td>{safe(c.allergies)}</td>
+              <td>{safe(c.allergiesDetails)}</td>
             </tr>
             <tr>
               <td>Eating disorder (current or past)</td>
-              <td>{safe(consultation.eatingDisorder)}</td>
-              <td>{safe(consultation.eatingDisorderDetails)}</td>
+              <td>{safe(c.eatingDisorder)}</td>
+              <td>{safe(c.eatingDisorderDetails)}</td>
             </tr>
             <tr>
               <td>Lactose intolerance</td>
-              <td>{safe(consultation.lactoseIntolerance)}</td>
-              <td>{safe(consultation.lactoseIntoleranceDetails)}</td>
+              <td>{safe(c.lactoseIntolerance)}</td>
+              <td>{safe(c.lactoseIntoleranceDetails)}</td>
             </tr>
             <tr>
               <td>Liver problems</td>
-              <td>{consultation.liverProblems?.join(", ") || "—"}</td>
+              <td>{c.liverProblems?.join(", ") || "—"}</td>
               <td>—</td>
             </tr>
             <tr>
               <td>Kidney problems</td>
-              <td>{safe(consultation.kidney)}</td>
+              <td>{safe(c.kidney)}</td>
               <td>—</td>
             </tr>
             <tr>
               <td>Mental health conditions</td>
-              <td>{consultation.mentalHealth?.join(", ") || "—"}</td>
+              <td>{c.mentalHealth?.join(", ") || "—"}</td>
               <td>—</td>
             </tr>
             <tr>
               <td>Heart or circulation problems</td>
-              <td>{safe(consultation.heart)}</td>
+              <td>{safe(c.heart)}</td>
               <td>—</td>
             </tr>
           </tbody>
@@ -169,32 +179,59 @@ export default function WeightLossConsultationTemplate({
       {/* Prescriber & Pharmacist Info */}
       <section className="template-section">
         <h2>Prescriber & Pharmacist Information</h2>
-        <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
-        <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
-        <p><strong>GPhC Number:</strong> {safe(data.GPHCnumber)}</p>
-        <p><strong>Pharmacist Notes:</strong> {safe(data.notes)}</p>
+        <p><strong>Prescriber Name:</strong> {safe(f.prescriberName)}</p>
+        <p><strong>Prescriber Type:</strong> {safe(f.prescriberType)}</p>
+        <p><strong>GPhC Number:</strong> {safe(f.GPHCnumber)}</p>
+        <p><strong>Pharmacist Notes:</strong> {safe(f.notes)}</p>
       </section>
 
       {/* Medication Details */}
       <section className="template-section">
-        <h2>Medication & Program</h2>
-        <p><strong>Dispensed Medication:</strong> {safe(data.medication)}</p>
-        {data.medication === "Other" && (
-          <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
+        {serviceId === "weightlossFollowup" ? (
+          <>
+            <h2>Original Medication & Program</h2>
+            <p><strong>Dispensed Medication:</strong> {safe(f.medication)}</p>
+            {f.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(f.otherMedication)}</p>
+            )}
+            <p><strong>Dosage:</strong> {safe(f.dosage)}</p>
+            <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
+            <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+
+            <h2 style={{ marginTop: "16px" }}>Follow-Up Medication & Program (Current Session)</h2>
+            <p><strong>Dispensed Medication:</strong> {safe(data.medication)}</p>
+            {data.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
+            )}
+            <p><strong>Strength:</strong> {safe(data.strength)}</p>
+            <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
+            <p><strong>Date Given:</strong> {safe(data.dateGiven)}</p>
+            <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
+            <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+            <p><strong>Pharmacist Notes:</strong> {safe(data.notes)}</p>
+          </>
+        ) : (
+          <>
+            <h2>Medication & Program</h2>
+            <p><strong>Dispensed Medication:</strong> {safe(f.medication)}</p>
+            {f.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(f.otherMedication)}</p>
+            )}
+            <p><strong>Dosage:</strong> {safe(f.dosage)}</p>
+            <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
+            <p><strong>Follow-Up Date:</strong> {safe(f.followUpDate)}</p>
+            <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+            <p><strong>Additional Notes:</strong> {safe(f.additionalNotes)}</p>
+          </>
         )}
-        <p><strong>Dosage:</strong> {safe(data.dosage)}</p>
-        <p><strong>Start Date:</strong> {safe(data.startDate)}</p>
-        <p><strong>Follow-Up Date:</strong> {safe(data.followUpDate)}</p>
-        <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
-        <p><strong>Additional Notes:</strong> {safe(data.additionalNotes)}</p>
       </section>
 
       {/* Signatures */}
       <section className="template-section signature-section">
         <div>
           <h3>Patient Signature</h3>
-          {data.signaturePatient ? (
-            <img src={data.signaturePatient} alt="Patient Signature" className="signature-img" />
+          {f.signaturePatient ? (
+            <img src={f.signaturePatient} alt="Patient Signature" className="signature-img" />
           ) : (
             <div className="signature-placeholder">Signature not provided</div>
           )}
@@ -202,8 +239,8 @@ export default function WeightLossConsultationTemplate({
 
         <div>
           <h3>Pharmacist Signature</h3>
-          {data.pharmacistSignature ? (
-            <img src={data.pharmacistSignature} alt="Pharmacist Signature" className="signature-img" />
+          {f.pharmacistSignature ? (
+            <img src={f.pharmacistSignature} alt="Pharmacist Signature" className="signature-img" />
           ) : (
             <div className="signature-placeholder">Signature not provided</div>
           )}
@@ -211,8 +248,8 @@ export default function WeightLossConsultationTemplate({
 
         <div>
           <h3>Prescriber Signature</h3>
-          {data.prescriberSignature ? (
-            <img src={data.prescriberSignature} alt="Prescriber Signature" className="signature-img" />
+          {f.prescriberSignature ? (
+            <img src={f.prescriberSignature} alt="Prescriber Signature" className="signature-img" />
           ) : (
             <div className="signature-placeholder">Signature not provided</div>
           )}

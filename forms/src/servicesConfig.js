@@ -192,30 +192,7 @@ export const services = [
     name: "Weight Loss Follow Up",
     color: "#F03D1A",
 
-    patientFields: [
-      { name: "fullName", label: "Full Name", type: "text" },
-      { name: "dob", label: "Date of Birth", type: "date" },
-      { name: "telephone", label: "Contact Number", type: "text" },
-      { name: "email", label: "Email", type: "email" },
-      { name: "address", label: "Address", type: "text", span: true },
-      { name: "surgery", label: "Surgery Name", type: "text" },
-
-      // Lifestyle + program-level inputs
-
-
-      {
-        name: "followUpPreference",
-        label: "Preferred Follow-up Method",
-        type: "select",
-        options: ["In-person", "Video Call", "Phone Call", "Email"]
-      },
-      {
-        name: "additionalNotes",
-        label: "Additional Notes",
-        type: "textarea",
-        span: true
-      }
-    ],
+    patientFields: [], // Intentionally empty; handled by FollowupWeightLossSearch component
 
     pharmacistFields: [
       {
@@ -236,27 +213,21 @@ export const services = [
         name: "otherMedication",
         label: "If Other, Specify Medication",
         type: "text",
-        conditional: { field: "medication", value: "Other" } // optional if your form renderer supports it
+        conditional: { field: "medication", value: "Other" }
       },
-
       {
-        name: "dosage",
-        label: "Dosage",
+        name: "strength",
+        label: "Strength",
         type: "text"
       },
       {
-        name: "startDate",
-        label: "Start Date",
-        type: "date"
+        name: "doseNumber",
+        label: "Dose Number (e.g Month 2 / Month 3 / Dose 2)",
+        type: "text"
       },
       {
-        name: "followUpDate",
-        label: "Follow-up Date",
-        type: "date"
-      },
-      {
-        name: "dateExpiry",
-        label: "Expiry Date",
+        name: "dateGiven",
+        label: "Date Given",
         type: "date"
       },
       {
@@ -265,16 +236,9 @@ export const services = [
         type: "text"
       },
       {
-        name: "prescriberType",
-        label: "Prescriber Type",
-        type: "select",
-        options: [
-          "GP",
-          "Pharmacist Independent Prescriber",
-          "Nurse Prescriber",
-          "Doctor (Specialist)",
-          "Other"
-        ]
+        name: "dateExpiry",
+        label: "Expiry Date",
+        type: "date"
       },
       {
         name: "prescriberName",
@@ -282,13 +246,18 @@ export const services = [
         type: "text"
       },
       {
-        name: "GPHCnumber",
-        label: "GPHC Number",
-        type: "text"
+        name: "prescriberAddress",
+        label: "Prescriber Address",
+        type: "select",
+        options: [
+          "Careplus Chemist",
+          "Wilmslow Road Pharmacy",
+          "247 Pharmacy"
+        ]
       },
       {
         name: "notes",
-        label: "Pharmacist Notes",
+        label: "Pharmacist Notes / Additional Comments",
         type: "textarea",
         span: true
       }

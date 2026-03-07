@@ -148,6 +148,7 @@ export function AppProvider({ children }) {
     useState({});
   const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
     useState({});
+  const [weightLossFollowupOriginalData, setWeightLossFollowupOriginalData] = useState(null);
   const [travelFollowUpOriginalData, setTravelFollowUpOriginalData] = useState(null);
 
   const resetTravelConsultation = () =>
@@ -299,6 +300,9 @@ export function AppProvider({ children }) {
 
         travelFollowUpOriginalData,
         setTravelFollowUpOriginalData,
+
+        weightLossFollowupOriginalData,
+        setWeightLossFollowupOriginalData,
       }}
     >
       {children}

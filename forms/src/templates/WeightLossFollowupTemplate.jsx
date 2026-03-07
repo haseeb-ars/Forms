@@ -1,8 +1,13 @@
 import React from "react";
-import "./WeightlossTemplate.css"; // reuse existing styles
+import "./WeightlossTemplate.css"; // Reuse existing styles
+import { useApp } from "../AppContext.jsx";
 
 export default function WeightLossFollowupTemplate({ data = {} }) {
+  const { weightLossFollowupOriginalData } = useApp();
   const safe = (v) => (v && v !== "" ? v : "—");
+
+  const originalPatient = weightLossFollowupOriginalData?.patient_data || {};
+  const originalMeds = weightLossFollowupOriginalData?.pharmacist_data || {};
 
   return (
     <div className="template weightloss-template">
@@ -12,50 +17,66 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
           <img src="/Logo3.png" alt="CarePlus Logo" className="logo" />
         </div>
         <div className="form-meta">
-          <h1>Weight Loss Follow-up Consent Form</h1>
+          <h1>Weight Loss Follow-up Prescription</h1>
         </div>
       </header>
 
-      {/* Patient Details */}
+      {/* Patient Details (From Original) */}
       <section className="template-section two-column">
         <div>
-          <p><strong>Full Name:</strong> {safe(data.fullName)}</p>
-          <p><strong>Date of Birth:</strong> {safe(data.dob)}</p>
-          <p><strong>Contact Number:</strong> {safe(data.telephone)}</p>
-          <p><strong>Email:</strong> {safe(data.email)}</p>
+          <h2>Patient Details</h2>
+          <p><strong>Full Name:</strong> {safe(originalPatient.fullName || data.name)}</p>
+          <p><strong>Date of Birth:</strong> {safe(originalPatient.dob || data.dob)}</p>
+          <p><strong>Contact Number:</strong> {safe(originalPatient.telephone || data.telephone)}</p>
         </div>
         <div>
-          <p><strong>Address:</strong> {safe(data.address)}</p>
-          <p><strong>Surgery:</strong> {safe(data.surgery)}</p>
-          <p><strong>Preferred Follow-Up:</strong> {safe(data.followUpPreference)}</p>
+          <h2 style={{ color: "transparent" }}>_</h2>
+          <p><strong>Email:</strong> {safe(originalPatient.email || data.email)}</p>
+          <p><strong>Address:</strong> {safe(originalPatient.address || data.address)}</p>
+          <p><strong>Surgery:</strong> {safe(originalPatient.surgery || data.surgery)}</p>
         </div>
       </section>
 
-      {/* Medication & Prescriber Info */}
+      {/* Prior Medication details (From Original) */}
       <section className="template-section">
-        <h2>Medication & Prescriber Details</h2>
-        <p><strong>Medication:</strong> {safe(data.medication)}</p>
-        {data.medication === "Other" && (
-          <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
-        )}
-        <p><strong>Dosage:</strong> {safe(data.dosage)}</p>
-        <p><strong>Start Date:</strong> {safe(data.startDate)}</p>
-        <p><strong>Follow-up Date:</strong> {safe(data.followUpDate)}</p>
-        <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
-        <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
-        <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
-        <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
-        <p><strong>Prescriber Address:</strong> {safe(data.prescriberAddress)}</p>
-        <p><strong>GPhC Number:</strong> {safe(data.GPHCnumber)}</p>
+        <h2>Original Weight Loss Prescription</h2>
+        <table className="template-table">
+          <thead>
+            <tr>
+              <th>Medication</th>
+              <th>Dosage</th>
+              <th>Date Started</th>
+              <th>Batch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{safe(originalMeds.medication)} {originalMeds.medication === "Other" ? `(${safe(originalMeds.otherMedication)})` : ""}</td>
+              <td>{safe(originalMeds.dosage)}</td>
+              <td>{safe(originalMeds.startDate)}</td>
+              <td>{safe(originalMeds.batchNumber)}</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
-      {/* Additional Notes */}
-      {data.notes && (
-        <section className="template-section">
-          <h2>Pharmacist Notes</h2>
-          <p>{data.notes}</p>
-        </section>
-      )}
+      {/* New Medication Details (Current Follow-up) */}
+      <section className="template-section" style={{ backgroundColor: "#fafafa", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+        <h2>Follow-up Dose (Current Session)</h2>
+        <div className="grid grid--2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <p><strong>Dispensed Medication:</strong> {safe(data.medication)} {data.medication === "Other" ? `(${safe(data.otherMedication)})` : ""}</p>
+          <p><strong>Strength:</strong> {safe(data.strength)}</p>
+          <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
+          <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
+          <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+          <p><strong>Date Given:</strong> {safe(data.dateGiven)}</p>
+          <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
+          <p><strong>Prescriber Address:</strong> {safe(data.prescriberAddress)}</p>
+        </div>
+        <div style={{ marginTop: "16px" }}>
+          <p><strong>Pharmacist Notes / Additional Comments:</strong><br />{safe(data.notes)}</p>
+        </div>
+      </section>
 
       {/* Consent Text */}
       <section className="template-section consent">

@@ -4,8 +4,17 @@
 .table { width:100%; border-collapse:collapse; font-size:.95rem; }
 .table th, .table td { padding:.5rem .75rem; border-bottom:1px solid #e5e7eb; text-align:left; }
 .table thead th { background:#f9fafb; position:sticky; top:0; z-index:1; }
+
+.patients__filters { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; align-items: flex-end; }
+.patients__filter-group { display: flex; flex-direction: column; gap: 0.25rem; }
+.patients__filter-group label { font-size: 0.85rem; font-weight: 500; color: #374151; }
+.patients__filter-input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.9rem; min-width: 150px; }
+.patients__filter-input:focus { outline: none; border-color: #3b82f6; }
+.patients__filter-clear { padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.9rem; cursor: pointer; color: #374151; font-weight: 500; height: 38px; display: flex; align-items: center; justify-content: center; }
+.patients__filter-clear:hover { background: #e5e7eb; }
+
 @media print {
-  .patients__actions { display:none; }
+  .patients__actions, .patients__filters { display:none; }
 }
 
 

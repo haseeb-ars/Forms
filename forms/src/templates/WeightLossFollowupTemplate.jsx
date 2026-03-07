@@ -44,6 +44,7 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
         <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
         <p><strong>Prescriber Type:</strong> {safe(data.prescriberType)}</p>
         <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
+        <p><strong>Prescriber Address:</strong> {safe(data.prescriberAddress)}</p>
         <p><strong>GPhC Number:</strong> {safe(data.GPHCnumber)}</p>
       </section>
 

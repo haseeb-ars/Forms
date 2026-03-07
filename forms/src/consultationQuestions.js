@@ -117,7 +117,7 @@ export const consultationQuestions = {
     },
      {
       id: "currentWeight",
-      text: "current weight",
+      text: "Current weight",
       type: "text",
     },
     {

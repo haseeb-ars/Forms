@@ -206,7 +206,7 @@ export default function TravelConsultationPage({ onContinue }) {
 
   const continueHandler = () => {
     if (onContinue) onContinue();
-    else navigate("/service/travel/patient");
+    else navigate("/service/travel/pharmacist");
   };
 
   // ---------------------- Vaccine List Renderer ----------------------
@@ -350,32 +350,32 @@ export default function TravelConsultationPage({ onContinue }) {
 
             {(travelConsultation.malariaRisks?.length ||
               travelConsultation.otherRisks?.length) && (
-              <div className="card1">
-                <h3 className="card-title1">🌡 Other Risks</h3>
-                <div className="two-col1">
-                  {travelConsultation.malariaRisks?.length ? (
-                    <div>
-                      <h4 className="sub1">Malaria</h4>
-                      <ul className="bullets1">
-                        {travelConsultation.malariaRisks.map((m) => (
-                          <li key={m}>{m}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                  {travelConsultation.otherRisks?.length ? (
-                    <div>
-                      <h4 className="sub1">General</h4>
-                      <ul className="bullets1">
-                        {travelConsultation.otherRisks.map((r) => (
-                          <li key={r}>{r}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
+                <div className="card1">
+                  <h3 className="card-title1">🌡 Other Risks</h3>
+                  <div className="two-col1">
+                    {travelConsultation.malariaRisks?.length ? (
+                      <div>
+                        <h4 className="sub1">Malaria</h4>
+                        <ul className="bullets1">
+                          {travelConsultation.malariaRisks.map((m) => (
+                            <li key={m}>{m}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {travelConsultation.otherRisks?.length ? (
+                      <div>
+                        <h4 className="sub1">General</h4>
+                        <ul className="bullets1">
+                          {travelConsultation.otherRisks.map((r) => (
+                            <li key={r}>{r}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             <div className="actions1">
               <button className="btn1 btn--primary1" onClick={() => setStep(2)}>

@@ -33,7 +33,7 @@ export default function WeightLossConsultationPage() {
   };
 
   const continueHandler = () => {
-    navigate("/service/weightloss/patient");
+    navigate("/service/weightloss/pharmacist");
   };
 
   // --- BMI calculation ---

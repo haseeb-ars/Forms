@@ -149,7 +149,7 @@ export const services = [
 ,
 {
   id: "weightlossFollowup",
-  name: "Weight Loss Followup",
+  name: "Weight Loss Follow Up",
   color: "#F03D1A",
 
   patientFields: [
@@ -437,7 +437,7 @@ export const services = [
 
 {
   id: "followupprescription",
-  name: "Follow-up Prescription",
+  name: "Follow Up Prescription",
   color: "#ff006e",
   pharmacistFields: [
     {

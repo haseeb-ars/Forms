@@ -10,18 +10,8 @@ export default function ServiceSelectPage() {
 
 const handleSelect = (serviceId) => {
   setSelectedFormType(serviceId);
-
-  // 🔹 Services that start with Consultation page
-  const withConsultation = ["travel", "weightloss", "earwax", "covid", "flu", "b12", "weightlossFollowup","mmr"];
-
-  if (serviceId === "privateprescription") {
-    // 🩺 Start with the form instead of consultation
-    navigate(`/service/${serviceId}/patient`);
-  } else if (withConsultation.includes(serviceId)) {
-    navigate(`/service/${serviceId}/consultation`);
-  } else {
-    navigate(`/service/${serviceId}/patient`);
-  }
+  // 🔹 All services now start with the Patient Form
+  navigate(`/service/${serviceId}/patient`);
 };
 
 

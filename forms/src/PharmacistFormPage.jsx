@@ -202,6 +202,22 @@ export default function PharmacistFormPage() {
           })}
       </div>
 
+      {/* 🏢 Prescriber Address Dropdown (all services) */}
+      <div className="grid grid--2" style={{ marginTop: 16 }}>
+        <LabeledField label="Prescriber Address">
+          <select
+            className="input"
+            value={pharm.prescriberAddress || ""}
+            onChange={(e) => setPharmField("prescriberAddress", e.target.value)}
+          >
+            <option value="">Select...</option>
+            <option value="Careplus Chemist">Careplus Chemist</option>
+            <option value="Wilmslow Road Pharmacy">Wilmslow Road Pharmacy</option>
+            <option value="247 Pharmacy">247 Pharmacy</option>
+          </select>
+        </LabeledField>
+      </div>
+
       {/* Pharmacist Signature */}
       <div className="grid grid--2 mt items-end">
         <div>

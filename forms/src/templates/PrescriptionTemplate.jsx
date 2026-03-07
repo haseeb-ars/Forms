@@ -174,7 +174,7 @@ const prescriptionMappings = {
       "—",
     prescriberType: (d) => d.prescriberType || "Pharmacist Independent Prescriber",
   },
-    followupprescription: {
+  followupprescription: {
     title: "Follow-up Prescription",
     drug: (d) => d.drug || d.medication || "As prescribed",
     quantity: (d) => d.quantity || "—",
@@ -192,7 +192,7 @@ const prescriptionMappings = {
 
 
 
-    mmr: {
+  mmr: {
     title: "MMR Vaccine Prescription",
     drug: (d) => d.vaccineBrand || "COVID-19 Vaccine",
     quantity: () => "1 dose",
@@ -291,7 +291,7 @@ function normaliseItems(data, serviceId) {
 
   // Weightloss (single fields)
   if (
-    serviceId === "weightloss" &&
+    (serviceId === "weightloss" || serviceId === "weightlossFollowup") &&
     (data.medication || data.otherMedication || data.dosage || data.batchNumber || data.startDate)
   ) {
     pushItem({
@@ -403,7 +403,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
                 <th style={{ padding: "6px" }}>Strength</th>
                 <th style={{ padding: "6px" }}>Dosage</th>
                 <th style={{ padding: "6px" }}>Quantity</th>
-                 <th style={{ padding: "6px" }}>Site</th> 
+                <th style={{ padding: "6px" }}>Site</th>
                 <th style={{ padding: "6px" }}>Batch No</th>
                 <th style={{ padding: "6px" }}>Expiry</th>
                 <th style={{ padding: "6px" }}>Date Given</th>
@@ -460,6 +460,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
       <section className="formdoc__section" style={{ maxWidth: 520 }}>
         <Row label="PRESCRIBER" value={map.prescriber(data)} />
         <Row label="PRESCRIBER TYPE" value={map.prescriberType(data)} />
+        <Row label="PRESCRIBER ADDRESS" value={data.prescriberAddress} />
         <Row label="GPhC" value={map.prescriberGPhC(data)} />
 
         <div className="row">

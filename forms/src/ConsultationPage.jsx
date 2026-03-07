@@ -50,24 +50,18 @@ export default function ConsultationPage() {
       case "privateprescription":
         setPrivatePrescriptionConsultation(answers);
         break;
-        case "weightlossFollowup":
+      case "weightlossFollowup":
         setWeightLossFollowupConsultation(answers);
         break;
-        case "mmr":
-  setMmrConsultation(answers);
-  break;
+      case "mmr":
+        setMmrConsultation(answers);
+        break;
       default:
         break;
     }
 
-    // ✅ Navigation logic
-    if (id === "privateprescription") {
-      // 🟩 Go to pharmacist form next
-      navigate(`/service/${id}/pharmacist`);
-    } else {
-      // 🟦 All other services go back to patient form as usual
-      navigate(`/service/${id}/patient`);
-    }
+    // ✅ All services: Consultation → Pharmacist
+    navigate(`/service/${id}/pharmacist`);
   };
 
   return (

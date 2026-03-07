@@ -17,13 +17,19 @@ export default function PatientFormPage() {
   const setPatientField = (key, value) =>
     setPatient(prev => ({ ...prev, [key]: value }));
 
+  // 🔹 Services that have a consultation step
+  const withConsultation = [
+    "travel", "weightloss", "earwax", "covid", "flu",
+    "b12", "weightlossFollowup", "mmr", "privateprescription",
+  ];
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (id === "privateprescription") {
-      // 🧭 Private Rx: Patient → Consultation
+    if (withConsultation.includes(id)) {
+      // 🧭 Patient → Consultation
       navigate(`/service/${id}/consultation`);
     } else {
-      // 🧭 Others: Patient → Pharmacist
+      // 🧭 Patient → Pharmacist (no consultation)
       navigate(`/service/${id}/pharmacist`);
     }
   };

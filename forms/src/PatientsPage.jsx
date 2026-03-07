@@ -17,6 +17,12 @@ export default function PatientsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // 🔹 Filter states
+  const [searchName, setSearchName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [selectedService, setSelectedService] = useState("");
+
   /* ----------------------------------------
      Determine tenant
   ----------------------------------------- */
@@ -45,6 +51,61 @@ export default function PatientsPage() {
       .catch((err) => setError(`Failed to load: ${err.message}`))
       .finally(() => setLoading(false));
   }, [tenant, currentUser]);
+
+  /* ----------------------------------------
+     Filter Logic
+  ----------------------------------------- */
+  // Auto-extract unique services from the loaded rows
+  const uniqueServices = useMemo(() => {
+    const services = new Set(rows.map((r) => r.service).filter(Boolean));
+    return Array.from(services).sort();
+  }, [rows]);
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      // 1. Name Match
+      if (searchName) {
+        const nameMatch = (r.name || "").toLowerCase().includes(searchName.toLowerCase());
+        if (!nameMatch) return false;
+      }
+
+      // 2. Service Match
+      if (selectedService && r.service !== selectedService) {
+        return false;
+      }
+
+      // 3. Date Match
+      if (fromDate || toDate) {
+        // use created_at (backend) or date (fallback)
+        const rowDateStr = r.created_at || r.date;
+        if (!rowDateStr) return false;
+
+        const rowDate = new Date(rowDateStr);
+        rowDate.setHours(0, 0, 0, 0); // normalize time
+
+        if (fromDate) {
+          const fDate = new Date(fromDate);
+          fDate.setHours(0, 0, 0, 0);
+          if (rowDate < fDate) return false;
+        }
+
+        if (toDate) {
+          const tDate = new Date(toDate);
+          tDate.setHours(0, 0, 0, 0);
+          if (rowDate > tDate) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [rows, searchName, selectedService, fromDate, toDate]);
+
+  const handleClearFilters = () => {
+    setSearchName("");
+    setFromDate("");
+    setToDate("");
+    setSelectedService("");
+  };
 
   /* ----------------------------------------
      PDF Download for each patient row
@@ -133,13 +194,13 @@ export default function PatientsPage() {
           ];
           break;
 
-      case "mmr":
-  serviceTabs = [
-    { key: "form", Comp: templates.mmr, pdfName: "mmr-form.pdf" },
-    { key: "consult", Comp: templates.consultation, pdfName: "mmr-consultation.pdf" },
-    { key: "rx", Comp: templates.prescription, pdfName: "mmr-prescription.pdf" },
-  ];
-  break;
+        case "mmr":
+          serviceTabs = [
+            { key: "form", Comp: templates.mmr, pdfName: "mmr-form.pdf" },
+            { key: "consult", Comp: templates.consultation, pdfName: "mmr-consultation.pdf" },
+            { key: "rx", Comp: templates.prescription, pdfName: "mmr-prescription.pdf" },
+          ];
+          break;
 
 
         case "flu":
@@ -244,6 +305,55 @@ export default function PatientsPage() {
         </button>
       </div>
 
+      <div className="patients__filters">
+        <div className="patients__filter-group">
+          <label>Search by Name</label>
+          <input
+            type="text"
+            className="patients__filter-input"
+            placeholder="e.g. John"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+        </div>
+        <div className="patients__filter-group">
+          <label>From Date</label>
+          <input
+            type="date"
+            className="patients__filter-input"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </div>
+        <div className="patients__filter-group">
+          <label>To Date</label>
+          <input
+            type="date"
+            className="patients__filter-input"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </div>
+        <div className="patients__filter-group">
+          <label>Service</label>
+          <select
+            className="patients__filter-input"
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+          >
+            <option value="">All Services</option>
+            {uniqueServices.map((srv) => (
+              <option key={srv} value={srv}>
+                {srv}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button className="patients__filter-clear" onClick={handleClearFilters}>
+          Clear Filters
+        </button>
+      </div>
+
       {loading ? (
         <div>Loading…</div>
       ) : error ? (
@@ -267,14 +377,14 @@ export default function PatientsPage() {
             </thead>
 
             <tbody>
-              {rows.length === 0 ? (
+              {filteredRows.length === 0 ? (
                 <tr>
                   <td colSpan="8" style={{ textAlign: "center", padding: "2rem" }}>
-                    No patients found for tenant: {tenant}
+                    No matching patients found{rows.length !== 0 ? " for the selected filters." : ` for tenant: ${tenant}`}
                   </td>
                 </tr>
               ) : (
-                rows.map((r) => (
+                filteredRows.map((r) => (
                   <tr key={r.id}>
                     <td>{r.name}</td>
                     <td>{r.dob ? String(r.dob).slice(0, 10) : ""}</td>

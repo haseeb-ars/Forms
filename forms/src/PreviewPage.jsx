@@ -373,6 +373,7 @@ export default function PreviewPage() {
     mmrConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
+    travelFollowUpOriginalData?.consultation_data,
   ]);
 
   // 🧩 Merge all relevant data + FORMAT DATES
@@ -438,6 +439,9 @@ export default function PreviewPage() {
     mmrConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
+    travelFollowUpOriginalData?.consultation_data,
+    travelFollowUpOriginalData?.patient_data,
+    travelFollowUpOriginalData?.pharmacist_data,
   ]);
 
   // 🧾 Auto-save to backend sheet/db + full submission
@@ -652,6 +656,7 @@ export default function PreviewPage() {
       perioddelayConsultation,
       privatePrescriptionConsultation,
       weightLossFollowupConsultation,
+      travelFollowUpOriginalData,
       id,
     ]
   );

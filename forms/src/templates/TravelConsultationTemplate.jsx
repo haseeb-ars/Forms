@@ -5,7 +5,7 @@ import "./TravelTemplate.css"; // reuse same styling
 import { useApp } from "../AppContext.jsx";
 
 export default function TravelConsultationTemplate({ consultation, data, serviceId }) {
-  const { patient, pharm, travelConsultation, travelFollowUpOriginalData } = useApp();
+  const { pharm, travelConsultation, travelFollowUpOriginalData } = useApp();
 
   const activePharm = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.pharmacist_data || {} : pharm;
   const activeConsultation = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.consultation_data || {} : travelConsultation;

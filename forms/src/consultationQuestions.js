@@ -104,7 +104,7 @@ export const consultationQuestions = {
     },
 
   ],
-    weightlossFollowup: [
+  weightlossFollowup: [
     {
       id: "Changes",
       text: "Changes from last consult",
@@ -115,7 +115,7 @@ export const consultationQuestions = {
       text: "Last weight",
       type: "text",
     },
-     {
+    {
       id: "currentWeight",
       text: "Current weight",
       type: "text",
@@ -125,7 +125,7 @@ export const consultationQuestions = {
       text: "Advice given",
       type: "textarea",
     },
-    
+
   ],
 
   mmr: [
@@ -162,8 +162,15 @@ export const consultationQuestions = {
     },
   ],
 
-
-
-
+  perioddelay: [
+    { id: "pregnancy", text: "Are you pregnant, breastfeeding, or planning to become pregnant?", type: "yesno" },
+    { id: "allergiesHormones", text: "Do you have any allergies to norethisterone or other hormone medicines?", type: "yesno" },
+    { id: "bloodClots", text: "Do you have a personal or family history of blood clots, DVT, pulmonary embolism, or bleeding disorders?", type: "yesno" },
+    { id: "liverKidneyHeart", text: "Do you have any liver, kidney, or heart problems?", type: "yesno" },
+    { id: "neurological", text: "Do you suffer from severe migraines, epilepsy, asthma, or other chronic neurological conditions?", type: "yesno" },
+    { id: "cancerHistory", text: "Do you have a history of breast cancer or an undiagnosed vaginal bleeding condition?", type: "yesno" },
+    { id: "currentMeds", text: "Current medications (including OTC and supplements)", type: "textarea" },
+    { id: "medicalHistory", text: "Any other relevant medical history", type: "textarea" },
+  ],
 
 };

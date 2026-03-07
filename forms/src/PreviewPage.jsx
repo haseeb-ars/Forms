@@ -110,6 +110,7 @@ export default function PreviewPage() {
     b12Consultation,
     fluConsultation,
     mmrConsultation,
+    perioddelayConsultation,
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
   } = useApp();
@@ -234,38 +235,59 @@ export default function PreviewPage() {
             pdfName: "privateprescription-prescription.pdf",
           },
         ];
+      case "perioddelay":
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: Template,
+            pdfName: "perioddelay-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: "perioddelay-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "perioddelay-prescription.pdf",
+          },
+        ];
       case "mmr":
-  return [
-    {
-      key: "form",
-      label: "Form",
-      Comp: MMRTemplate,
-      pdfName: "mmr-form.pdf",
-    },
-    {
-      key: "consult",
-      label: "Consultation",
-      Comp: ConsultationTemplate,
-      pdfName: "mmr-consultation.pdf",
-    },
-    {
-      key: "rx",
-      label: "Prescription",
-      Comp: PrescriptionTemplate,
-      pdfName: "mmr-prescription.pdf",
-    },
-  ];
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: MMRTemplate,
+            pdfName: "mmr-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: "mmr-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "mmr-prescription.pdf",
+          },
+        ];
 
 
-  case "followupprescription":
-  return [
-    {
-      key: "rx",
-      label: "Prescription",
-      Comp: PrescriptionTemplate,
-      pdfName: "follow-up-prescription.pdf",
-    },
-  ];
+      case "followupprescription":
+        return [
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "follow-up-prescription.pdf",
+          },
+        ];
 
       default:
         return [
@@ -282,7 +304,7 @@ export default function PreviewPage() {
             pdfName: `${id}-prescription.pdf`,
           },
         ];
-        
+
     }
   }, [id, Template]);
 
@@ -308,8 +330,10 @@ export default function PreviewPage() {
         return earwaxConsultation;
       case "privateprescription":
         return privatePrescriptionConsultation;
-          case "mmr":
-  return mmrConsultation;
+      case "mmr":
+        return mmrConsultation;
+      case "perioddelay":
+        return perioddelayConsultation;
       default:
 
         return {};
@@ -324,6 +348,7 @@ export default function PreviewPage() {
     b12Consultation,
     earwaxConsultation,
     mmrConsultation,
+    perioddelayConsultation,
     privatePrescriptionConsultation,
   ]);
 
@@ -355,9 +380,10 @@ export default function PreviewPage() {
         return mergeAll(earwaxConsultation);
       case "privateprescription":
         return mergeAll(privatePrescriptionConsultation);
-        case "mmr":
-  return mergeAll(mmrConsultation);
-
+      case "mmr":
+        return mergeAll(mmrConsultation);
+      case "perioddelay":
+        return mergeAll(perioddelayConsultation);
       default:
         return deepFormatDates(baseData);
     }
@@ -374,7 +400,7 @@ export default function PreviewPage() {
     b12Consultation,
     earwaxConsultation,
     mmrConsultation,
-
+    perioddelayConsultation,
     privatePrescriptionConsultation,
   ]);
 
@@ -386,10 +412,10 @@ export default function PreviewPage() {
       (currentUser?.name || "").toUpperCase().includes("WILMSLOW")
         ? "WRP"
         : (currentUser?.name || "").toUpperCase().includes("CAREPLUS")
-        ? "CPC"
-        : (currentUser?.name || "").toUpperCase().includes("247")
-        ? "247"
-        : "";
+          ? "CPC"
+          : (currentUser?.name || "").toUpperCase().includes("247")
+            ? "247"
+            : "";
 
     const row = {
       tenant,
@@ -500,6 +526,7 @@ export default function PreviewPage() {
             b12Consultation,
             earwaxConsultation,
             mmrConsultation,
+            perioddelayConsultation,
             privatePrescriptionConsultation,
             weightLossFollowupConsultation,
           }}
@@ -567,7 +594,7 @@ export default function PreviewPage() {
       } finally {
         try {
           root.unmount();
-        } catch {}
+        } catch { }
         document.body.removeChild(host);
       }
     },
@@ -585,7 +612,7 @@ export default function PreviewPage() {
       b12Consultation,
       earwaxConsultation,
       mmrConsultation,
-
+      perioddelayConsultation,
       privatePrescriptionConsultation,
       weightLossFollowupConsultation,
       id,

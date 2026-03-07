@@ -1,14 +1,16 @@
 // src/templates/ConsultationTemplate.jsx
 import React from "react";
 import "./ConsultationTemplate.css";
+import { consultationQuestions } from "../consultationQuestions"; // ✅ IMPORT QUESTIONS
 
 export default function ConsultationTemplate({
   serviceName,
   patientForm = {},
   pharmacistForm = {},
   consultationData = {},
+  serviceId, // ✅ DESTRUCTURE SERVICE_ID
 }) {
-  // Helper to format keys nicely
+  // Helper to format keys nicely (fallback)
   const formatKey = (key) =>
     key
       .replace(/_/g, " ")
@@ -84,24 +86,31 @@ export default function ConsultationTemplate({
         ) : (
           <table className="details-table">
             <tbody>
-              {Object.entries(consultationData).map(([key, value]) => (
-                <tr key={key}>
-                  <td className="field-label">{formatKey(key)}:</td>
-                  <td className="field-value">
-                    {isBase64Image(value) ? (
-                      <img
-                        src={value}
-                        alt={`${formatKey(key)} signature`}
-                        className="signature-img"
-                      />
-                    ) : Array.isArray(value) ? (
-                      value.join(", ")
-                    ) : (
-                      value?.toString() || "-"
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {Object.entries(consultationData).map(([key, value]) => {
+                // ✅ FIND EXACT QUESTION TEXT
+                const questions = consultationQuestions[serviceId] || [];
+                const questionObj = questions.find((q) => q.id === key);
+                const displayLabel = questionObj ? questionObj.text : formatKey(key);
+
+                return (
+                  <tr key={key}>
+                    <td className="field-label">{displayLabel}:</td>
+                    <td className="field-value">
+                      {isBase64Image(value) ? (
+                        <img
+                          src={value}
+                          alt={`${formatKey(key)} signature`}
+                          className="signature-img"
+                        />
+                      ) : Array.isArray(value) ? (
+                        value.join(", ")
+                      ) : (
+                        value?.toString() || "-"
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -111,44 +120,44 @@ export default function ConsultationTemplate({
       {(patientForm.SignaturePatient ||
         pharmacistForm.SignaturePharmacist ||
         pharmacistForm.SignaturePrescriber) && (
-        <section className="template-section signature-section">
-          <h2 className="section-title">Signatures</h2>
-          <div className="signature-container">
-            {patientForm.SignaturePatient && (
-              <div className="signature-block">
-                <h3>Patient Signature</h3>
-                <img
-                  src={patientForm.SignaturePatient}
-                  alt="Patient Signature"
-                  className="signature-img"
-                />
-              </div>
-            )}
+          <section className="template-section signature-section">
+            <h2 className="section-title">Signatures</h2>
+            <div className="signature-container">
+              {patientForm.SignaturePatient && (
+                <div className="signature-block">
+                  <h3>Patient Signature</h3>
+                  <img
+                    src={patientForm.SignaturePatient}
+                    alt="Patient Signature"
+                    className="signature-img"
+                  />
+                </div>
+              )}
 
-            {pharmacistForm.SignaturePharmacist && (
-              <div className="signature-block">
-                <h3>Pharmacist Signature</h3>
-                <img
-                  src={pharmacistForm.SignaturePharmacist}
-                  alt="Pharmacist Signature"
-                  className="signature-img"
-                />
-              </div>
-            )}
+              {pharmacistForm.SignaturePharmacist && (
+                <div className="signature-block">
+                  <h3>Pharmacist Signature</h3>
+                  <img
+                    src={pharmacistForm.SignaturePharmacist}
+                    alt="Pharmacist Signature"
+                    className="signature-img"
+                  />
+                </div>
+              )}
 
-            {pharmacistForm.SignaturePrescriber && (
-              <div className="signature-block">
-                <h3>Prescriber Signature</h3>
-                <img
-                  src={pharmacistForm.SignaturePrescriber}
-                  alt="Prescriber Signature"
-                  className="signature-img"
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+              {pharmacistForm.SignaturePrescriber && (
+                <div className="signature-block">
+                  <h3>Prescriber Signature</h3>
+                  <img
+                    src={pharmacistForm.SignaturePrescriber}
+                    alt="Prescriber Signature"
+                    className="signature-img"
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
     </div>
   );
 }

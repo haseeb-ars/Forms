@@ -142,7 +142,8 @@ export function AppProvider({ children }) {
   const [covidConsultation, setCovidConsultation] = useState({});
   const [b12Consultation, setB12Consultation] = useState({});
   const [fluConsultation, setFluConsultation] = useState({});
-  const [mmrConsultation, setMmrConsultation] = useState({}); // ✅ ADDED
+  const [mmrConsultation, setMmrConsultation] = useState({});
+  const [perioddelayConsultation, setPerioddelayConsultation] = useState({}); // ✅ ADDED
   const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] =
     useState({});
   const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
@@ -178,7 +179,7 @@ export function AppProvider({ children }) {
           }
         }
       }
-    } catch {}
+    } catch { }
     setPatient(DEFAULT_PATIENT);
     setIsHydrated(true);
   }, []);
@@ -194,7 +195,7 @@ export function AppProvider({ children }) {
             auth: { isAuthenticated, currentUser },
           })
         );
-      } catch {}
+      } catch { }
     }, 300);
     return () => clearTimeout(id);
   }, [selectedFormType, isAuthenticated, currentUser]);
@@ -288,6 +289,9 @@ export function AppProvider({ children }) {
         // ✅ MMR
         mmrConsultation,
         setMmrConsultation,
+
+        perioddelayConsultation,
+        setPerioddelayConsultation,
 
         privatePrescriptionConsultation,
         setPrivatePrescriptionConsultation,

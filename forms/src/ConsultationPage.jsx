@@ -16,6 +16,7 @@ export default function ConsultationPage() {
     setPrivatePrescriptionConsultation,
     setWeightLossFollowupConsultation,
     setMmrConsultation,
+    setPerioddelayConsultation,
   } = useApp();
 
   const [answers, setAnswers] = useState({});
@@ -55,6 +56,9 @@ export default function ConsultationPage() {
         break;
       case "mmr":
         setMmrConsultation(answers);
+        break;
+      case "perioddelay":
+        setPerioddelayConsultation(answers);
         break;
       default:
         break;

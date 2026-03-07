@@ -210,8 +210,23 @@ const prescriptionMappings = {
       d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
 
-
-
+  perioddelay: {
+    title: "Period Delay Prescription",
+    drug: (d) => (d.medication === "Other" ? d.otherMedication : d.medication) || "Norethisterone 5mg",
+    quantity: (d) => d.quantity || "—",
+    dose: (d) => d.dosage || "As prescribed",
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
+  },
 };
 
 // 🔧 Normalise ALL possible medication/vaccine sources to one array
@@ -304,6 +319,24 @@ function normaliseItems(data, serviceId) {
       batchNumber: data.batchNumber,
       expiry: data.dateExpiry || "",
       datePharm: data.startDate,
+    });
+  }
+
+  // Period Delay (single fields)
+  if (
+    serviceId === "perioddelay" &&
+    (data.medication || data.otherMedication || data.dosage || data.batchNumber || data.dateExpiry)
+  ) {
+    pushItem({
+      name:
+        data.medication === "Other"
+          ? data.otherMedication || "Other Medication"
+          : data.medication || "Norethisterone 5mg",
+      dose: data.dosage,
+      quantity: data.quantity,
+      batchNumber: data.batchNumber,
+      expiry: data.dateExpiry || "",
+      datePharm: data.datePharm || new Date().toISOString().split("T")[0],
     });
   }
 

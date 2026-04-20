@@ -531,5 +531,40 @@ export const services = [
     template: "MMRTemplate"
   },
 
+  {
+    id: "meningitis",
+    name: "Meningitis Vaccine",
+    color: "#0E7C7B",
+    patientFields: [
+      { name: "fullName", label: "Full Name", type: "text" },
+      { name: "dob", label: "Date of Birth", type: "date" },
+      { name: "telephone", label: "Contact Number", type: "text" },
+      { name: "address", label: "Address", type: "text", span: true },
+      { name: "surgeryName", label: "Surgery Name", type: "text" },
+      { name: "nhsNumber", label: "NHS Number", type: "text" }
+    ],
+    pharmacistFields: [
+      { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },
+      { name: "doseNumber", label: "Dose Number", type: "select", options: ["1", "2", "3", "Booster"] },
+      { name: "dateGiven", label: "Date Given", type: "date" },
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
+      { name: "batchNumber", label: "Batch Number", type: "text" },
+      { name: "site", label: "Injection Site", type: "select", options: ["Right Deltoid", "Left Deltoid", "Right Thigh", "Left Thigh"] },
+      {
+        name: "prescriberType",
+        label: "Prescriber Type",
+        type: "select",
+        options: [
+          "Doctor",
+          "Independent Prescribing Pharmacist ",
+          "Independent Prescribing Nurse"
+        ]
+      },
+      { name: "prescriberName", label: "Prescriber's Name", type: "text" },
+      { name: "prescriberGPhC", label: "GPHC Number", type: "text" },
+    ],
+    template: "MeningitisTemplate"
+  },
+
 ];
 

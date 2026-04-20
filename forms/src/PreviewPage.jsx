@@ -24,6 +24,7 @@ import ConsultationTemplate from "./templates/ConsultationTemplate.jsx";
 import PrivatePrescriptionConsultationTemplate from "./templates/PrivatePrescriptionConsultationTemplate.jsx";
 import PrivatePrescriptionTemplate from "./templates/PrivatePrescriptionTemplate.jsx";
 import MMRTemplate from "./templates/MMRTemplate.jsx";
+import MeningitisTemplate from "./templates/MeningitisTemplate.jsx";
 
 
 /* -------------------------------
@@ -110,6 +111,7 @@ export default function PreviewPage() {
     b12Consultation,
     fluConsultation,
     mmrConsultation,
+    meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
@@ -300,6 +302,27 @@ export default function PreviewPage() {
             pdfName: "mmr-prescription.pdf",
           },
         ];
+      case "meningitis":
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: MeningitisTemplate,
+            pdfName: "meningitis-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ConsultationTemplate,
+            pdfName: "meningitis-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "meningitis-prescription.pdf",
+          },
+        ];
 
 
       case "followupprescription":
@@ -355,6 +378,8 @@ export default function PreviewPage() {
         return privatePrescriptionConsultation;
       case "mmr":
         return mmrConsultation;
+      case "meningitis":
+        return meningitisConsultation;
       case "perioddelay":
         return perioddelayConsultation;
       case "travelFollowUp":
@@ -372,6 +397,7 @@ export default function PreviewPage() {
     b12Consultation,
     earwaxConsultation,
     mmrConsultation,
+    meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
     travelFollowUpOriginalData?.consultation_data,
@@ -407,6 +433,8 @@ export default function PreviewPage() {
         return mergeAll(privatePrescriptionConsultation);
       case "mmr":
         return mergeAll(mmrConsultation);
+      case "meningitis":
+        return mergeAll(meningitisConsultation);
       case "perioddelay":
         return mergeAll(perioddelayConsultation);
       case "travelFollowUp": {
@@ -438,6 +466,7 @@ export default function PreviewPage() {
     b12Consultation,
     earwaxConsultation,
     mmrConsultation,
+    meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
     travelFollowUpOriginalData?.consultation_data,
@@ -567,6 +596,7 @@ export default function PreviewPage() {
             b12Consultation,
             earwaxConsultation,
             mmrConsultation,
+            meningitisConsultation,
             perioddelayConsultation,
             privatePrescriptionConsultation,
             weightLossFollowupConsultation,
@@ -655,6 +685,7 @@ export default function PreviewPage() {
       b12Consultation,
       earwaxConsultation,
       mmrConsultation,
+      meningitisConsultation,
       perioddelayConsultation,
       privatePrescriptionConsultation,
       weightLossFollowupConsultation,

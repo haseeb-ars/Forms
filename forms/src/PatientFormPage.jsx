@@ -23,7 +23,7 @@ export default function PatientFormPage() {
   const withConsultation = [
     "travel", "weightloss", "earwax", "covid", "flu",
     "b12", "mmr", "privateprescription",
-    "perioddelay" // ✅ ADDED
+    "perioddelay", "meningitis"
   ];
 
   const handleSubmit = (e) => {

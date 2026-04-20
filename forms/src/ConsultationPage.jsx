@@ -16,6 +16,7 @@ export default function ConsultationPage() {
     setPrivatePrescriptionConsultation,
     setWeightLossFollowupConsultation,
     setMmrConsultation,
+    setMeningitisConsultation,
     setPerioddelayConsultation,
   } = useApp();
 
@@ -56,6 +57,9 @@ export default function ConsultationPage() {
         break;
       case "mmr":
         setMmrConsultation(answers);
+        break;
+      case "meningitis":
+        setMeningitisConsultation(answers);
         break;
       case "perioddelay":
         setPerioddelayConsultation(answers);

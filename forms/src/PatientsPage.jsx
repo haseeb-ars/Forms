@@ -179,7 +179,7 @@ export default function PatientsPage() {
             {
               key: "form",
               Comp: templates.weightlossFollowup,
-              pdfName: "weightloss-followup-form.pdf",
+              pdfName: "weightloss-follow-up-form.pdf",
             },
             {
               key: "consult",

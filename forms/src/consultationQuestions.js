@@ -162,6 +162,45 @@ export const consultationQuestions = {
     },
   ],
 
+  meningitis: [
+    {
+      id: "previousMeningitis",
+      text: "Have you previously received a Meningitis vaccine?",
+      type: "checkbox",
+      options: [
+        "No, I have never had it",
+        "Yes, I have had 1 dose",
+        "Yes, I have had 2 doses",
+        "I am not sure",
+      ],
+    },
+    {
+      id: "allergyReaction",
+      text: "Have you ever had a severe allergic reaction (anaphylaxis) to a Meningitis vaccine or any of its components (e.g. diphtheria toxoid, latex)?",
+      type: "yesno",
+    },
+    {
+      id: "pregnancy",
+      text: "Are you currently pregnant, or planning to become pregnant within the next 1 month?",
+      type: "yesno",
+    },
+    {
+      id: "immunosuppression",
+      text: "Do you have a weakened immune system or are you receiving treatment such as chemotherapy/radiotherapy, biologic therapy, or high-dose steroids?",
+      type: "yesno",
+    },
+    {
+      id: "currentIllness",
+      text: "Do you currently have a fever or acute illness?",
+      type: "yesno",
+    },
+    {
+      id: "guillainBarre",
+      text: "Do you have a history of Guillain-Barré syndrome?",
+      type: "yesno",
+    },
+  ],
+
   perioddelay: [
     { id: "pregnancy", text: "Are you pregnant, breastfeeding, or planning to become pregnant?", type: "yesno" },
     { id: "allergiesHormones", text: "Do you have any allergies to norethisterone or other hormone medicines?", type: "yesno" },

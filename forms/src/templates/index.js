@@ -13,6 +13,7 @@ import CovidTemplate from "./CovidTemplate.jsx";
 import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx";
 import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate.jsx";
 import MMRTemplate from "./MMRTemplate.jsx";
+import MeningitisTemplate from "./MeningitisTemplate.jsx";
 
 
 // ⭐ NEW shared templates
@@ -39,6 +40,7 @@ const templates = {
   covid: CovidTemplate,
   weightlossFollowup: WeightLossFollowupTemplate,
   mmr: MMRTemplate,
+  meningitis: MeningitisTemplate,
   perioddelay: PeriodDelayTemplate,
   travelFollowUp: FollowupTravelPrescriptionTemplate,
 

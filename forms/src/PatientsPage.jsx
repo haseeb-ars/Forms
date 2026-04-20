@@ -174,26 +174,6 @@ export default function PatientsPage() {
           ];
           break;
 
-        case "weightlossFollowup":
-          serviceTabs = [
-            {
-              key: "form",
-              Comp: templates.weightlossFollowup,
-              pdfName: "weightloss-follow-up-form.pdf",
-            },
-            {
-              key: "consult",
-              Comp: templates.consultation,
-              pdfName: "weightloss-followup-consultation.pdf",
-            },
-            {
-              key: "rx",
-              Comp: templates.prescription,
-              pdfName: "weightloss-followup-prescription.pdf",
-            },
-          ];
-          break;
-
         case "mmr":
           serviceTabs = [
             { key: "form", Comp: templates.mmr, pdfName: "mmr-form.pdf" },
@@ -202,8 +182,38 @@ export default function PatientsPage() {
           ];
           break;
 
+        case "meningitis":
+          serviceTabs = [
+            { key: "form", Comp: templates.meningitis, pdfName: "meningitis-form.pdf" },
+            { key: "consult", Comp: templates.consultation, pdfName: "meningitis-consultation.pdf" },
+            { key: "rx", Comp: templates.prescription, pdfName: "meningitis-prescription.pdf" },
+          ];
+          break;
 
-        case "flu":
+        case "travelFollowUp":
+          serviceTabs = [
+            { key: "form", Comp: templates.travel, pdfName: "travel-follow-up-form.pdf" },
+            { key: "consult", Comp: templates.travelConsultation, pdfName: "travel-follow-up-consultation.pdf" },
+            { key: "rx", Comp: templates.travelFollowUp, pdfName: "travel-follow-up-prescription.pdf" },
+          ];
+          break;
+
+        case "weightlossFollowup":
+          serviceTabs = [
+            { key: "form", Comp: templates.weightloss, pdfName: "weightloss-followup-original-form.pdf" },
+            { key: "consult", Comp: templates.weightlossConsultation, pdfName: "weightloss-followup-consultation.pdf" },
+            { key: "rx", Comp: templates.weightlossFollowup, pdfName: "weightloss-followup-prescription.pdf" },
+          ];
+          break;
+
+        case "perioddelay":
+          serviceTabs = [
+            { key: "form", Comp: templates.perioddelay, pdfName: "perioddelay-form.pdf" },
+            { key: "consult", Comp: templates.consultation, pdfName: "perioddelay-consultation.pdf" },
+            { key: "rx", Comp: templates.prescription, pdfName: "perioddelay-prescription.pdf" },
+          ];
+          break;
+
         case "covid":
         case "b12":
         case "earwax": {

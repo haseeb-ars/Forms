@@ -165,7 +165,7 @@ export const consultationQuestions = {
   meningitis: [
     {
       id: "previousMeningitis",
-      text: "Have you previously received a Meningitis vaccine?",
+      text: "Have you previously received a Meningitis B vaccine?",
       type: "checkbox",
       options: [
         "No, I have never had it",
@@ -176,7 +176,7 @@ export const consultationQuestions = {
     },
     {
       id: "allergyReaction",
-      text: "Have you ever had a severe allergic reaction (anaphylaxis) to a Meningitis vaccine or any of its components (e.g. diphtheria toxoid, latex)?",
+      text: "Have you ever had a severe allergic reaction (anaphylaxis) to a Meningitis B vaccine or any of its components (e.g. diphtheria toxoid, latex)?",
       type: "yesno",
     },
     {

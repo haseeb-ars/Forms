@@ -8,7 +8,7 @@ export default function MeningitisTemplate({ data }) {
     return (
         <div className="template covid-template">
             <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
-            <h1>Meningitis Vaccination Consent Form</h1>
+            <h1>Meningitis B Vaccination Consent Form</h1>
 
             {/* Patient Details */}
             <section className="template-section">
@@ -26,14 +26,14 @@ export default function MeningitisTemplate({ data }) {
                 <h2>Consultation Screening</h2>
 
                 <p>
-                    <strong>Previous Meningitis vaccination status:</strong>{" "}
+                    <strong>Previous Meningitis B vaccination status:</strong>{" "}
                     {Array.isArray(data.previousMeningitis)
                         ? data.previousMeningitis.join(", ")
                         : data.previousMeningitis}
                 </p>
 
                 <p>
-                    <strong>Severe allergy/anaphylaxis to Meningitis vaccine components (e.g. diphtheria toxoid, latex):</strong>{" "}
+                    <strong>Severe allergy/anaphylaxis to Meningitis B vaccine components (e.g. diphtheria toxoid, latex):</strong>{" "}
                     {data.allergyReaction}
                 </p>
                 {data.allergyReaction === "Yes" && (
@@ -77,7 +77,7 @@ export default function MeningitisTemplate({ data }) {
             <section className="template-section">
                 <h2>Vaccination Details</h2>
 
-                <p><strong>Vaccine:</strong> {menVaccine.name || "Meningitis"}</p>
+                <p><strong>Vaccine:</strong> {menVaccine.name || "Meningitis B"}</p>
                 <p><strong>Brand Name:</strong> {data.vaccineBrand}</p>
                 <p><strong>Batch Number:</strong> {data.batchNumber}</p>
                 <p><strong>Expiry Date:</strong> {data.dateExpiry}</p>

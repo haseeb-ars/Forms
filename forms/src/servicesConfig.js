@@ -533,7 +533,7 @@ export const services = [
 
   {
     id: "meningitis",
-    name: "Meningitis Vaccine",
+    name: "Meningitis B Vaccine",
     color: "#0E7C7B",
     patientFields: [
       { name: "fullName", label: "Full Name", type: "text" },

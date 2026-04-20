@@ -194,7 +194,25 @@ const prescriptionMappings = {
 
   mmr: {
     title: "MMR Vaccine Prescription",
-    drug: (d) => d.vaccineBrand || "COVID-19 Vaccine",
+    drug: (d) => d.vaccineBrand || "MMR Vaccine",
+    quantity: () => "1 dose",
+    dose: (d) => `Dose ${d.doseNumber || "-"}`,
+    prescriber: (d) =>
+      d.prescriberName || d.prescriber || d.clinicianName || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      d.clinicianGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
+  },
+
+  meningitis: {
+    title: "Meningitis Vaccine Prescription",
+    drug: (d) => d.vaccineBrand || "Meningitis Vaccine",
     quantity: () => "1 dose",
     dose: (d) => `Dose ${d.doseNumber || "-"}`,
     prescriber: (d) =>
@@ -337,6 +355,40 @@ function normaliseItems(data, serviceId) {
       batchNumber: data.batchNumber,
       expiry: data.dateExpiry || "",
       datePharm: data.datePharm || new Date().toISOString().split("T")[0],
+    });
+  }
+
+  // MMR (single fields)
+  if (
+    serviceId === "mmr" &&
+    (data.vaccineBrand || data.batchNumber || data.dateGiven || data.dateExpiry)
+  ) {
+    pushItem({
+      name: data.vaccineBrand || "MMR Vaccine",
+      vaccineBrand: data.vaccineBrand,
+      dose: data.doseNumber ? `Dose ${data.doseNumber}` : "",
+      quantity: "1",
+      batchNumber: data.batchNumber,
+      expiry: data.dateExpiry,
+      dateGiven: data.dateGiven,
+      site: data.site,
+    });
+  }
+
+  // Meningitis (single fields)
+  if (
+    serviceId === "meningitis" &&
+    (data.vaccineBrand || data.batchNumber || data.dateGiven || data.dateExpiry)
+  ) {
+    pushItem({
+      name: data.vaccineBrand || "Meningitis Vaccine",
+      vaccineBrand: data.vaccineBrand,
+      dose: data.doseNumber ? `Dose ${data.doseNumber}` : "",
+      quantity: "1",
+      batchNumber: data.batchNumber,
+      expiry: data.dateExpiry,
+      dateGiven: data.dateGiven,
+      site: data.site,
     });
   }
 

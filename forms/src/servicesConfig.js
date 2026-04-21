@@ -539,6 +539,7 @@ export const services = [
       { name: "fullName", label: "Full Name", type: "text" },
       { name: "dob", label: "Date of Birth", type: "date" },
       { name: "telephone", label: "Contact Number", type: "text" },
+      { name: "email", label: "Email", type: "email" },
       { name: "address", label: "Address", type: "text", span: true },
       { name: "surgeryName", label: "Surgery Name", type: "text" },
       { name: "nhsNumber", label: "NHS Number", type: "text" }

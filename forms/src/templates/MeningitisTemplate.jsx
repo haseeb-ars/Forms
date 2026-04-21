@@ -16,6 +16,7 @@ export default function MeningitisTemplate({ data }) {
                 <p><strong>Full Name:</strong> {data.fullName}</p>
                 <p><strong>Date of Birth:</strong> {data.dob}</p>
                 <p><strong>Contact Number:</strong> {data.telephone}</p>
+                <p><strong>Email:</strong> {data.email}</p>
                 <p><strong>Address:</strong> {data.address}</p>
                 <p><strong>NHS Number:</strong> {data.nhsNumber}</p>
                 <p><strong>Surgery Name:</strong> {data.surgeryName}</p>

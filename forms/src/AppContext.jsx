@@ -145,6 +145,7 @@ export function AppProvider({ children }) {
   const [mmrConsultation, setMmrConsultation] = useState({});
   const [meningitisConsultation, setMeningitisConsultation] = useState({});
   const [perioddelayConsultation, setPerioddelayConsultation] = useState({}); // ✅ ADDED
+  const [contraceptionConsultation, setContraceptionConsultation] = useState({});
   const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] =
     useState({});
   const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
@@ -248,6 +249,7 @@ export function AppProvider({ children }) {
     resetPrivatePrescriptionConsultation();
     setMmrConsultation({}); // ✅ clear on logout
     setMeningitisConsultation({}); // ✅ clear on logout
+    setContraceptionConsultation({}); // ✅ clear on logout
   };
 
   return (
@@ -300,6 +302,10 @@ export function AppProvider({ children }) {
 
         perioddelayConsultation,
         setPerioddelayConsultation,
+
+        // ✅ Contraception
+        contraceptionConsultation,
+        setContraceptionConsultation,
 
         privatePrescriptionConsultation,
         setPrivatePrescriptionConsultation,

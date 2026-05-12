@@ -25,6 +25,8 @@ import PrivatePrescriptionConsultationTemplate from "./templates/PrivatePrescrip
 import PrivatePrescriptionTemplate from "./templates/PrivatePrescriptionTemplate.jsx";
 import MMRTemplate from "./templates/MMRTemplate.jsx";
 import MeningitisTemplate from "./templates/MeningitisTemplate.jsx";
+import ContraceptionTemplate from "./templates/ContraceptionTemplate.jsx";
+import ContraceptionConsultationTemplate from "./templates/ContraceptionConsultationTemplate.jsx";
 
 
 /* -------------------------------
@@ -115,6 +117,7 @@ export default function PreviewPage() {
     perioddelayConsultation,
     privatePrescriptionConsultation,
     weightLossFollowupConsultation,
+    contraceptionConsultation,
     travelFollowUpOriginalData,
     weightLossFollowupOriginalData,
   } = useApp();
@@ -324,6 +327,28 @@ export default function PreviewPage() {
           },
         ];
 
+      case "contraception":
+        return [
+          {
+            key: "form",
+            label: "Form",
+            Comp: ContraceptionTemplate,
+            pdfName: "contraception-form.pdf",
+          },
+          {
+            key: "consult",
+            label: "Consultation",
+            Comp: ContraceptionConsultationTemplate,
+            pdfName: "contraception-consultation.pdf",
+          },
+          {
+            key: "rx",
+            label: "Prescription",
+            Comp: PrescriptionTemplate,
+            pdfName: "contraception-prescription.pdf",
+          },
+        ];
+
 
       case "followupprescription":
         return [
@@ -382,6 +407,8 @@ export default function PreviewPage() {
         return meningitisConsultation;
       case "perioddelay":
         return perioddelayConsultation;
+      case "contraception":
+        return contraceptionConsultation;
       case "travelFollowUp":
         return travelFollowUpOriginalData?.consultation_data || {};
       default:
@@ -400,6 +427,7 @@ export default function PreviewPage() {
     meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
+    contraceptionConsultation,
     travelFollowUpOriginalData?.consultation_data,
   ]);
 
@@ -437,6 +465,8 @@ export default function PreviewPage() {
         return mergeAll(meningitisConsultation);
       case "perioddelay":
         return mergeAll(perioddelayConsultation);
+      case "contraception":
+        return mergeAll(contraceptionConsultation);
       case "travelFollowUp": {
         const pData = travelFollowUpOriginalData?.patient_data || {};
         const rxData = travelFollowUpOriginalData?.pharmacist_data || {};
@@ -469,6 +499,7 @@ export default function PreviewPage() {
     meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
+    contraceptionConsultation,
     travelFollowUpOriginalData?.consultation_data,
     travelFollowUpOriginalData?.patient_data,
     travelFollowUpOriginalData?.pharmacist_data,
@@ -489,7 +520,7 @@ export default function PreviewPage() {
 
     const row = {
       tenant,
-      name: patient.fullName || "",
+      name: patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" ") || "",
       dob: patient.dob || "",
       address: patient.address || "",
       contactNo: patient.telephone || "",
@@ -511,7 +542,7 @@ export default function PreviewPage() {
         createdAt: new Date().toISOString(),
       },
       // helpful top-level fields for quick filtering (server also derives these from `patient`)
-      patient_name: patient.fullName || "",
+      patient_name: patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" ") || "",
       dob: patient.dob || null,
       email: patient.email || "",
     };
@@ -599,6 +630,7 @@ export default function PreviewPage() {
             meningitisConsultation,
             perioddelayConsultation,
             privatePrescriptionConsultation,
+            contraceptionConsultation,
             weightLossFollowupConsultation,
             travelFollowUpOriginalData, // ✅ Added missing state for Follow-up templates
             weightLossFollowupOriginalData,
@@ -660,8 +692,8 @@ export default function PreviewPage() {
           heightLeft -= pdfHeight;
         }
 
-        const safeName = patient.fullName
-          ? patient.fullName.replace(/\s+/g, "_")
+        const safeName = (patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" "))
+          ? (patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" ")).replace(/\s+/g, "_")
           : "form";
         pdf.save(`${safeName}-${fileName}`);
       } finally {
@@ -688,6 +720,7 @@ export default function PreviewPage() {
       meningitisConsultation,
       perioddelayConsultation,
       privatePrescriptionConsultation,
+      contraceptionConsultation,
       weightLossFollowupConsultation,
       travelFollowUpOriginalData,
       weightLossFollowupOriginalData,

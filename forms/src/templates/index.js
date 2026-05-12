@@ -14,6 +14,8 @@ import WeightlossConsultationTemplate from "./WeightLossConsultationTemplate.jsx
 import WeightLossFollowupTemplate from "./WeightLossFollowupTemplate.jsx";
 import MMRTemplate from "./MMRTemplate.jsx";
 import MeningitisTemplate from "./MeningitisTemplate.jsx";
+import ContraceptionTemplate from "./ContraceptionTemplate.jsx";
+import ContraceptionConsultationTemplate from "./ContraceptionConsultationTemplate.jsx";
 
 
 // ⭐ NEW shared templates
@@ -43,6 +45,8 @@ const templates = {
   meningitis: MeningitisTemplate,
   perioddelay: PeriodDelayTemplate,
   travelFollowUp: FollowupTravelPrescriptionTemplate,
+  contraception: ContraceptionTemplate,
+  contraceptionConsultation: ContraceptionConsultationTemplate,
 
 
 

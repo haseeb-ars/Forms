@@ -245,6 +245,23 @@ const prescriptionMappings = {
     prescriberType: (d) =>
       d.prescriberType || d.clinicianType || "Pharmacist Independent Prescriber",
   },
+
+  contraception: {
+    title: "Contraception Prescription",
+    drug: (d) => d.drugGiven || "Contraceptive Pill",
+    quantity: (d) => d.quantity || "—",
+    dose: (d) => d.dosage || "As prescribed",
+    prescriber: (d) =>
+      d.pharmacistName || d.prescriberName || d.prescriber || "—",
+    prescriberGPhC: (d) =>
+      d.GPHCnumber ||
+      d.prescriberGPhC ||
+      d.gphcNumber ||
+      d.pharmacistGPhC ||
+      "—",
+    prescriberType: (d) =>
+      d.prescriberType || d.clinicianType || "Pharmacist",
+  },
 };
 
 // 🔧 Normalise ALL possible medication/vaccine sources to one array
@@ -392,6 +409,22 @@ function normaliseItems(data, serviceId) {
     });
   }
 
+  // Contraception (single fields)
+  if (
+    serviceId === "contraception" &&
+    (data.drugGiven || data.strength || data.dosage || data.batchNumber || data.dateExpiry)
+  ) {
+    pushItem({
+      name: data.drugGiven || "Contraceptive Pill",
+      strength: data.strength,
+      dose: data.dosage,
+      quantity: data.quantity,
+      batchNumber: data.batchNumber,
+      expiry: data.dateExpiry,
+      dateGiven: data.consultationDate || data.datePharm || "",
+    });
+  }
+
   return items;
 }
 
@@ -458,7 +491,7 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
 
       {/* Patient details */}
       <section className="formdoc__section" style={{ maxWidth: 520 }}>
-        <Row label="FULL NAME" value={data.fullName} />
+        <Row label="FULL NAME" value={data.fullName || [data.firstName, data.surname].filter(Boolean).join(" ")} />
         <Row label="ADDRESS" value={data.address} />
         <Row label="DATE OF BIRTH" value={data.dob} />
         {data.surgery && <Row label="SURGERY NAME" value={data.surgery} />}

@@ -567,5 +567,45 @@ export const services = [
     template: "MeningitisTemplate"
   },
 
+  {
+    id: "contraception",
+    name: "Contraception",
+    color: "#D946EF",
+    patientFields: [
+      { name: "firstName", label: "First Name", type: "text" },
+      { name: "surname", label: "Surname", type: "text" },
+      { name: "telephone", label: "Phone", type: "text" },
+      { name: "email", label: "Email", type: "email" },
+      { name: "dob", label: "Date of Birth", type: "date" },
+      { name: "address", label: "Address including Postcode", type: "text", span: true },
+    ],
+    pharmacistFields: [
+      { name: "drugGiven", label: "Drug Given", type: "text" },
+      { name: "strength", label: "Strength", type: "text" },
+      { name: "quantity", label: "Quantity", type: "text" },
+      { name: "dosage", label: "Directions / Dosage", type: "text" },
+      { name: "batchNumber", label: "Batch Number", type: "text" },
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
+      { name: "pharmacistName", label: "Pharmacist Name", type: "text" },
+      { name: "GPHCnumber", label: "GPhC Number", type: "text" },
+      { name: "pharmacyNameField", label: "Pharmacy Name", type: "text" },
+      {
+        name: "consultationOutcome",
+        label: "Consultation Outcome",
+        type: "select",
+        options: [
+          "Contraceptive Pill Supplied",
+          "Referred to GP",
+          "Referred to Sexual Health Clinic",
+          "No Supply - Not Suitable",
+          "Other"
+        ]
+      },
+      { name: "notes", label: "Additional Notes", type: "textarea", span: true },
+      { name: "consultationDate", label: "Consultation Date", type: "date" },
+    ],
+    template: "ContraceptionTemplate"
+  },
+
 ];
 

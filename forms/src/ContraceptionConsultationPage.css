@@ -1,0 +1,91 @@
+/* src/ContraceptionConsultationPage.css */
+
+.contraception-consultation {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.contraception-consultation .consultation-title {
+  text-align: center;
+  color: #1f2937;
+  margin-bottom: 24px;
+  font-size: 1.6rem;
+}
+
+.contraception-consultation .question-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.contraception-consultation .question-text {
+  display: block;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.contraception-consultation .radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.contraception-consultation .radio-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.contraception-consultation .radio-option input[type="radio"] {
+  accent-color: #005eb8;
+}
+
+.contraception-consultation .extra-info {
+  margin-top: 10px;
+  width: 100%;
+  min-height: 70px;
+}
+
+/* Blood pressure group */
+.contraception-consultation .bp-group {
+  margin-top: 8px;
+}
+
+.contraception-consultation .bp-field {
+  margin-bottom: 12px;
+}
+
+.contraception-consultation .bp-label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.contraception-consultation .bp-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.contraception-consultation .continue-btn {
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .contraception-consultation .bp-inputs {
+    grid-template-columns: 1fr;
+  }
+}

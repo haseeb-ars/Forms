@@ -13,6 +13,7 @@ import PatientsPage from "./PatientsPage.jsx";
 import TravelConsultationPage from "./TravelConsultationPage.jsx";
 import WeightlossConsultationPage from "./WeightLossConsultationPage.jsx";
 import ConsultationPage from "./ConsultationPage.jsx"; // ✅ Shared for earwax, flu, covid, b12
+import ContraceptionConsultationPage from "./ContraceptionConsultationPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
 
 import "./App.css";
@@ -99,6 +100,16 @@ function AppShell() {
             element={
               <RequireAuth>
                 <WeightlossConsultationPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 💊 Contraception Consultation */}
+          <Route
+            path="/service/contraception/consultation"
+            element={
+              <RequireAuth>
+                <ContraceptionConsultationPage />
               </RequireAuth>
             }
           />

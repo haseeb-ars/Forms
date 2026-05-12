@@ -1,0 +1,532 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
+  .cert-root {
+    font-family: 'EB Garamond', Georgia, serif;
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 24px;
+  }
+
+  .cert-paper {
+    background: #f0ede8;
+    width: 680px;
+    position: relative;
+    padding: 36px 40px 28px;
+    border: 1px solid #c8b898;
+    overflow: hidden;
+  }
+
+  .cert-watermark {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.11;
+  }
+
+  .cert-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cert-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .cert-stamp {
+    width: 110px;
+    height: 110px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .stamp-ring-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2.5px solid #6b5a3a;
+    box-shadow: 0 0 0 1.5px #c9b98a, 0 0 0 4px #6b5a3a, inset 0 0 0 3px #c9b98a;
+  }
+
+  .stamp-core {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #7a6040, #4a3010);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #c9b98a;
+    gap: 0;
+  }
+
+  .stamp-top-text {
+    font-size: 6px;
+    color: #e8d8a0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-family: 'EB Garamond', serif;
+    line-height: 1.2;
+  }
+
+  .stamp-certified-text {
+    font-size: 13px;
+    color: #f5e8b0;
+    font-weight: 600;
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin: 2px 0;
+  }
+
+  .stamp-ribbon {
+    background: linear-gradient(90deg, #4a3010, #7a6040, #4a3010);
+    color: #f5e8b0;
+    font-size: 5px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'EB Garamond', serif;
+    border-top: 0.5px solid #c9b98a;
+    border-bottom: 0.5px solid #c9b98a;
+    width: 100%;
+  }
+
+  .cert-arabic-title {
+    font-family: 'Amiri', serif;
+    font-size: 52px;
+    color: #2a200e;
+    line-height: 1;
+    direction: rtl;
+    text-align: right;
+    flex: 1;
+    padding-left: 16px;
+  }
+
+  .cert-subtitle-band {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1.5px solid #9a8a6a;
+    border-bottom: 1.5px solid #9a8a6a;
+    padding: 4px 0;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+
+  .sub-en {
+    font-size: 9.5px;
+    color: #5a4a2a;
+    letter-spacing: 0.3px;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .sub-ar {
+    font-family: 'Amiri', serif;
+    font-size: 10.5px;
+    color: #5a4a2a;
+    direction: rtl;
+  }
+
+  .cert-main-title {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .main-title-en {
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a120a;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .main-title-ar {
+    font-family: 'Amiri', serif;
+    font-size: 13.5px;
+    color: #1a120a;
+    direction: rtl;
+    line-height: 1.6;
+  }
+
+  .field-group {
+    margin-bottom: 12px;
+  }
+
+  .field-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+
+  .lbl-en {
+    font-family: 'EB Garamond', serif;
+    font-size: 12px;
+    color: #3a2e1e;
+  }
+
+  .lbl-ar {
+    font-family: 'Amiri', serif;
+    font-size: 12.5px;
+    color: #3a2e1e;
+    direction: rtl;
+  }
+
+  .field-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #9a8a6a;
+    background: transparent;
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    color: #1a120a;
+    padding: 3px 2px;
+    outline: none;
+    display: block;
+  }
+
+  .field-input:focus {
+    border-bottom-color: #5a4020;
+    background: rgba(90,64,32,0.03);
+  }
+
+  .two-col {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+
+  .two-col .field-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .para-en {
+    font-family: 'EB Garamond', serif;
+    font-size: 12px;
+    color: #2a200e;
+    line-height: 1.5;
+    margin-bottom: 3px;
+  }
+
+  .para-ar {
+    font-family: 'Amiri', serif;
+    font-size: 12.5px;
+    color: #2a200e;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .divider-line {
+    border: none;
+    border-top: 1px solid #c8b898;
+    margin: 10px 0;
+  }
+
+  .sig-spacer {
+    height: 32px;
+    border-bottom: 1px solid #9a8a6a;
+    margin-bottom: 4px;
+  }
+
+  .block-caps-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1px;
+    margin-bottom: 8px;
+  }
+
+  .block-caps-note {
+    font-size: 8px;
+    color: #7a6a4a;
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 0.5px;
+  }
+
+  .block-caps-note-ar {
+    font-family: 'Amiri', serif;
+    font-size: 9px;
+    color: #7a6a4a;
+    direction: rtl;
+  }
+
+  .stamp-box {
+    border: 1px solid #9a8a6a;
+    padding: 12px 14px 10px;
+    margin-bottom: 0;
+  }
+
+  .stamp-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .stamp-box-inner {
+    min-height: 70px;
+    margin-bottom: 4px;
+  }
+
+  .stamp-box-textarea {
+    width: 100%;
+    min-height: 60px;
+    background: transparent;
+    border: none;
+    font-family: 'EB Garamond', serif;
+    font-size: 12px;
+    color: #1a120a;
+    resize: none;
+    outline: none;
+  }
+
+  .vax-date-row {
+    border-top: 1px solid #9a8a6a;
+    padding-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    border-top: 1px solid #c8b898;
+    padding-top: 8px;
+  }
+
+  .footer-code-text {
+    font-size: 8.5px;
+    color: #8a7a5a;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .pfizer-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .pfizer-produced {
+    font-size: 8.5px;
+    color: #8a7a5a;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+  }
+
+  .pfizer-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #003087;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .side-effects-section {
+    display: flex;
+    gap: 18px;
+    border-top: 1px solid #c8b898;
+    padding-top: 9px;
+    margin-top: 8px;
+  }
+
+  .side-effects-en {
+    flex: 1;
+    font-family: 'EB Garamond', serif;
+    font-size: 8px;
+    color: #5a4a2a;
+    line-height: 1.55;
+  }
+
+  .side-effects-ar {
+    flex: 1;
+    font-family: 'Amiri', serif;
+    font-size: 9px;
+    color: #5a4a2a;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.55;
+  }
+</style>
+
+<div class="cert-root">
+  <div class="cert-paper">
+
+    <svg class="cert-watermark" viewBox="0 0 680 1000" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#7a6a4a" fill="none">
+        <circle cx="340" cy="480" r="60"/><circle cx="340" cy="480" r="110"/>
+        <circle cx="340" cy="480" r="160"/><circle cx="340" cy="480" r="210"/>
+        <circle cx="340" cy="480" r="260"/><circle cx="340" cy="480" r="310"/>
+        <circle cx="340" cy="480" r="360"/><circle cx="340" cy="480" r="410"/>
+        <line x1="340" y1="70" x2="340" y2="890" stroke-width="0.4"/>
+        <line x1="0" y1="480" x2="680" y2="480" stroke-width="0.4"/>
+        <line x1="100" y1="140" x2="580" y2="820" stroke-width="0.3"/>
+        <line x1="580" y1="140" x2="100" y2="820" stroke-width="0.3"/>
+        <line x1="0" y1="200" x2="680" y2="760" stroke-width="0.3"/>
+        <line x1="680" y1="200" x2="0" y2="760" stroke-width="0.3"/>
+        <line x1="200" y1="70" x2="480" y2="890" stroke-width="0.3"/>
+        <line x1="480" y1="70" x2="200" y2="890" stroke-width="0.3"/>
+        <circle cx="60" cy="80" r="30"/><circle cx="60" cy="80" r="50"/><circle cx="60" cy="80" r="70"/>
+        <circle cx="620" cy="80" r="30"/><circle cx="620" cy="80" r="50"/><circle cx="620" cy="80" r="70"/>
+        <circle cx="60" cy="920" r="30"/><circle cx="60" cy="920" r="50"/><circle cx="60" cy="920" r="70"/>
+        <circle cx="620" cy="920" r="30"/><circle cx="620" cy="920" r="50"/><circle cx="620" cy="920" r="70"/>
+      </g>
+    </svg>
+
+    <div class="cert-content">
+
+      <div class="cert-header">
+        <div class="cert-stamp">
+          <div class="stamp-ring-outer"></div>
+          <div class="stamp-core">
+            <div class="stamp-top-text">CERTIFICATE OF</div>
+            <div class="stamp-certified-text">CERTIFIED</div>
+            <div class="stamp-ribbon">ACWY VACCINATION</div>
+          </div>
+        </div>
+        <div class="cert-arabic-title">شهادة</div>
+      </div>
+
+      <div class="cert-subtitle-band">
+        <span class="sub-en">CERTIFICATE OF CERTIFIED ACWY VACCINATION</span>
+        <span class="sub-ar">[شهادة مُعتمدة للتحصين بلقاح ACWY]</span>
+      </div>
+
+      <div class="cert-main-title">
+        <div class="main-title-en">
+          Certificate of Immunisation against Meningococcal Meningitis A, C, W<sub>135</sub> and Y
+        </div>
+        <div class="main-title-ar">
+          شهادة تحصين من التهاب السحايا بالمكورات السحانية A و C و W<sub>135</sub> و Y
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span class="lbl-en">This Patient (Name):</span>
+          <span class="lbl-ar">:هذا المريض (الاسم)</span>
+        </div>
+        <input class="field-input" type="text" placeholder="" />
+      </div>
+
+      <div class="para-en">
+        has been vaccinated against Meningococcal Meningitis A, C, W<sub>135</sub> and Y using a Meningococcal ACWY conjugate vaccine
+      </div>
+      <div class="para-ar">
+        تم تلقيحه ضد التهاب السحايا بالمكورات السحانية A و C و W<sub>135</sub> و Y<br/>
+        باستخدام لقاح مُقتّرن للمكورات السحانية ACWY
+      </div>
+
+      <hr class="divider-line"/>
+
+      <div class="two-col">
+        <div class="field-group">
+          <div class="field-label-row">
+            <span class="lbl-en">Date of Birth:</span>
+          </div>
+          <input class="field-input" type="text" placeholder="" />
+          <div style="text-align:right; margin-top:3px;">
+            <span class="lbl-ar">:تاريخ الميلاد</span>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label-row">
+            <span class="lbl-en">Passport Number:</span>
+          </div>
+          <input class="field-input" type="text" placeholder="" />
+          <div style="text-align:right; margin-top:3px;">
+            <span class="lbl-ar">:رقم جواز السفر</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span class="lbl-en">Doctor/Nurse/Pharmacist Signature</span>
+          <span class="lbl-ar">توقيع الطبيب/الممرض/الصيدلي</span>
+        </div>
+        <div class="sig-spacer"></div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span class="lbl-en">Doctor/Nurse/Pharmacist</span>
+          <span class="lbl-ar">الطبيب/الممرض/الصيدلي</span>
+        </div>
+        <input class="field-input" type="text" placeholder="" />
+        <div class="block-caps-row">
+          <span class="block-caps-note">BLOCK CAPITALS PLEASE</span>
+          <span class="block-caps-note-ar">يُرجى الكتابة بخط واضح</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span class="lbl-en">Manufacturer/Batch No:</span>
+          <span class="lbl-ar">:المُصنّع/رقم التشغيلة</span>
+        </div>
+        <input class="field-input" type="text" placeholder="" />
+      </div>
+
+      <div class="stamp-box">
+        <div class="stamp-box-header">
+          <span class="lbl-en" style="font-style:italic;">Official Stamp of the Administering Centre</span>
+          <span class="lbl-ar">الختم الرسمي للمركز الذي أعطى التلقيح</span>
+        </div>
+        <div class="stamp-box-inner">
+          <textarea class="stamp-box-textarea" placeholder=""></textarea>
+        </div>
+        <div class="vax-date-row">
+          <div style="flex:1;">
+            <span class="lbl-en">Date of Vaccination</span>
+            <input class="field-input" type="text" placeholder="" style="width:60%; margin-top:3px;" />
+          </div>
+          <span class="lbl-ar">تاريخ التلقيح</span>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <span class="footer-code-text">PP-UNP-GBR-4134 &nbsp; March 2023</span>
+        <div class="pfizer-row">
+          <span class="pfizer-produced">Produced and funded by</span>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="9" stroke="#003087" stroke-width="1.5"/>
+            <path d="M6 14V7h4c1.5 0 2.5 0.8 2.5 2.2s-1 2.2-2.5 2.2H8V14H6z" fill="#003087"/>
+          </svg>
+          <span class="pfizer-name">Pfizer</span>
+        </div>
+      </div>
+
+      <div class="side-effects-section">
+        <div class="side-effects-en">
+          <strong>Reporting side effects:</strong> if you get any side effects, talk to your doctor,
+          pharmacist or nurse. This includes any possible side effects not listed in the
+          package leaflet. You can also report side effects directly via the Yellow Card
+          Scheme at www.mhra.gov.uk/yellow-card
+        </div>
+        <div class="side-effects-ar">
+          <strong>الإبلاغ عن الآثار الجانبية:</strong> إذا أُصبت بأية آثار جانبية، تحدث إلى طبيبك
+          أو الصيدلي أو الممرض. يشمل هذا أية آثار جانبية محتملة غير مذكورة في
+          النشرة المرفقة بالعبوة، ويمكنك أيضًا الإبلاغ عن الآثار الجانبية مباشرة من
+          خلال مخطط البطاقة الصفراء على www.mhra.gov.uk/yellow-card
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

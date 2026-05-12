@@ -46,9 +46,15 @@ function AppShell() {
             Home
           </Link>
 
-          <Link to="/holidays" className="link-btn3" style={{ marginLeft: 8 }}>
-            Holidays
-          </Link>
+          <a
+  href="https://holidaytracker.careplushealth.co.uk/#/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="link-btn3"
+  style={{ marginLeft: 8 }}
+>
+  Holidays
+</a>
 
           <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>
             Patients

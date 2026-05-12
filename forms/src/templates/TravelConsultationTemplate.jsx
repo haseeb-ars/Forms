@@ -106,64 +106,104 @@ export default function TravelConsultationTemplate({ consultation, data, service
         </p>
       </section>
 
-      {/* ---------------- Administered Vaccines ---------------- */}
+      {/* ---------------- Administered Vaccines (Historical vs Current) ---------------- */}
       <section className="template-section">
-        <h2>Vaccinations Administered</h2>
-        {Array.isArray(f.vaccines) && f.vaccines.length > 0 ? (
-          <table className="template-table">
-            <thead>
-              <tr>
-                <th>Vaccine</th>
-                <th>Batch No</th>
-                <th>Date Given</th>
-                <th>Expiry Date</th>
-                <th>Administered Site</th>
-
-              </tr>
-            </thead>
-            <tbody>
-              {f.vaccines.map((v, i) => (
-                <React.Fragment key={i}>
-                  {/* main row */}
+        {serviceId === "travelFollowUp" ? (
+          <>
+            <h2 className="section-title" style={{ color: "#4b5563", marginTop: "20px" }}>A. Previous Travel Consultation Vaccines</h2>
+            {Array.isArray(f.vaccines) && f.vaccines.length > 0 ? (
+              <table className="template-table">
+                <thead>
                   <tr>
-                    <td>{safe(v.name)}</td>
-                    <td>{safe(v.batchNumber)}</td>
-                    <td>{safe(v.dateGiven)}</td>
-                    <td>{safe(v.expiry)}</td>
-                    <td>{safe(v.site)}</td>
-
+                    <th>Vaccine Name</th>
+                    <th>Batch No</th>
+                    <th>Date Given</th>
+                    <th>Expiry Date</th>
                   </tr>
-
-                  {/* brand + indication second line */}
-                  {(v.brand || v.indication) && (
-                    <tr className="sub-row">
-                      <td
-                        colSpan={6}
-                        style={{
-                          fontSize: "0.85rem",
-                          padding: "4px 6px 6px",
-                          background: "#f9fafb",
-                        }}
-                      >
-                        {v.brand && (
-                          <span>
-                            <strong>Brand:</strong> {safe(v.brand)}
-                          </span>
-                        )}
-                        {v.indication && (
-                          <span style={{ marginLeft: "1.5rem" }}>
-                            <strong>Indication:</strong> {safe(v.indication)}
-                          </span>
-                        )}
-                      </td>
+                </thead>
+                <tbody>
+                  {f.vaccines.map((v, i) => (
+                    <tr key={i}>
+                      <td>{safe(v.name)}</td>
+                      <td>{safe(v.batchNumber)}</td>
+                      <td>{safe(v.dateGiven)}</td>
+                      <td>{safe(v.expiry)}</td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="muted">No historical vaccinations found.</p>
+            )}
+
+            <h2 className="section-title" style={{ color: "#118AB2", marginTop: "30px" }}>B. Current Follow-Up Vaccines (Administered Today)</h2>
+            {Array.isArray(pharm?.followUpVaccines) && pharm.followUpVaccines.length > 0 ? (
+              <table className="template-table" style={{ border: "2px solid #118AB2" }}>
+                <thead>
+                  <tr style={{ background: "#e0f2fe" }}>
+                    <th>Vaccine Name</th>
+                    <th>Dose No</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
+                    <th>Site/Route</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pharm.followUpVaccines.map((v, i) => (
+                    <tr key={i}>
+                      <td><strong>{safe(v.name)}</strong></td>
+                      <td>{safe(v.doseNumber)}</td>
+                      <td>{safe(v.batchNumber)}</td>
+                      <td>{safe(v.expiry)}</td>
+                      <td>{safe(v.site)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No new vaccinations recorded today.</p>
+            )}
+          </>
         ) : (
-          <p>No vaccinations recorded.</p>
+          <>
+            <h2>Vaccinations Administered</h2>
+            {Array.isArray(f.vaccines) && f.vaccines.length > 0 ? (
+              <table className="template-table">
+                <thead>
+                  <tr>
+                    <th>Vaccine</th>
+                    <th>Batch No</th>
+                    <th>Date Given</th>
+                    <th>Expiry Date</th>
+                    <th>Administered Site</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {f.vaccines.map((v, i) => (
+                    <React.Fragment key={i}>
+                      <tr>
+                        <td>{safe(v.name)}</td>
+                        <td>{safe(v.batchNumber)}</td>
+                        <td>{safe(v.dateGiven)}</td>
+                        <td>{safe(v.expiry)}</td>
+                        <td>{safe(v.site)}</td>
+                      </tr>
+                      {(v.brand || v.indication) && (
+                        <tr className="sub-row">
+                          <td colSpan={5} style={{ fontSize: "0.85rem", padding: "4px 6px 6px", background: "#f9fafb" }}>
+                            {v.brand && <span><strong>Brand:</strong> {safe(v.brand)}</span>}
+                            {v.indication && <span style={{ marginLeft: "1.5rem" }}><strong>Indication:</strong> {safe(v.indication)}</span>}
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No vaccinations recorded.</p>
+            )}
+          </>
         )}
       </section>
 

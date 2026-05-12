@@ -204,8 +204,9 @@ export default function WeightLossConsultationTemplate({
               <p><strong>Specified Medication:</strong> {safe(data.otherMedication)}</p>
             )}
             <p><strong>Strength:</strong> {safe(data.strength)}</p>
+            <p><strong>Quantity Supplied:</strong> {safe(data.quantity)}</p>
             <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
-            <p><strong>Date Given:</strong> {safe(data.dateGiven)}</p>
+            <p><strong>Date Given:</strong> {safe(data.dateGiven || new Date().toISOString().split("T")[0])}</p>
             <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
             <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
             <p><strong>Pharmacist Notes:</strong> {safe(data.notes)}</p>

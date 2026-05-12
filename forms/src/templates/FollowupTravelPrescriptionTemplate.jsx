@@ -3,14 +3,14 @@ import "./B12Template.css"; // Reuse styling
 import { useApp } from "../AppContext";
 
 export default function FollowupTravelPrescriptionTemplate({ data }) {
-    const { followupTravelOriginalData } = useApp();
+    const { travelFollowUpOriginalData } = useApp();
 
     const safe = (val) => val || "—";
 
-    // Build the array of historical doses
+    // Build the array of historical doses (Original Consultation)
     let previousDoses = [];
-    if (followupTravelOriginalData?.pharmacist_data) {
-        const pData = followupTravelOriginalData.pharmacist_data;
+    if (travelFollowUpOriginalData?.pharmacist_data) {
+        const pData = travelFollowUpOriginalData.pharmacist_data;
         if (Array.isArray(pData.vaccines)) {
             previousDoses = previousDoses.concat(pData.vaccines);
         }
@@ -33,7 +33,7 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
 
             {/* PATIENT DETAILS */}
             <section className="template-section">
-                <h2>Patient Details</h2>
+                <h2 className="section-title">Patient Details</h2>
                 <div className="grid grid--2">
                     <p><strong>Name:</strong> {safe(data.fullName || data.name)}</p>
                     <p><strong>DOB:</strong> {safe(data.dob)}</p>
@@ -43,70 +43,66 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                 </div>
             </section>
 
-            {/* ORIGINAL DOSES (HISTORY) */}
+            {/* A. PREVIOUS TRAVEL CONSULTATION VACCINES (Historical) */}
             <section className="template-section">
-                <h2>Previous Travel Dose(s)</h2>
+                <h2 className="section-title" style={{ color: "#4b5563" }}>A. Previous Travel Consultation Vaccines</h2>
                 {previousDoses.length > 0 ? (
                     <table className="template-table">
                         <thead>
                             <tr>
-                                <th>Vaccine</th>
-                                <th>Brand</th>
-                                <th>Batch</th>
+                                <th>Vaccine Name</th>
+                                <th>Dose No.</th>
                                 <th>Date Given</th>
-                                <th>Expiry</th>
                             </tr>
                         </thead>
                         <tbody>
                             {previousDoses.map((dose, i) => (
                                 <tr key={i}>
                                     <td>{safe(dose.name || dose.vaccine || dose.vaccineName)}</td>
-                                    <td>{safe(dose.brand)}</td>
-                                    <td>{safe(dose.batchNumber)}</td>
+                                    <td>{safe(dose.doseNumber || "Dose 1")}</td>
                                     <td>{safe(dose.dateGiven)}</td>
-                                    <td>{safe(dose.expiry)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p>No previous vaccinations found in the original record.</p>
+                    <p className="muted">No historical vaccination records found.</p>
                 )}
             </section>
 
-            {/* NEW DOSE */}
-            <section className="template-section">
-                <h2>Follow-up Dose(s) (Current Session)</h2>
+            {/* B. CURRENT FOLLOW-UP VACCINES (New) */}
+            <section className="template-section current-followup" style={{ border: "2px solid #118AB2", padding: "15px", borderRadius: "8px", background: "#f0f9ff" }}>
+                <h2 className="section-title" style={{ color: "#118AB2" }}>B. Current Follow-Up Vaccines (Administered Today)</h2>
                 {Array.isArray(data.followUpVaccines) && data.followUpVaccines.length > 0 ? (
                     <table className="template-table">
                         <thead>
                             <tr>
-                                <th>Vaccine</th>
-                                <th>Dose Number</th>
+                                <th>Vaccine Name</th>
+                                <th>Dose No.</th>
                                 <th>Batch</th>
-                                <th>Date Given</th>
                                 <th>Expiry</th>
+                                <th>Site/Route</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.followUpVaccines.map((v, i) => (
                                 <tr key={i}>
-                                    <td>{safe(v.name)}</td>
+                                    <td><strong>{safe(v.name)}</strong></td>
                                     <td>{safe(v.doseNumber)}</td>
                                     <td>{safe(v.batchNumber)}</td>
-                                    <td>{safe(v.dateGiven)}</td>
                                     <td>{safe(v.expiry)}</td>
+                                    <td>{safe(v.site)}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 ) : (
-                    <p>No follow-up doses recorded for this session.</p>
+                    <p>No new follow-up doses were recorded for this session.</p>
                 )}
                 {data.notes && (
-                    <p style={{ marginTop: 10 }}>
-                        <strong>Pharmacist Notes:</strong> {data.notes}
-                    </p>
+                    <div style={{ marginTop: 15, padding: 10, background: "#fff", border: "1px solid #bae6fd", borderRadius: "5px" }}>
+                        <strong>Clinical Notes:</strong> {data.notes}
+                    </div>
                 )}
             </section>
 

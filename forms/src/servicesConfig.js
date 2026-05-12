@@ -221,6 +221,11 @@ export const services = [
         type: "text"
       },
       {
+        name: "quantity",
+        label: "Quantity Supplied",
+        type: "text"
+      },
+      {
         name: "doseNumber",
         label: "Dose Number (e.g Month 2 / Month 3 / Dose 2)",
         type: "text"

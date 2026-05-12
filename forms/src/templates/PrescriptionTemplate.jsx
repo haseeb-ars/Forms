@@ -285,10 +285,24 @@ function normaliseItems(data, serviceId) {
     });
   };
 
-  // 1) Repeaters
-  asArray(data.prescribedDrugs).forEach(pushItem); // MedicationRepeater in "drug" mode
-  asArray(data.vaccines).forEach(pushItem);        // Vaccine/MedicationRepeater in "vaccine" mode
-  asArray(data.malariaVaccines).forEach(pushItem); // VaccineRepeater (malaria)
+  // 1) Repeaters - ONLY include based on serviceId to prevent data leakage
+  const isTravel = serviceId === "travel" || serviceId === "travelFollowUp";
+  const isVaccineService = isTravel || serviceId === "mmr" || serviceId === "meningitis" || serviceId === "flu" || serviceId === "covid";
+
+  if (serviceId === "privateprescription" || serviceId === "followupprescription") {
+    asArray(data.prescribedDrugs).forEach(pushItem);
+  }
+  
+  if (isTravel) {
+    asArray(data.vaccines).forEach(pushItem);
+    asArray(data.malariaVaccines).forEach(pushItem);
+    asArray(data.followUpVaccines).forEach(pushItem);
+  }
+
+  // Generic fallback: if it's a vaccine service, allow 'vaccines' array
+  if (isVaccineService && !isTravel) {
+    asArray(data.vaccines).forEach(pushItem);
+  }
 
   // 2) Service-specific singles
 

@@ -37,16 +37,15 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
         </div>
       </section>
 
-      {/* Prior Medication details (From Original) */}
+      {/* A. PREVIOUS MEDICATION DETAILS (Historical) */}
       <section className="template-section">
-        <h2>Original Weight Loss Prescription</h2>
+        <h2 className="section-title" style={{ color: "#4b5563" }}>A. Previous Medication Details</h2>
         <table className="template-table">
           <thead>
             <tr>
-              <th>Medication</th>
-              <th>Dosage</th>
-              <th>Date Started</th>
-              <th>Batch</th>
+              <th>Previous Medication</th>
+              <th>Previous Dose</th>
+              <th>Original Start Date</th>
             </tr>
           </thead>
           <tbody>
@@ -54,27 +53,26 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
               <td>{safe(originalMeds.medication)} {originalMeds.medication === "Other" ? `(${safe(originalMeds.otherMedication)})` : ""}</td>
               <td>{safe(originalMeds.dosage)}</td>
               <td>{safe(originalMeds.startDate)}</td>
-              <td>{safe(originalMeds.batchNumber)}</td>
             </tr>
           </tbody>
         </table>
       </section>
 
-      {/* New Medication Details (Current Follow-up) */}
-      <section className="template-section" style={{ backgroundColor: "#fafafa", padding: "16px", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-        <h2>Follow-up Dose (Current Session)</h2>
+      {/* B. CURRENT FOLLOW-UP MEDICATION DETAILS (New) */}
+      <section className="template-section current-followup" style={{ border: "2px solid #F03D1A", padding: "16px", borderRadius: "8px", background: "#fffaf0" }}>
+        <h2 className="section-title" style={{ color: "#F03D1A" }}>B. Current Follow-Up Medication Details (Newly Supplied)</h2>
         <div className="grid grid--2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-          <p><strong>Dispensed Medication:</strong> {safe(data.medication)} {data.medication === "Other" ? `(${safe(data.otherMedication)})` : ""}</p>
-          <p><strong>Strength:</strong> {safe(data.strength)}</p>
-          <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
+          <p><strong>New Medication:</strong> {safe(data.medication)} {data.medication === "Other" ? `(${safe(data.otherMedication)})` : ""}</p>
+          <p><strong>New Dose/Strength:</strong> {safe(data.strength)}</p>
+          <p><strong>Quantity Supplied:</strong> {safe(data.quantity)}</p>
+          <p><strong>Dose/Month Number:</strong> {safe(data.doseNumber)}</p>
           <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
           <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
-          <p><strong>Date Given:</strong> {safe(data.dateGiven)}</p>
-          <p><strong>Prescriber Name:</strong> {safe(data.prescriberName)}</p>
-          <p><strong>Prescriber Address:</strong> {safe(data.prescriberAddress)}</p>
+          <p><strong>Date Supplied:</strong> {safe(data.dateGiven || new Date().toISOString().split("T")[0])}</p>
+          <p><strong>Prescriber:</strong> {safe(data.prescriberName)}</p>
         </div>
-        <div style={{ marginTop: "16px" }}>
-          <p><strong>Pharmacist Notes / Additional Comments:</strong><br />{safe(data.notes)}</p>
+        <div style={{ marginTop: "16px", padding: "10px", background: "#fff", border: "1px solid #fed7aa", borderRadius: "5px" }}>
+          <p><strong>Follow-up Clinical Notes:</strong><br />{safe(data.notes)}</p>
         </div>
       </section>
 

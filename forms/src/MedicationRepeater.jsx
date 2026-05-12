@@ -93,18 +93,20 @@ export default function MedicationRepeater({
             <div className="label">Drug/Vaccine</div>
 
             {isVaccine ? (
-              <select
-                className="input"
-                value={it.name || ""}
-                onChange={(e) => update(idx, { name: e.target.value })}
-              >
-                <option value="">Select vaccine</option>
-                {dropdownOptions.map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
+              <>
+                <input
+                  className="input"
+                  list={`vaccine-options-${idx}`}
+                  value={it.name || ""}
+                  onChange={(e) => update(idx, { name: e.target.value })}
+                  placeholder="Select or type vaccine..."
+                />
+                <datalist id={`vaccine-options-${idx}`}>
+                  {dropdownOptions.map((v) => (
+                    <option key={v} value={v} />
+                  ))}
+                </datalist>
+              </>
             ) : (
               <input
                 className="input"

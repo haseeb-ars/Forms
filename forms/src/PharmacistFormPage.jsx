@@ -62,7 +62,9 @@ export default function PharmacistFormPage() {
                     showDosage={false}
                     showStrength={false}
                     showDoseNumber
-                    options={uniqueNames.length > 0 ? uniqueNames : ["No previous vaccines found"]}
+                    showSite
+                    showBrand
+                    options={uniqueNames} // MedicationRepeater will fallback to defaults if needed, but we can also merge here if we want to be explicit.
                   />
                 </div>
               );

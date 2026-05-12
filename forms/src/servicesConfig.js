@@ -542,7 +542,8 @@ export const services = [
       { name: "email", label: "Email", type: "email" },
       { name: "address", label: "Address", type: "text", span: true },
       { name: "surgeryName", label: "Surgery Name", type: "text" },
-      { name: "nhsNumber", label: "NHS Number", type: "text" }
+      { name: "nhsNumber", label: "NHS Number", type: "text" },
+      { name: "passportNumber", label: "Passport Number", type: "text" }
     ],
     pharmacistFields: [
       { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },

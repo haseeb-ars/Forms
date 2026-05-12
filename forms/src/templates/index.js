@@ -16,6 +16,7 @@ import MMRTemplate from "./MMRTemplate.jsx";
 import MeningitisTemplate from "./MeningitisTemplate.jsx";
 import ContraceptionTemplate from "./ContraceptionTemplate.jsx";
 import ContraceptionConsultationTemplate from "./ContraceptionConsultationTemplate.jsx";
+import ACWYCertificateTemplate from "./ACWYCertificateTemplate.jsx";
 
 
 // ⭐ NEW shared templates
@@ -47,6 +48,7 @@ const templates = {
   travelFollowUp: FollowupTravelPrescriptionTemplate,
   contraception: ContraceptionTemplate,
   contraceptionConsultation: ContraceptionConsultationTemplate,
+  acwyCertificate: ACWYCertificateTemplate,
 
 
 

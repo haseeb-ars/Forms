@@ -27,6 +27,7 @@ import MMRTemplate from "./templates/MMRTemplate.jsx";
 import MeningitisTemplate from "./templates/MeningitisTemplate.jsx";
 import ContraceptionTemplate from "./templates/ContraceptionTemplate.jsx";
 import ContraceptionConsultationTemplate from "./templates/ContraceptionConsultationTemplate.jsx";
+import ACWYCertificateTemplate from "./templates/ACWYCertificateTemplate.jsx";
 
 
 /* -------------------------------
@@ -325,6 +326,12 @@ export default function PreviewPage() {
             Comp: PrescriptionTemplate,
             pdfName: "meningitis-prescription.pdf",
           },
+          {
+            key: "acwy-cert",
+            label: "ACWY Certificate",
+            Comp: ACWYCertificateTemplate,
+            pdfName: "acwy-certificate.pdf",
+          },
         ];
 
       case "contraception":
@@ -592,14 +599,15 @@ export default function PreviewPage() {
   /** 🧾 Generate PDF (compressed) **/
   const generatePDF = useCallback(
     async (Comp, fileName, extraProps = {}) => {
+      const isACWY = fileName.includes("acwy-certificate");
       const host = document.createElement("div");
       Object.assign(host.style, {
         position: "absolute",
         left: "-99999px",
         top: "0",
-        width: "900px",
+        width: isACWY ? "680px" : "900px",
         background: "#fff",
-        padding: "24px",
+        padding: isACWY ? "0" : "24px",
         zIndex: "-1",
       });
       document.body.appendChild(host);
@@ -645,6 +653,7 @@ export default function PreviewPage() {
             consultationData={consultF}
             serviceId={id}
             serviceName={id.toUpperCase()}
+            isPDF={isACWY}
             {...extraProps}
           />
         </AppContext.Provider>
@@ -656,15 +665,15 @@ export default function PreviewPage() {
       await waitForImages(host);
 
       try {
-        // Smaller capture scale keeps layout but reduces file size
+        // High quality for ACWY, smaller capture scale for others
         const canvas = await html2canvas(host, {
-          scale: 1.25,
+          scale: isACWY ? 2.5 : 1.25,
           useCORS: true,
           backgroundColor: "#ffffff",
         });
 
-        // JPEG with quality ~0.72 saves a lot of space
-        const imgData = canvas.toDataURL("image/jpeg", 0.72);
+        // JPEG with quality 1.0 for ACWY, 0.72 for others
+        const imgData = canvas.toDataURL("image/jpeg", isACWY ? 1.0 : 0.72);
 
         // Enable PDF stream compression
         const pdf = new jsPDF({

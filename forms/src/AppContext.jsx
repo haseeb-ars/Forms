@@ -34,7 +34,7 @@ const BRANCH_CONFIG = {
   },
   southport: {
     logo: `${process.env.PUBLIC_URL}/logos/southport.png`,
-    pharmacyName: "Care Plus Chemist",
+    pharmacyName: "CarePlus Chemist",
     pharmacyAddress: "34 Shakespeare St, Southport PR8 5AB",
   },
   liverpool: {

@@ -242,9 +242,9 @@ export default function PharmacistFormPage() {
             onChange={(e) => setPharmField("prescriberAddress", e.target.value)}
           >
             <option value="">Select...</option>
-            <option value="Careplus Chemist">Careplus Chemist</option>
-            <option value="Wilmslow Road Pharmacy">Wilmslow Road Pharmacy</option>
-            <option value="247 Pharmacy">247 Pharmacy</option>
+            <option value="34 Shakespeare St, Southport PR8 5AB">Careplus Chemist (Southport)</option>
+            <option value="480 Wilmslow Rd, Withington, Manchester M20 3BG">Wilmslow Road Pharmacy (Manchester)</option>
+            <option value="15 Stuart Rd, Waterloo, Liverpool L22 4QR">247 Pharmacy (Liverpool)</option>
           </select>
         </LabeledField>
       </div>

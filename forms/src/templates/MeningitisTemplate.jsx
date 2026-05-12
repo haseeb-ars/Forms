@@ -20,6 +20,7 @@ export default function MeningitisTemplate({ data }) {
                 <p><strong>Address:</strong> {data.address}</p>
                 <p><strong>NHS Number:</strong> {data.nhsNumber}</p>
                 <p><strong>Surgery Name:</strong> {data.surgeryName}</p>
+                <p><strong>Passport Number:</strong> {data.passportNumber}</p>
             </section>
 
             {/* Consultation / Screening */}
@@ -86,8 +87,26 @@ export default function MeningitisTemplate({ data }) {
                 <p><strong>Administration Site:</strong> {data.site}</p>
 
                 <p><strong>Pharmacist Name (GPhC):</strong> {data.pharmacistNameGPhC}</p>
-                <p><strong>Pharmacy Name:</strong> {data.pharmacyName}</p>
-                <p><strong>Pharmacy Address:</strong> {data.pharmacyAddress}</p>
+                {(() => {
+                    const name = (data.pharmacyName || "").trim();
+                    const nameLower = name.toLowerCase();
+                    let address = data.pharmacyAddress || "";
+
+                    if (nameLower.includes("wilmslow")) {
+                        address = "480 Wilmslow Rd, Withington, Manchester M20 3BG";
+                    } else if (nameLower.includes("careplus") || nameLower.includes("care plus")) {
+                        address = "34 Shakespeare St, Southport PR8 5AB";
+                    } else if (nameLower.includes("247")) {
+                        address = "15 Stuart Rd, Waterloo, Liverpool L22 4QR";
+                    }
+
+                    return (
+                        <>
+                            <p><strong>Pharmacy Name:</strong> {name || "—"}</p>
+                            <p><strong>Pharmacy Address:</strong> {address || "—"}</p>
+                        </>
+                    );
+                })()}
 
                 <p><strong>Adverse Reactions / Notes:</strong> {data.adverseReactions}</p>
                 <p><strong>Point of Variance:</strong> {data.pointOfVariance}</p>

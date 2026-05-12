@@ -177,3 +177,83 @@
     .formdoc__grid { gap: 1.5rem }
     .formdoc__siggrid { gap: 1.5rem }
 }
+/* Save Status Badge */
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.save-badge {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.save-badge--idle {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.save-badge--saving {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.save-badge--success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.save-badge--error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.save-error-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn--small {
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn--small:hover {
+  background: #b91c1c;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.preview-actions {
+  margin-top: 30px;
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.preview-container {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}

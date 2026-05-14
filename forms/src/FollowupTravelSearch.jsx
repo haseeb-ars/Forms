@@ -53,33 +53,71 @@ export default function FollowupTravelSearch() {
     const handleSelectPatient = async (row) => {
         try {
             setLoading(true);
-            const result = await fetchSubmissionByName({
-                name: row.name,
-                dob: row.dob,
-                service: "travel",
-                tenant,
-            });
+            
+            // 1. Find ALL visits for this patient (name + dob match) to build cumulative history
+            // We search for both 'travel' and 'travelFollowUp' services
+            const allVisits = patients.filter(p => 
+                p.name === row.name && 
+                p.dob === row.dob && 
+                (p.service === "travel" || p.service === "travelFollowUp")
+            );
 
-            if (!result.ok || !result.row) {
+            // Sort by date (oldest first)
+            allVisits.sort((a, b) => new Date(a.created_at || a.date) - new Date(b.created_at || b.date));
+
+            // 2. Fetch full data for each visit to extract vaccines
+            const history = [];
+            let latestPatientData = null;
+            let latestConsultationData = null;
+            let latestPharmacistData = null;
+
+            for (const visit of allVisits) {
+                const result = await fetchSubmissionByName({
+                    name: visit.name,
+                    dob: visit.dob,
+                    service: visit.service,
+                    tenant,
+                    // Note: fetchSubmissionByName might need an ID or date to be specific if multiple exist, 
+                    // but usually it returns the most recent. This is a bit tricky with the current API.
+                    // If the API supports passing an ID, that would be better.
+                });
+
+                if (result.ok && result.row) {
+                    const { pharmacist_data } = result.row;
+                    const vax = Array.isArray(pharmacist_data?.vaccines) ? pharmacist_data.vaccines : [];
+                    const malVax = Array.isArray(pharmacist_data?.malariaVaccines) ? pharmacist_data.malariaVaccines : [];
+                    const fupVax = Array.isArray(pharmacist_data?.followUpVaccines) ? pharmacist_data.followUpVaccines : [];
+                    
+                    // Add all vaccines from this visit to history
+                    history.push(...vax, ...malVax, ...fupVax);
+
+                    // Keep track of the latest data for context seeding
+                    latestPatientData = result.row.patient_data;
+                    latestConsultationData = result.row.consultation_data;
+                    latestPharmacistData = result.row.pharmacist_data;
+                }
+            }
+
+            if (!latestPatientData) {
                 alert("Could not load original travel consultation for this patient.");
                 setLoading(false);
                 return;
             }
 
-            const { patient_data, consultation_data, pharmacist_data } = result.row;
-
             // Seed context
             setTravelFollowUpOriginalData({
-                patient_data,
-                consultation_data,
-                pharmacist_data,
+                patient_data: latestPatientData,
+                consultation_data: latestConsultationData,
+                pharmacist_data: latestPharmacistData,
+                history: history, // ✅ Bug 4: Cumulative history
             });
 
             // Keep superficial patient details so standard preview checks still see it
-            setPatient(patient_data || {});
+            setPatient(latestPatientData || {});
 
             // Navigate straight to Pharmacist Form (bypass consultation)
             navigate(`/service/travelFollowUp/pharmacist`);
+
 
         } catch (err) {
             console.error(err);

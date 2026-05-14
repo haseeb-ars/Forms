@@ -2,22 +2,31 @@ import React from "react";
 import "./B12Template.css"; // Reuse styling
 import { useApp } from "../AppContext";
 
-export default function FollowupTravelPrescriptionTemplate({ data }) {
-    const { travelFollowUpOriginalData } = useApp();
+export default function FollowupTravelPrescriptionTemplate({ data = {} }) {
+    const context = useApp();
 
     const safe = (val) => val || "—";
 
-    // Build the array of historical doses (Original Consultation)
+    // ✅ Bug 4: Build the array of historical doses (Cumulative History)
+    // Prioritize data.history (from props/DB), then context.travelFollowUpOriginalData.history
     let previousDoses = [];
-    if (travelFollowUpOriginalData?.pharmacist_data) {
-        const pData = travelFollowUpOriginalData.pharmacist_data;
+    if (data.history && Array.isArray(data.history)) {
+        previousDoses = data.history;
+    } else if (context.travelFollowUpOriginalData?.history) {
+        previousDoses = context.travelFollowUpOriginalData.history;
+    } else if (context.travelFollowUpOriginalData?.pharmacist_data) {
+        const pData = context.travelFollowUpOriginalData.pharmacist_data;
         if (Array.isArray(pData.vaccines)) {
             previousDoses = previousDoses.concat(pData.vaccines);
         }
         if (pData.malariaGiven === "Yes" && Array.isArray(pData.malariaVaccines)) {
             previousDoses = previousDoses.concat(pData.malariaVaccines);
         }
+    } else if (Array.isArray(data.vaccines)) {
+        // Fallback for re-opened forms where history might be merged into vaccines
+        previousDoses = data.vaccines;
     }
+
 
     return (
         <div className="template prescription-template">
@@ -38,8 +47,8 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                     <p><strong>Name:</strong> {safe(data.fullName || data.name)}</p>
                     <p><strong>DOB:</strong> {safe(data.dob)}</p>
                     <p><strong>Address:</strong> {safe(data.address)}</p>
-                    <p><strong>NHS No:</strong> {safe(data.nhsNumber)}</p>
-                    <p><strong>GP Details:</strong> {safe(data.surgery)}</p>
+                    <p><strong>Surgery Name:</strong> {safe(data.surgery)}</p>
+                    <p><strong>Email:</strong> {safe(data.email)}</p>
                 </div>
             </section>
 
@@ -53,15 +62,26 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                                 <th>Vaccine Name</th>
                                 <th>Dose No.</th>
                                 <th>Date Given</th>
+                                <th>Batch No.</th>
                             </tr>
                         </thead>
                         <tbody>
                             {previousDoses.map((dose, i) => (
-                                <tr key={i}>
-                                    <td>{safe(dose.name || dose.vaccine || dose.vaccineName)}</td>
-                                    <td>{safe(dose.doseNumber || "Dose 1")}</td>
-                                    <td>{safe(dose.dateGiven)}</td>
-                                </tr>
+                                <React.Fragment key={i}>
+                                    <tr>
+                                        <td>{safe(dose.name || dose.vaccine || dose.vaccineName)}</td>
+                                        <td>{safe(dose.doseNumber || "Dose 1")}</td>
+                                        <td>{safe(dose.dateGiven)}</td>
+                                        <td>{safe(dose.batchNumber)}</td>
+                                    </tr>
+                                    {dose.brand && (
+                                        <tr className="sub-row">
+                                            <td colSpan={4} style={{ fontSize: "0.85rem", padding: "4px 6px 6px", background: "#f9fafb" }}>
+                                                <span><strong>Brand:</strong> {safe(dose.brand)}</span>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </tbody>
                     </table>
@@ -86,13 +106,22 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                         </thead>
                         <tbody>
                             {data.followUpVaccines.map((v, i) => (
-                                <tr key={i}>
-                                    <td><strong>{safe(v.name)}</strong></td>
-                                    <td>{safe(v.doseNumber)}</td>
-                                    <td>{safe(v.batchNumber)}</td>
-                                    <td>{safe(v.expiry)}</td>
-                                    <td>{safe(v.site)}</td>
-                                </tr>
+                                <React.Fragment key={i}>
+                                    <tr>
+                                        <td><strong>{safe(v.name)}</strong></td>
+                                        <td>{safe(v.doseNumber)}</td>
+                                        <td>{safe(v.batchNumber)}</td>
+                                        <td>{safe(v.expiry)}</td>
+                                        <td>{safe(v.site)}</td>
+                                    </tr>
+                                    {v.brand && (
+                                        <tr className="sub-row">
+                                            <td colSpan={5} style={{ fontSize: "0.85rem", padding: "4px 6px 6px", background: "#f9fafb" }}>
+                                                <span><strong>Brand:</strong> {safe(v.brand)}</span>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </tbody>
                     </table>
@@ -113,7 +142,8 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                     <p><strong>Type:</strong> {safe(data.prescriberType)}</p>
                     <p><strong>Name:</strong> {safe(data.prescriberName)}</p>
                     <p><strong>GPhC Number:</strong> {safe(data.prescriberGPhC || data.GPHCnumber)}</p>
-                    <p><strong>Date:</strong> {safe(data.datePharm || new Date().toISOString().split("T")[0])}</p>
+                    {/* ✅ Bug 3: Use datePharm or fall back, but not just today */}
+                    <p><strong>Date:</strong> {safe(data.datePharm || data.consultationDate || data.date)}</p>
                 </div>
                 <div style={{ flex: 1, textAlign: "center" }}>
                     <h3 style={{ marginBottom: 10 }}>Prescriber Signature</h3>
@@ -126,6 +156,7 @@ export default function FollowupTravelPrescriptionTemplate({ data }) {
                     )}
                 </div>
             </section>
+
 
         </div>
     );

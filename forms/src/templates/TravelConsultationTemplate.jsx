@@ -4,14 +4,20 @@ import "./TravelTemplate.css"; // reuse same styling
 
 import { useApp } from "../AppContext.jsx";
 
-export default function TravelConsultationTemplate({ consultation, data, serviceId }) {
-  const { pharm, travelConsultation, travelFollowUpOriginalData } = useApp();
+export default function TravelConsultationTemplate({ consultation, data, pharmacist, serviceId }) {
+  const context = useApp();
 
-  const activePharm = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.pharmacist_data || {} : pharm;
-  const activeConsultation = serviceId === "travelFollowUp" ? travelFollowUpOriginalData?.consultation_data || {} : travelConsultation;
+  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
+  const activePatient = (data && Object.keys(data).length > 0) ? data : context.patient;
+  const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) ? pharmacist : (serviceId === "travelFollowUp" ? context.travelFollowUpOriginalData?.pharmacist_data : context.pharm) || {};
+  const activeConsultation = (consultation && Object.keys(consultation).length > 0) ? consultation : (serviceId === "travelFollowUp" ? context.travelFollowUpOriginalData?.consultation_data : context.travelConsultation) || {};
+  
+  // Use persistent history from props if available
+  const history = activePharm?.history || context.travelFollowUpOriginalData?.history || [];
 
-  const tc = serviceId === "travelFollowUp" ? activeConsultation : (consultation || {});
-  const f = serviceId === "travelFollowUp" ? { ...travelFollowUpOriginalData?.patient_data, ...activePharm } : (data || {}); // pharmacist/patient form data combined
+  const tc = activeConsultation;
+  const f = { ...activePatient, ...activePharm }; // combined form data
+
 
   const safe = (v) =>
     v && String(v).trim() !== "" ? v : "—";
@@ -22,27 +28,30 @@ export default function TravelConsultationTemplate({ consultation, data, service
       style={{ padding: 20, fontFamily: "sans-serif" }}
     >
       <img src="/Logo3.png" alt="CarePlus Logo" width={280} />
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>
         Travel Vaccination Consultation Summary
       </h1>
+      <p style={{ marginBottom: 20, color: "#4b5563" }}>
+        <strong>Consultation Date:</strong> {safe(f.datePharm || f.consultationDate || f.date)}
+      </p>
 
       {/* ---------------- Patient Details ---------------- */}
       <section className="template-section">
         <h2>Patient Details</h2>
         <p>
-          <strong>Full Name:</strong> {f.fullName || "-"}
+          <strong>Full Name:</strong> {f.fullName || context.patient?.fullName || "-"}
         </p>
         <p>
-          <strong>Date of Birth:</strong> {f.dob || "-"}
+          <strong>Date of Birth:</strong> {f.dob || context.patient?.dob || "-"}
         </p>
         <p>
-          <strong>Contact Number:</strong> {f.telephone || "-"}
+          <strong>Contact Number:</strong> {f.telephone || context.patient?.telephone || "-"}
         </p>
         <p>
-          <strong>Email:</strong> {f.email || "-"}
+          <strong>Email:</strong> {f.email || context.patient?.email || "-"}
         </p>
         <p>
-          <strong>Surgery Name:</strong> {f.surgery || "-"}
+          <strong>Surgery Name:</strong> {f.surgery || context.patient?.surgery || "-"}
         </p>
       </section>
 
@@ -105,13 +114,13 @@ export default function TravelConsultationTemplate({ consultation, data, service
           {tc.contraindicatedVaccines?.join(", ") || "-"}
         </p>
       </section>
-
       {/* ---------------- Administered Vaccines (Historical vs Current) ---------------- */}
       <section className="template-section">
         {serviceId === "travelFollowUp" ? (
           <>
             <h2 className="section-title" style={{ color: "#4b5563", marginTop: "20px" }}>A. Previous Travel Consultation Vaccines</h2>
-            {Array.isArray(f.vaccines) && f.vaccines.length > 0 ? (
+            {/* Bug 4: Show cumulative history if available */}
+            {history && history.length > 0 ? (
               <table className="template-table">
                 <thead>
                   <tr>
@@ -122,13 +131,22 @@ export default function TravelConsultationTemplate({ consultation, data, service
                   </tr>
                 </thead>
                 <tbody>
-                  {f.vaccines.map((v, i) => (
-                    <tr key={i}>
-                      <td>{safe(v.name)}</td>
-                      <td>{safe(v.batchNumber)}</td>
-                      <td>{safe(v.dateGiven)}</td>
-                      <td>{safe(v.expiry)}</td>
-                    </tr>
+                  {history.map((v, i) => (
+                    <React.Fragment key={i}>
+                      <tr>
+                        <td>{safe(v.name)}</td>
+                        <td>{safe(v.batchNumber)}</td>
+                        <td>{safe(v.dateGiven)}</td>
+                        <td>{safe(v.expiry)}</td>
+                      </tr>
+                      {v.brand && (
+                        <tr className="sub-row">
+                          <td colSpan={4} style={{ fontSize: "0.85rem", padding: "4px 6px 6px", background: "#f9fafb" }}>
+                            <span><strong>Brand:</strong> {safe(v.brand)}</span>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -137,7 +155,7 @@ export default function TravelConsultationTemplate({ consultation, data, service
             )}
 
             <h2 className="section-title" style={{ color: "#118AB2", marginTop: "30px" }}>B. Current Follow-Up Vaccines (Administered Today)</h2>
-            {Array.isArray(pharm?.followUpVaccines) && pharm.followUpVaccines.length > 0 ? (
+            {Array.isArray(activePharm?.followUpVaccines) && activePharm.followUpVaccines.length > 0 ? (
               <table className="template-table" style={{ border: "2px solid #118AB2" }}>
                 <thead>
                   <tr style={{ background: "#e0f2fe" }}>
@@ -149,14 +167,23 @@ export default function TravelConsultationTemplate({ consultation, data, service
                   </tr>
                 </thead>
                 <tbody>
-                  {pharm.followUpVaccines.map((v, i) => (
-                    <tr key={i}>
-                      <td><strong>{safe(v.name)}</strong></td>
-                      <td>{safe(v.doseNumber)}</td>
-                      <td>{safe(v.batchNumber)}</td>
-                      <td>{safe(v.expiry)}</td>
-                      <td>{safe(v.site)}</td>
-                    </tr>
+                  {activePharm.followUpVaccines.map((v, i) => (
+                    <React.Fragment key={i}>
+                      <tr>
+                        <td><strong>{safe(v.name)}</strong></td>
+                        <td>{safe(v.doseNumber)}</td>
+                        <td>{safe(v.batchNumber)}</td>
+                        <td>{safe(v.expiry)}</td>
+                        <td>{safe(v.site)}</td>
+                      </tr>
+                      {v.brand && (
+                        <tr className="sub-row">
+                          <td colSpan={5} style={{ fontSize: "0.85rem", padding: "4px 6px 6px", background: "#f9fafb" }}>
+                            <span><strong>Brand:</strong> {safe(v.brand)}</span>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -206,6 +233,7 @@ export default function TravelConsultationTemplate({ consultation, data, service
           </>
         )}
       </section>
+
 
       {/* ---------------- Malaria Section ---------------- */}
       {f.malariaGiven && (
@@ -348,3 +376,4 @@ export default function TravelConsultationTemplate({ consultation, data, service
     </div>
   );
 }
+

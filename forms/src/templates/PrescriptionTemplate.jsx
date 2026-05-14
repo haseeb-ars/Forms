@@ -458,7 +458,8 @@ export default function PrescriptionTemplate({ data = {}, serviceId }) {
   const map = prescriptionMappings[serviceId] || prescriptionMappings.b12;
 
   const consultationDate =
-    data.consultationDate || data.datePharm || data.date || new Date().toLocaleDateString();
+    safe(data.datePharm || data.consultationDate || data.date);
+
 
   const showGenericHeader = serviceId !== "travel";
 

@@ -244,7 +244,17 @@ export default function PreviewPage() {
     switch (id) {
       case "travel": return mergeAll(travelConsultation);
       case "weightloss": return mergeAll(weightLossConsultation);
-      case "weightlossFollowup": return mergeAll(weightLossFollowupConsultation);
+      case "weightlossFollowup": {
+        const pData = weightLossFollowupOriginalData?.patient_data || {};
+        const rxData = weightLossFollowupOriginalData?.pharmacist_data || {};
+        return deepFormatDates({ 
+          ...pData, ...rxData, ...pharm, 
+          originalPatient: weightLossFollowupOriginalData?.patient_data || {},
+          originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {},
+          original_consultation_id: pData.id, branch 
+        });
+      }
+
       case "flu": return mergeAll(fluConsultation);
       case "covid": return mergeAll(covidConsultation);
       case "b12": return mergeAll(b12Consultation);
@@ -258,8 +268,10 @@ export default function PreviewPage() {
         const pData = travelFollowUpOriginalData?.patient_data || {};
         const rxData = travelFollowUpOriginalData?.pharmacist_data || {};
         const cData = travelFollowUpOriginalData?.consultation_data || {};
-        return deepFormatDates({ ...pData, ...cData, ...rxData, ...pharm, original_consultation_id: pData.id, branch });
+        const history = travelFollowUpOriginalData?.history || rxData?.history || [];
+        return deepFormatDates({ ...pData, ...cData, ...rxData, ...pharm, history, original_consultation_id: pData.id, branch });
       }
+
       default: return deepFormatDates({ ...safePatient, ...pharm, ...branch });
     }
   }, [
@@ -270,77 +282,112 @@ export default function PreviewPage() {
     travelFollowUpOriginalData,
   ]);
 
-  const performSave = useCallback(async () => {
-    if (saveStatus === "saving" || saveStatus === "success") return;
-    setSaveStatus("saving");
-    setSaveError("");
+    const tenant = useMemo(() => {
+      const bId = currentUser?.branchId;
+      if (bId === "wilmslow") return "WRP";
+      if (bId === "southport") return "CPC";
+      if (bId === "liverpool") return "247";
+      
+      // Fallback to name check
+      const n = (currentUser?.name || "").toUpperCase();
+      if (n.includes("WILMSLOW")) return "WRP";
+      if (n.includes("CAREPLUS")) return "CPC";
+      if (n.includes("247")) return "247";
+      return "";
+    }, [currentUser]);
 
-    const tenant = (currentUser?.name || "").toUpperCase().includes("WILMSLOW") ? "WRP"
-      : (currentUser?.name || "").toUpperCase().includes("CAREPLUS") ? "CPC"
-      : (currentUser?.name || "").toUpperCase().includes("247") ? "247" : "";
+    const performSave = useCallback(async () => {
+      if (saveStatus === "saving" || saveStatus === "success") return;
+      
+      console.log("[PreviewPage] performSave triggered. Service:", id);
+      setSaveStatus("saving");
+      setSaveError("");
 
-    const fullName = patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" ") || "";
-    
-    // 🛡️ Defensive Check: Prevent empty payloads
-    if (!patient.fullName && !(patient.firstName && patient.surname)) {
-      setSaveStatus("error");
-      setSaveError("Patient name is missing. Cannot save consultation.");
-      return;
-    }
-
-    const row = {
-      tenant,
-      name: fullName,
-      dob: patient.dob || "",
-      address: patient.address || "",
-      contactNo: patient.telephone || "",
-      email: patient.email || "",
-      service: id,
-      date: new Date().toISOString(),
-    };
-
-    const fullPayload = {
-      tenant,
-      service: id,
-      patient,
-      pharm,
-      consultation: currentConsultation || {},
-      branch,
-      extraMeta: {
-        currentUserName: currentUser?.name || "",
-        createdAt: new Date().toISOString(),
-      },
-      patient_name: fullName,
-      dob: patient.dob || null,
-      email: patient.email || "",
-    };
-
-    console.log("[PreviewPage] Starting save sequence...", { service: id, patient: fullName });
-    try {
-      // 1. Save Patient Row
-      await savePatientRow(row);
-      console.log("[PreviewPage] Patient row saved.");
-
-      // 2. Save Full Submission
-      const submissionResult = await saveFullSubmission(fullPayload);
-      console.log("[PreviewPage] Full submission saved.", submissionResult);
-
-      // 3. 🔍 Verification Step: Confirm the record exists
-      console.log("[PreviewPage] Verifying save...");
-      // The server response usually includes the row/id. If not, we could re-fetch.
-      if (submissionResult && (submissionResult.ok || submissionResult.id)) {
-        console.log("[PreviewPage] Save verified successfully.");
-        setSaveStatus("success");
-        setSavedOnce(true);
-      } else {
-        throw new Error("Save completed but verification failed (no record ID returned).");
+      // Use the memoized tenant
+      if (!tenant) {
+        console.warn("[PreviewPage] No tenant identified for user:", currentUser?.name);
       }
-    } catch (err) {
-      console.error("[PreviewPage] Save failed during execution or verification:", err);
-      setSaveStatus("error");
-      setSaveError(err.message || "Failed to persist consultation.");
-    }
-  }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation]);
+
+      // Robust name resolution
+      const fullName = (patient.fullName || patient.name || [patient.firstName, patient.surname].filter(Boolean).join(" ") || "").trim();
+      
+      console.log("[PreviewPage] Resolving patient name:", { 
+        fullName, 
+        contextPatient: patient,
+        travelFollowUpOriginalData: travelFollowUpOriginalData?.patient_data 
+      });
+
+      // 🛡️ Defensive Check: Prevent empty payloads
+      if (!fullName) {
+        setSaveStatus("error");
+        setSaveError("Patient name is missing. Cannot save consultation.");
+        console.error("[PreviewPage] Save aborted: fullName is empty.");
+        return;
+      }
+
+      const row = {
+        tenant,
+        name: fullName,
+        dob: patient.dob || "",
+        address: patient.address || "",
+        contactNo: patient.telephone || patient.contact_no || "",
+        email: patient.email || "",
+        service: id,
+        date: new Date().toISOString(),
+      };
+
+      const fullPayload = {
+        tenant,
+        service: id,
+        patient: { ...patient, fullName }, // Ensure fullName is present
+        pharm: id === "travelFollowUp" 
+          ? { ...pharm, history: travelFollowUpOriginalData?.history || [] } 
+          : id === "weightlossFollowup"
+            ? { 
+                ...pharm, 
+                originalPatient: weightLossFollowupOriginalData?.patient_data || {},
+                originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {}
+              }
+            : pharm,
+
+        consultation: currentConsultation || {},
+        branch,
+        extraMeta: {
+          currentUserName: currentUser?.name || "",
+          createdAt: new Date().toISOString(),
+          branchId: currentUser?.branchId || "",
+        },
+        patient_name: fullName,
+        dob: patient.dob || null,
+        email: patient.email || "",
+      };
+
+
+      console.log("[PreviewPage] Starting save sequence for tenant:", tenant);
+      try {
+        // 1. Save Patient Row (The index used by PatientsPage)
+        const rowResult = await savePatientRow(row);
+        console.log("[PreviewPage] Patient row saved successfully:", rowResult);
+
+        // 2. Save Full Submission (The detailed data)
+        const submissionResult = await saveFullSubmission(fullPayload);
+        console.log("[PreviewPage] Full submission saved successfully:", submissionResult);
+
+        // 3. Verification
+        if (submissionResult && (submissionResult.ok || submissionResult.id)) {
+          setSaveStatus("success");
+          setSavedOnce(true);
+          console.log("[PreviewPage] All save operations confirmed.");
+        } else {
+          throw new Error("Server confirmed save but returned no confirmation ID.");
+        }
+      } catch (err) {
+        console.error("[PreviewPage] CRITICAL SAVE FAILURE:", err);
+        setSaveStatus("error");
+        setSaveError(err.message || "Failed to persist consultation.");
+      }
+    }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation, tenant, travelFollowUpOriginalData]);
+
 
   useEffect(() => {
     if (savedOnce || saveStatus !== "idle") return;

@@ -27,12 +27,18 @@ export default function PatientsPage() {
      Determine tenant
   ----------------------------------------- */
   const tenant = useMemo(() => {
+    const bId = currentUser?.branchId;
+    if (bId === "wilmslow") return "WRP";
+    if (bId === "southport") return "CPC";
+    if (bId === "liverpool") return "247";
+
     const n = (currentUser?.name || "").toUpperCase();
     if (n.includes("WILMSLOW")) return "WRP";
     if (n.includes("CAREPLUS")) return "CPC";
     if (n.includes("247")) return "247";
     return "";
   }, [currentUser]);
+
 
   /* ----------------------------------------
      Load basic patients table

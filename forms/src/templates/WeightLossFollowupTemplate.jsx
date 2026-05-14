@@ -3,11 +3,13 @@ import "./WeightlossTemplate.css"; // Reuse existing styles
 import { useApp } from "../AppContext.jsx";
 
 export default function WeightLossFollowupTemplate({ data = {} }) {
-  const { weightLossFollowupOriginalData } = useApp();
+  const context = useApp();
   const safe = (v) => (v && v !== "" ? v : "—");
 
-  const originalPatient = weightLossFollowupOriginalData?.patient_data || {};
-  const originalMeds = weightLossFollowupOriginalData?.pharmacist_data || {};
+  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB), fallback to context (for live previews)
+  const originalPatient = (data.originalPatient) ? data.originalPatient : context.weightLossFollowupOriginalData?.patient_data || {};
+  const originalMeds = (data.originalMeds) ? data.originalMeds : context.weightLossFollowupOriginalData?.pharmacist_data || {};
+
 
   return (
     <div className="template weightloss-template">

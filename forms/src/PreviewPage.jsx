@@ -245,12 +245,14 @@ export default function PreviewPage() {
       case "travel": return mergeAll(travelConsultation);
       case "weightloss": return mergeAll(weightLossConsultation);
       case "weightlossFollowup": {
-        const pData = weightLossFollowupOriginalData?.patient_data || {};
-        const rxData = weightLossFollowupOriginalData?.pharmacist_data || {};
+        const pData = weightLossFollowupOriginalData?.patient_data || pharm.originalPatient || {};
+        const rxData = weightLossFollowupOriginalData?.pharmacist_data || pharm.originalMeds || {};
+        const cData = weightLossFollowupOriginalData?.consultation_data || pharm.originalConsultation || {};
         return deepFormatDates({ 
-          ...pData, ...rxData, ...pharm, 
-          originalPatient: weightLossFollowupOriginalData?.patient_data || {},
-          originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {},
+          ...pData, ...cData, ...rxData, ...pharm, 
+          originalPatient: pData,
+          originalMeds: rxData,
+          originalConsultation: cData,
           original_consultation_id: pData.id, branch 
         });
       }
@@ -265,11 +267,18 @@ export default function PreviewPage() {
       case "perioddelay": return mergeAll(perioddelayConsultation);
       case "contraception": return mergeAll(contraceptionConsultation);
       case "travelFollowUp": {
-        const pData = travelFollowUpOriginalData?.patient_data || {};
-        const rxData = travelFollowUpOriginalData?.pharmacist_data || {};
-        const cData = travelFollowUpOriginalData?.consultation_data || {};
-        const history = travelFollowUpOriginalData?.history || rxData?.history || [];
-        return deepFormatDates({ ...pData, ...cData, ...rxData, ...pharm, history, original_consultation_id: pData.id, branch });
+        const pData = travelFollowUpOriginalData?.patient_data || pharm.originalPatient || {};
+        const rxData = travelFollowUpOriginalData?.pharmacist_data || pharm.originalMeds || {};
+        const cData = travelFollowUpOriginalData?.consultation_data || pharm.originalConsultation || {};
+        const history = travelFollowUpOriginalData?.history || pharm.history || rxData?.history || [];
+        return deepFormatDates({ 
+          ...pData, ...cData, ...rxData, ...pharm, 
+          history, 
+          originalPatient: pData,
+          originalMeds: rxData,
+          originalConsultation: cData,
+          original_consultation_id: pData.id, branch 
+        });
       }
 
       default: return deepFormatDates({ ...safePatient, ...pharm, ...branch });
@@ -341,12 +350,19 @@ export default function PreviewPage() {
         service: id,
         patient: { ...patient, fullName }, // Ensure fullName is present
         pharm: id === "travelFollowUp" 
-          ? { ...pharm, history: travelFollowUpOriginalData?.history || [] } 
+          ? { 
+              ...pharm, 
+              history: travelFollowUpOriginalData?.history || [],
+              originalPatient: travelFollowUpOriginalData?.patient_data || {},
+              originalMeds: travelFollowUpOriginalData?.pharmacist_data || {},
+              originalConsultation: travelFollowUpOriginalData?.consultation_data || {}
+            } 
           : id === "weightlossFollowup"
             ? { 
                 ...pharm, 
                 originalPatient: weightLossFollowupOriginalData?.patient_data || {},
-                originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {}
+                originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {},
+                originalConsultation: weightLossFollowupOriginalData?.consultation_data || {}
               }
             : pharm,
 

@@ -10,7 +10,8 @@ export default function TravelConsultationTemplate({ consultation, data, pharmac
   // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
   const activePatient = (data && Object.keys(data).length > 0) ? data : context.patient;
   const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) ? pharmacist : (serviceId === "travelFollowUp" ? context.travelFollowUpOriginalData?.pharmacist_data : context.pharm) || {};
-  const activeConsultation = (consultation && Object.keys(consultation).length > 0) ? consultation : (serviceId === "travelFollowUp" ? context.travelFollowUpOriginalData?.consultation_data : context.travelConsultation) || {};
+  const activeConsultation = (consultation && Object.keys(consultation).length > 0) ? consultation : (serviceId === "travelFollowUp" ? (data.originalConsultation || pharmacist.originalConsultation || context.travelFollowUpOriginalData?.consultation_data) : context.travelConsultation) || {};
+
   
   // Use persistent history from props if available
   const history = activePharm?.history || context.travelFollowUpOriginalData?.history || [];

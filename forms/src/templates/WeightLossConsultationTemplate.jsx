@@ -8,14 +8,27 @@ export default function WeightLossConsultationTemplate({
   pharmacist = {},
   serviceId
 }) {
-  const { weightLossFollowupOriginalData } = useApp();
+  const context = useApp();
+
+  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
+  const activePatient = (data && Object.keys(data).length > 0) ? data : context.patient;
+  const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) ? pharmacist : context.pharm;
+  const activeConsultation = (consultation && Object.keys(consultation).length > 0) ? consultation : context.weightLossConsultation;
 
   const f = serviceId === "weightlossFollowup"
-    ? { ...(weightLossFollowupOriginalData?.patient_data || {}), ...(weightLossFollowupOriginalData?.pharmacist_data || {}) }
-    : data;
+    ? { 
+        ...(context.weightLossFollowupOriginalData?.patient_data || {}), 
+        ...(context.weightLossFollowupOriginalData?.pharmacist_data || {}),
+        ...activePharm,
+        ...data
+      }
+    : { ...activePatient, ...activePharm, ...data };
+
   const c = serviceId === "weightlossFollowup"
-    ? (weightLossFollowupOriginalData?.consultation_data || {})
-    : consultation;
+    ? (data.originalConsultation || pharmacist.originalConsultation || context.weightLossFollowupOriginalData?.consultation_data || {})
+    : activeConsultation;
+
+
   const safe = (val) => (val && val !== "" ? val : "—");
 
   // --- BMI Fallback Calculation ---

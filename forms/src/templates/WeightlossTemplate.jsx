@@ -2,15 +2,31 @@ import React from "react";
 import "./WeightlossTemplate.css";
 import { useApp } from "../AppContext.jsx";
 
-export default function WeightlossTemplate({ data = {}, serviceId }) {
-  const { weightLossFollowupOriginalData } = useApp();
+export default function WeightlossTemplate({ 
+  data = {}, 
+  patientForm = {}, 
+  pharmacistForm = {}, 
+  consultationData = {}, 
+  serviceId 
+}) {
+  const context = useApp();
+
+  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
+  const activePatient = (patientForm && Object.keys(patientForm).length > 0) ? patientForm : context.patient;
+  const activePharm = (pharmacistForm && Object.keys(pharmacistForm).length > 0) ? pharmacistForm : context.pharm;
+  const activeConsultation = (consultationData && Object.keys(consultationData).length > 0) ? consultationData : context.weightLossConsultation;
+
   const f = serviceId === "weightlossFollowup"
     ? {
-      ...(weightLossFollowupOriginalData?.patient_data || {}),
-      ...(weightLossFollowupOriginalData?.consultation_data || {}),
-      ...(weightLossFollowupOriginalData?.pharmacist_data || {})
+      ...(context.weightLossFollowupOriginalData?.patient_data || {}),
+      ...(context.weightLossFollowupOriginalData?.consultation_data || {}),
+      ...(context.weightLossFollowupOriginalData?.pharmacist_data || {}),
+      ...(data.originalConsultation || pharmacistForm.originalConsultation || {}),
+      ...activePharm, // overlay current session data
+      ...data,
     }
-    : data;
+
+    : { ...activePatient, ...activeConsultation, ...activePharm, ...data };
   const safe = (v) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : "—");
 
   // Build display strings from either unit set

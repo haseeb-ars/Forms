@@ -89,14 +89,15 @@ export async function generatePDFFromData({
   extraContext = {},
 }) {
   return new Promise(async (resolve) => {
+    const isACWY = fileName.includes("acwy-certificate");
     const host = document.createElement("div");
     Object.assign(host.style, {
       position: "absolute",
       left: "-99999px",
       top: "0",
-      width: "900px",
+      width: isACWY ? "680px" : "900px",
       background: "#fff",
-      padding: "24px",
+      padding: isACWY ? "0" : "24px",
       zIndex: "-1",
     });
     document.body.appendChild(host);
@@ -137,6 +138,7 @@ export async function generatePDFFromData({
           consultation={consultF}
           serviceId={serviceId}
           serviceName={serviceName}
+          isPDF={isACWY}
         />
       </AppContext.Provider>
     );
@@ -147,12 +149,12 @@ export async function generatePDFFromData({
 
     try {
       const canvas = await html2canvas(host, {
-        scale: 1.25,
+        scale: isACWY ? 2.5 : 1.25,
         useCORS: true,
         backgroundColor: "#ffffff",
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 0.72);
+      const imgData = canvas.toDataURL("image/jpeg", isACWY ? 1.0 : 0.72);
       const pdf = new jsPDF({
         orientation: "p",
         unit: "pt",

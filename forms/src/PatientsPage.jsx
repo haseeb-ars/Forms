@@ -193,6 +193,7 @@ export default function PatientsPage() {
             { key: "form", Comp: templates.meningitis, pdfName: "meningitis-form.pdf" },
             { key: "consult", Comp: templates.consultation, pdfName: "meningitis-consultation.pdf" },
             { key: "rx", Comp: templates.prescription, pdfName: "meningitis-prescription.pdf" },
+            { key: "acwy-cert", Comp: templates.acwyCertificate, pdfName: "acwy-certificate.pdf" },
           ];
           break;
 

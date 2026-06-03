@@ -7,13 +7,23 @@ import { useApp } from "../AppContext.jsx";
 export default function TravelConsultationTemplate({ consultation, data, pharmacist, serviceId }) {
   const context = useApp();
 
-  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
-  const activePatient = (data && Object.keys(data).length > 0) ? data : context.patient;
-  const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) ? pharmacist : (serviceId === "travelFollowUp" ? context.travelFollowUpOriginalData?.pharmacist_data : context.pharm) || {};
-  const activeConsultation = (consultation && Object.keys(consultation).length > 0) ? consultation : (serviceId === "travelFollowUp" ? (data.originalConsultation || pharmacist.originalConsultation || context.travelFollowUpOriginalData?.consultation_data) : context.travelConsultation) || {};
+  const origPatient = data.originalPatient || pharmacist.originalPatient || context.travelFollowUpOriginalData?.patient_data || {};
+  const origConsult = data.originalConsultation || pharmacist.originalConsultation || context.travelFollowUpOriginalData?.consultation_data || {};
+  const origMeds = data.originalMeds || pharmacist.originalMeds || context.travelFollowUpOriginalData?.pharmacist_data || {};
 
+  // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
+  const activePatient = (data && Object.keys(data).length > 0) 
+    ? { ...origPatient, ...data } 
+    : (serviceId === "travelFollowUp" ? origPatient : context.patient) || {};
   
-  // Use persistent history from props if available
+  const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) 
+    ? { ...origMeds, ...pharmacist } 
+    : (serviceId === "travelFollowUp" ? origMeds : context.pharm) || {};
+  
+  const activeConsultation = (consultation && Object.keys(consultation).length > 0)
+    ? { ...origConsult, ...consultation }
+    : (serviceId === "travelFollowUp" ? origConsult : context.travelConsultation) || {};
+  
   const history = activePharm?.history || context.travelFollowUpOriginalData?.history || [];
 
   const tc = activeConsultation;

@@ -12,10 +12,20 @@ export default function TravelTemplate({
 }) {
   const context = useApp();
   
+  const origPatient = data.originalPatient || pharmacistForm.originalPatient || context.travelFollowUpOriginalData?.patient_data || {};
+  const origConsult = data.originalConsultation || pharmacistForm.originalConsultation || context.travelFollowUpOriginalData?.consultation_data || {};
+
   // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
-  const activePatient = (patientForm && Object.keys(patientForm).length > 0) ? patientForm : context.patient;
+  const activePatient = (patientForm && Object.keys(patientForm).length > 0) 
+    ? { ...origPatient, ...patientForm } 
+    : (serviceId === "travelFollowUp" ? origPatient : context.patient) || {};
+  
   const activePharm = (pharmacistForm && Object.keys(pharmacistForm).length > 0) ? pharmacistForm : context.pharm;
-  const activeConsultation = (consultationData && Object.keys(consultationData).length > 0) ? consultationData : context.travelConsultation;
+  
+  const activeConsultation = (consultationData && Object.keys(consultationData).length > 0)
+    ? { ...origConsult, ...consultationData }
+    : (serviceId === "travelFollowUp" ? origConsult : context.travelConsultation) || {};
+  
   const history = activePharm?.history || context.travelFollowUpOriginalData?.history || [];
 
   // 🧠 Merge pharmacist + consultation data

@@ -10,6 +10,10 @@ export default function WeightLossConsultationTemplate({
 }) {
   const context = useApp();
 
+  const origPatient = data.originalPatient || pharmacist.originalPatient || context.weightLossFollowupOriginalData?.patient_data || {};
+  const origMeds = data.originalMeds || pharmacist.originalMeds || context.weightLossFollowupOriginalData?.pharmacist_data || {};
+  const origConsult = data.originalConsultation || pharmacist.originalConsultation || context.weightLossFollowupOriginalData?.consultation_data || {};
+
   // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
   const activePatient = (data && Object.keys(data).length > 0) ? data : context.patient;
   const activePharm = (pharmacist && Object.keys(pharmacist).length > 0) ? pharmacist : context.pharm;
@@ -17,15 +21,15 @@ export default function WeightLossConsultationTemplate({
 
   const f = serviceId === "weightlossFollowup"
     ? { 
-        ...(context.weightLossFollowupOriginalData?.patient_data || {}), 
-        ...(context.weightLossFollowupOriginalData?.pharmacist_data || {}),
+        ...origPatient, 
+        ...origMeds,
         ...activePharm,
         ...data
       }
     : { ...activePatient, ...activePharm, ...data };
 
   const c = serviceId === "weightlossFollowup"
-    ? (data.originalConsultation || pharmacist.originalConsultation || context.weightLossFollowupOriginalData?.consultation_data || {})
+    ? origConsult
     : activeConsultation;
 
 

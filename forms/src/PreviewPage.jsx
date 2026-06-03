@@ -285,10 +285,10 @@ export default function PreviewPage() {
     }
   }, [
     id, patient, pharm, branch, travelConsultation, weightLossConsultation,
-    weightLossFollowupConsultation, fluConsultation, covidConsultation,
+    fluConsultation, covidConsultation,
     b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation,
     perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation,
-    travelFollowUpOriginalData,
+    travelFollowUpOriginalData, weightLossFollowupOriginalData,
   ]);
 
     const tenant = useMemo(() => {
@@ -402,7 +402,7 @@ export default function PreviewPage() {
         setSaveStatus("error");
         setSaveError(err.message || "Failed to persist consultation.");
       }
-    }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation, tenant, travelFollowUpOriginalData]);
+    }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation, tenant, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
 
 
   useEffect(() => {

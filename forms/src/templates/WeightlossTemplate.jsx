@@ -11,6 +11,10 @@ export default function WeightlossTemplate({
 }) {
   const context = useApp();
 
+  const origPatient = data.originalPatient || pharmacistForm.originalPatient || context.weightLossFollowupOriginalData?.patient_data || {};
+  const origMeds = data.originalMeds || pharmacistForm.originalMeds || context.weightLossFollowupOriginalData?.pharmacist_data || {};
+  const origConsult = data.originalConsultation || pharmacistForm.originalConsultation || context.weightLossFollowupOriginalData?.consultation_data || {};
+
   // 🧩 Data Sourcing: Prioritize props (for PDFs/DB reloads), fallback to context (for live previews)
   const activePatient = (patientForm && Object.keys(patientForm).length > 0) ? patientForm : context.patient;
   const activePharm = (pharmacistForm && Object.keys(pharmacistForm).length > 0) ? pharmacistForm : context.pharm;
@@ -18,14 +22,12 @@ export default function WeightlossTemplate({
 
   const f = serviceId === "weightlossFollowup"
     ? {
-      ...(context.weightLossFollowupOriginalData?.patient_data || {}),
-      ...(context.weightLossFollowupOriginalData?.consultation_data || {}),
-      ...(context.weightLossFollowupOriginalData?.pharmacist_data || {}),
-      ...(data.originalConsultation || pharmacistForm.originalConsultation || {}),
+      ...origPatient,
+      ...origConsult,
+      ...origMeds,
       ...activePharm, // overlay current session data
       ...data,
     }
-
     : { ...activePatient, ...activeConsultation, ...activePharm, ...data };
   const safe = (v) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : "—");
 
@@ -112,13 +114,13 @@ export default function WeightlossTemplate({
         {serviceId === "weightlossFollowup" ? (
           <>
             <h2>Original Medication Plan</h2>
-            <p><strong>Medication:</strong> {safe(f.medication)}</p>
-            {f.medication === "Other" && (
-              <p><strong>Specified Medication:</strong> {safe(f.otherMedication)}</p>
+            <p><strong>Medication:</strong> {safe(origMeds.medication)}</p>
+            {origMeds.medication === "Other" && (
+              <p><strong>Specified Medication:</strong> {safe(origMeds.otherMedication)}</p>
             )}
-            <p><strong>Dosage:</strong> {safe(f.dosage)}</p>
-            <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
-            <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+            <p><strong>Dosage:</strong> {safe(origMeds.dosage)}</p>
+            <p><strong>Start Date:</strong> {safe(origMeds.startDate)}</p>
+            <p><strong>Batch Number:</strong> {safe(origMeds.batchNumber)}</p>
 
             <h2 style={{ marginTop: "16px" }}>Follow-Up Medication Plan (Current Session)</h2>
             <p><strong>Dispensed Medication:</strong> {safe(data.medication)}</p>

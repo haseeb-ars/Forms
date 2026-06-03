@@ -133,6 +133,77 @@ export default function PatientsPage() {
 
       const submission = result.row;
 
+      if (submission.service === "travelFollowUp") {
+        // 1. Fetch original travel submission
+        const origResult = await fetchSubmissionByName({
+          name: row.name,
+          dob: row.dob,
+          service: "travel",
+          tenant,
+        });
+        const origRow = (origResult.ok && origResult.row) ? origResult.row : null;
+
+        // 2. Build cumulative history from all visits
+        const allVisits = rows.filter(r => 
+          r.name === row.name && 
+          r.dob === row.dob && 
+          (r.service === "travel" || r.service === "travelFollowUp")
+        );
+        // Sort by date (oldest first)
+        allVisits.sort((a, b) => new Date(a.created_at || a.date) - new Date(b.created_at || b.date));
+
+        const history = [];
+        for (const visit of allVisits) {
+          if (new Date(visit.created_at || visit.date) < new Date(row.created_at || row.date)) {
+            const vResult = await fetchSubmissionByName({
+              name: visit.name,
+              dob: visit.dob,
+              service: visit.service,
+              tenant,
+            });
+            if (vResult.ok && vResult.row) {
+              const rxData = vResult.row.pharmacist_data || {};
+              const vax = Array.isArray(rxData.vaccines) ? rxData.vaccines : [];
+              const malVax = Array.isArray(rxData.malariaVaccines) ? rxData.malariaVaccines : [];
+              const fupVax = Array.isArray(rxData.followUpVaccines) ? rxData.followUpVaccines : [];
+              history.push(...vax, ...malVax, ...fupVax);
+            }
+          }
+        }
+
+        submission.pharmacist_data = {
+          ...submission.pharmacist_data,
+          history,
+          originalPatient: submission.pharmacist_data?.originalPatient || origRow?.patient_data || {},
+          originalMeds: submission.pharmacist_data?.originalMeds || origRow?.pharmacist_data || {},
+          originalConsultation: submission.pharmacist_data?.originalConsultation || origRow?.consultation_data || {},
+        };
+
+        if (!submission.consultation_data || Object.keys(submission.consultation_data).length === 0) {
+          submission.consultation_data = origRow?.consultation_data || {};
+        }
+      } else if (submission.service === "weightlossFollowup") {
+        // Fetch original weightloss submission
+        const origResult = await fetchSubmissionByName({
+          name: row.name,
+          dob: row.dob,
+          service: "weightloss",
+          tenant,
+        });
+        const origRow = (origResult.ok && origResult.row) ? origResult.row : null;
+
+        submission.pharmacist_data = {
+          ...submission.pharmacist_data,
+          originalPatient: submission.pharmacist_data?.originalPatient || origRow?.patient_data || {},
+          originalMeds: submission.pharmacist_data?.originalMeds || origRow?.pharmacist_data || {},
+          originalConsultation: submission.pharmacist_data?.originalConsultation || origRow?.consultation_data || {},
+        };
+
+        if (!submission.consultation_data || Object.keys(submission.consultation_data).length === 0) {
+          submission.consultation_data = origRow?.consultation_data || {};
+        }
+      }
+
       /* ------------------------------
          Match templates to service
          (mirrors PreviewPage)

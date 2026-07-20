@@ -14,6 +14,7 @@ import TravelConsultationPage from "./TravelConsultationPage.jsx";
 import WeightlossConsultationPage from "./WeightLossConsultationPage.jsx";
 import ConsultationPage from "./ConsultationPage.jsx"; // ✅ Shared for earwax, flu, covid, b12
 import ContraceptionConsultationPage from "./ContraceptionConsultationPage.jsx";
+import EmployeeAppraisalFormPage from "./EmployeeAppraisalFormPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
 
 import "./App.css";
@@ -86,6 +87,25 @@ function AppShell() {
             element={
               <RequireAuth>
                 <HolidaysPage />
+              </RequireAuth>
+            }
+          />
+
+          {/* 👔 Employee Performance Appraisal Form */}
+          <Route
+            path="/service/employeeAppraisal/form"
+            element={
+              <RequireAuth>
+                <EmployeeAppraisalFormPage />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/service/employeeAppraisal/patient"
+            element={
+              <RequireAuth>
+                <EmployeeAppraisalFormPage />
               </RequireAuth>
             }
           />

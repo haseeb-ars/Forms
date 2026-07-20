@@ -10,8 +10,11 @@ export default function ServiceSelectPage() {
 
 const handleSelect = (serviceId) => {
   setSelectedFormType(serviceId);
-  // 🔹 All services now start with the Patient Form
-  navigate(`/service/${serviceId}/patient`);
+  if (serviceId === "employeeAppraisal") {
+    navigate(`/service/employeeAppraisal/form`);
+  } else {
+    navigate(`/service/${serviceId}/patient`);
+  }
 };
 
 

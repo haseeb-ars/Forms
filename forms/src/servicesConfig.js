@@ -612,6 +612,21 @@ export const services = [
     ],
     template: "ContraceptionTemplate"
   },
-
+  {
+    id: "employeeAppraisal",
+    name: "Employee Performance Appraisal Form",
+    color: "#4f46e5",
+    patientFields: [
+      { name: "employeeName", label: "Employee Name", type: "text", required: true },
+      { name: "employeeId", label: "Employee ID", type: "text", required: true },
+      { name: "jobTitle", label: "Job Title", type: "text", required: true },
+      { name: "department", label: "Department", type: "text", required: true },
+      { name: "managerName", label: "Manager/Supervisor Name", type: "text", required: true },
+      { name: "startDate", label: "Employment Start Date", type: "date", required: true },
+      { name: "appraisalDate", label: "Date of Appraisal", type: "date", required: true },
+    ],
+    pharmacistFields: [],
+    template: "EmployeeAppraisalTemplate"
+  }
 ];
 

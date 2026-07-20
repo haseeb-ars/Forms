@@ -114,6 +114,38 @@ export const DEFAULT_PRIVATE_PRESCRIPTION_CONSULTATION = {
   otherNotes: "",
 };
 
+// 🔹 Default Employee Performance Appraisal Form
+export const DEFAULT_EMPLOYEE_APPRAISAL = {
+  employeeName: "",
+  employeeId: "",
+  jobTitle: "",
+  department: "",
+  managerName: "",
+  startDate: "",
+  appraisalDate: "",
+  qualityOfWork: 5,
+  productivity: 5,
+  communicationSkills: 5,
+  teamwork: 5,
+  attendance: 5,
+  problemSolving: 5,
+  initiative: 5,
+  policyCompliance: 5,
+  keyAchievements: "",
+  goalsMet: "",
+  areasForImprovement: "",
+  trainingNeeds: "",
+  careerObjectives: "",
+  agreedActionPlan: "",
+  overallRating: 5,
+  managerComments: "",
+  employeeComments: "",
+  recommendation: "Meets Expectations",
+  employeeSignature: "",
+  managerSignature: "",
+  dateSigned: "",
+};
+
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
 
@@ -148,6 +180,8 @@ export function AppProvider({ children }) {
   const [contraceptionConsultation, setContraceptionConsultation] = useState({});
   const [privatePrescriptionConsultation, setPrivatePrescriptionConsultation] =
     useState({});
+  const [employeeAppraisalConsultation, setEmployeeAppraisalConsultation] =
+    useState(DEFAULT_EMPLOYEE_APPRAISAL);
   const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
     useState({});
   const [weightLossFollowupOriginalData, setWeightLossFollowupOriginalData] = useState(null);
@@ -250,6 +284,7 @@ export function AppProvider({ children }) {
     setMmrConsultation({}); // ✅ clear on logout
     setMeningitisConsultation({}); // ✅ clear on logout
     setContraceptionConsultation({}); // ✅ clear on logout
+    setEmployeeAppraisalConsultation(DEFAULT_EMPLOYEE_APPRAISAL); // ✅ clear on logout
   };
 
   return (
@@ -309,6 +344,9 @@ export function AppProvider({ children }) {
 
         privatePrescriptionConsultation,
         setPrivatePrescriptionConsultation,
+
+        employeeAppraisalConsultation,
+        setEmployeeAppraisalConsultation,
 
         travelFollowUpOriginalData,
         setTravelFollowUpOriginalData,

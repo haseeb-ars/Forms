@@ -292,6 +292,12 @@ export default function PatientsPage() {
           ];
           break;
 
+        case "employeeAppraisal":
+          serviceTabs = [
+            { key: "form", Comp: templates.employeeAppraisal, pdfName: "employee-performance-appraisal.pdf" },
+          ];
+          break;
+
         case "covid":
         case "b12":
         case "earwax": {

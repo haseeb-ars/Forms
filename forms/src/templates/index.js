@@ -17,9 +17,7 @@ import MeningitisTemplate from "./MeningitisTemplate.jsx";
 import ContraceptionTemplate from "./ContraceptionTemplate.jsx";
 import ContraceptionConsultationTemplate from "./ContraceptionConsultationTemplate.jsx";
 import ACWYCertificateTemplate from "./ACWYCertificateTemplate.jsx";
-
-
-// ⭐ NEW shared templates
+import EmployeeAppraisalTemplate from "./EmployeeAppraisalTemplate.jsx";
 import ConsultationTemplate from "./ConsultationTemplate.jsx";
 import PrescriptionTemplate from "./PrescriptionTemplate.jsx";
 import TravelConsultationTemplate from "./TravelConsultationTemplate.jsx";
@@ -49,6 +47,7 @@ const templates = {
   contraception: ContraceptionTemplate,
   contraceptionConsultation: ContraceptionConsultationTemplate,
   acwyCertificate: ACWYCertificateTemplate,
+  employeeAppraisal: EmployeeAppraisalTemplate,
 
 
 

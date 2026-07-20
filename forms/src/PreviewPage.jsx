@@ -30,6 +30,8 @@ import ContraceptionConsultationTemplate from "./templates/ContraceptionConsulta
 import ACWYCertificateTemplate from "./templates/ACWYCertificateTemplate.jsx";
 
 
+import EmployeeAppraisalTemplate from "./templates/EmployeeAppraisalTemplate.jsx";
+
 /* -------------------------------
    Date helpers
 ---------------------------------- */
@@ -116,6 +118,7 @@ export default function PreviewPage() {
     meningitisConsultation,
     perioddelayConsultation,
     privatePrescriptionConsultation,
+    employeeAppraisalConsultation,
     weightLossFollowupConsultation,
     contraceptionConsultation,
     travelFollowUpOriginalData,
@@ -199,6 +202,10 @@ export default function PreviewPage() {
           { key: "consult", label: "Consultation", Comp: ContraceptionConsultationTemplate, pdfName: "contraception-consultation.pdf" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "contraception-prescription.pdf" },
         ];
+      case "employeeAppraisal":
+        return [
+          { key: "form", label: "Appraisal Form", Comp: EmployeeAppraisalTemplate, pdfName: "employee-performance-appraisal.pdf" },
+        ];
       case "followupprescription":
         return [
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "follow-up-prescription.pdf" },
@@ -227,6 +234,7 @@ export default function PreviewPage() {
       case "meningitis": return meningitisConsultation;
       case "perioddelay": return perioddelayConsultation;
       case "contraception": return contraceptionConsultation;
+      case "employeeAppraisal": return employeeAppraisalConsultation;
       case "travelFollowUp": return travelFollowUpOriginalData?.consultation_data || {};
       default: return {};
     }
@@ -234,7 +242,7 @@ export default function PreviewPage() {
     id, travelConsultation, weightLossConsultation, weightLossFollowupConsultation,
     fluConsultation, covidConsultation, b12Consultation, earwaxConsultation,
     mmrConsultation, meningitisConsultation, perioddelayConsultation,
-    privatePrescriptionConsultation, contraceptionConsultation, travelFollowUpOriginalData?.consultation_data,
+    privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, travelFollowUpOriginalData?.consultation_data,
   ]);
 
   const getMergedData = useCallback(() => {
@@ -266,6 +274,7 @@ export default function PreviewPage() {
       case "meningitis": return mergeAll(meningitisConsultation);
       case "perioddelay": return mergeAll(perioddelayConsultation);
       case "contraception": return mergeAll(contraceptionConsultation);
+      case "employeeAppraisal": return mergeAll(employeeAppraisalConsultation);
       case "travelFollowUp": {
         const pData = travelFollowUpOriginalData?.patient_data || pharm.originalPatient || {};
         const rxData = travelFollowUpOriginalData?.pharmacist_data || pharm.originalMeds || {};
@@ -287,7 +296,7 @@ export default function PreviewPage() {
     id, patient, pharm, branch, travelConsultation, weightLossConsultation,
     fluConsultation, covidConsultation,
     b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation,
-    perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation,
+    perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
     travelFollowUpOriginalData, weightLossFollowupOriginalData,
   ]);
 
@@ -453,7 +462,7 @@ export default function PreviewPage() {
         patient, pharm, currentUser, branch, travelConsultation, weightLossConsultation,
         fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation,
         meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation,
-        contraceptionConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
+        contraceptionConsultation, employeeAppraisalConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
       }}>
         <Comp
           data={mergedData} consultation={consultF} pharmacist={pharmF}
@@ -493,7 +502,7 @@ export default function PreviewPage() {
       try { root.unmount(); } catch { }
       document.body.removeChild(host);
     }
-  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
+  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
 
   const downloadPDFs = useCallback(async () => {
     for (const tab of serviceTabs) {

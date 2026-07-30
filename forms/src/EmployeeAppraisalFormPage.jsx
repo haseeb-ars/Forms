@@ -137,7 +137,8 @@ export default function EmployeeAppraisalFormPage() {
   };
 
   return (
-    <form className="appraisal-form" onSubmit={handleSubmit}>
+    <div className="appraisal-form-wrapper">
+      <form className="appraisal-form" onSubmit={handleSubmit}>
       <div className="appraisal-header">
         <span className="appraisal-badge">CarePlusHealth HR</span>
         <h2>Employee Performance Appraisal Form</h2>
@@ -442,10 +443,11 @@ export default function EmployeeAppraisalFormPage() {
       </section>
 
       <div className="form-actions">
-        <button type="submit" className="btn btn--primary btn--lg">
-          Generate Preview & Save Appraisal
+        <button type="submit" className="cph-btn cph-btn-primary" style={{ padding: "12px 28px", fontSize: "1rem" }}>
+          Generate Preview &amp; Save Appraisal →
         </button>
       </div>
     </form>
+  </div>
   );
 }

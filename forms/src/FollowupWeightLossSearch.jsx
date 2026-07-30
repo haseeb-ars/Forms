@@ -1,185 +1,268 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchPatients, fetchSubmissionByName } from "./api";
+import { fetchPatients, fetchConsultationHistory } from "./api";
 import { useApp } from "./AppContext";
-import "./PatientsPage.css"; // Reuse table styling
+import ConsultationHistoryTimeline from "./ConsultationHistoryTimeline";
+import "./designSystem.css";
+import "./PatientsPage.css";
 
 export default function FollowupWeightLossSearch() {
-    const navigate = useNavigate();
-    const { currentUser, setWeightLossFollowupOriginalData, setPatient } = useApp();
+  const navigate = useNavigate();
+  const { currentUser, setWeightLossFollowupOriginalData, setPatient } = useApp();
 
-    const [patients, setPatients] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedPatientHistory, setSelectedPatientHistory] = useState(null);
+  const [fetchingHistory, setFetchingHistory] = useState(false);
 
-    const [searchName, setSearchName] = useState("");
-    const [searchDob, setSearchDob] = useState("");
-    const [searchEmail, setSearchEmail] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchDob, setSearchDob] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
 
-    const tenant = useMemo(() => {
-        const n = (currentUser?.name || "").toUpperCase();
-        if (n.includes("WILMSLOW")) return "WRP";
-        if (n.includes("CAREPLUS")) return "CPC";
-        if (n.includes("247")) return "247";
-        return "";
-    }, [currentUser]);
+  const tenant = useMemo(() => {
+    const n = (currentUser?.name || "").toUpperCase();
+    if (n.includes("WILMSLOW")) return "WRP";
+    if (n.includes("CAREPLUS")) return "CPC";
+    if (n.includes("247")) return "247";
+    return "";
+  }, [currentUser]);
 
-    useEffect(() => {
-        if (!tenant) {
-            setError("No tenant found for user.");
-            setLoading(false);
-            return;
+  useEffect(() => {
+    fetchPatients(tenant || "")
+      .then((data) => {
+        // Keep weightloss and weightlossFollowup
+        const weightLossPatients = data.filter(
+          (r) => r.service === "weightloss" || r.service === "weightlossFollowup"
+        );
+
+        // Deduplicate by name & dob
+        const unique = [];
+        const seen = new Set();
+        for (const p of weightLossPatients) {
+          const key = `${(p.name || "").trim().toLowerCase()}|${p.dob || ""}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(p);
+          }
         }
+        setPatients(unique);
+      })
+      .catch((err) => setError(`Failed to load patients: ${err.message}`))
+      .finally(() => setLoading(false));
+  }, [tenant]);
 
-        fetchPatients(tenant)
-            .then((data) => {
-                // Only keep weightloss
-                const weightLossPatients = data.filter((r) => r.service === "weightloss");
-                setPatients(weightLossPatients);
-            })
-            .catch((err) => setError(`Failed to load patients: ${err.message}`))
-            .finally(() => setLoading(false));
-    }, [tenant]);
+  const filteredPatients = useMemo(() => {
+    return patients.filter((p) => {
+      if (searchName && !(p.name || "").toLowerCase().includes(searchName.toLowerCase())) return false;
+      if (searchDob && !p.dob?.includes(searchDob)) return false;
+      if (searchEmail && !(p.email || "").toLowerCase().includes(searchEmail.toLowerCase())) return false;
+      return true;
+    });
+  }, [patients, searchName, searchDob, searchEmail]);
 
-    const filteredPatients = useMemo(() => {
-        return patients.filter((p) => {
-            if (searchName && !(p.name || "").toLowerCase().includes(searchName.toLowerCase())) return false;
-            if (searchDob && !p.dob?.includes(searchDob)) return false;
-            if (searchEmail && !(p.email || "").toLowerCase().includes(searchEmail.toLowerCase())) return false;
-            return true;
+  const handleSelectPatient = async (row) => {
+    try {
+      setFetchingHistory(true);
+      setError("");
+
+      let history = [];
+      try {
+        history = await fetchConsultationHistory({
+          name: row.name,
+          dob: row.dob,
+          service: "weightloss",
         });
-    }, [patients, searchName, searchDob, searchEmail]);
+      } catch (err) {
+        console.warn("History lookup error, using row fallback", err);
+      }
 
-    const handleSelectPatient = async (row) => {
-        try {
-            setLoading(true);
-            const result = await fetchSubmissionByName({
-                name: row.name,
-                dob: row.dob,
-                service: "weightloss",
-                tenant,
-            });
+      // Latest visit or fallback to row
+      const latest = (history && history.length > 0) ? history[history.length - 1] : row;
+      const pData = latest.patient_data || latest.patient || {
+        fullName: row.name,
+        name: row.name,
+        dob: row.dob,
+        email: row.email,
+        date: row.created_at || row.date,
+      };
+      const cData = latest.consultation_data || latest.consultation || {};
+      const rxData = latest.pharmacist_data || latest.pharmacist || {};
 
-            if (!result.ok || !result.row) {
-                alert("Could not load original weight loss consultation for this patient.");
-                setLoading(false);
-                return;
-            }
+      setWeightLossFollowupOriginalData({
+        patient_data: pData,
+        consultation_data: cData,
+        pharmacist_data: rxData,
+        history: history.length > 0 ? history : [latest],
+      });
 
-            const { patient_data, consultation_data, pharmacist_data } = result.row;
+      setPatient(pData || {});
+      navigate(`/service/weightlossFollowup/pharmacist`);
+    } catch (err) {
+      console.error("Selection error:", err);
+      const pData = row.patient_data || { fullName: row.name, name: row.name, dob: row.dob, email: row.email };
+      setWeightLossFollowupOriginalData({
+        patient_data: pData,
+        consultation_data: row.consultation_data || {},
+        pharmacist_data: row.pharmacist_data || {},
+        history: [row],
+      });
+      setPatient(pData);
+      navigate(`/service/weightlossFollowup/pharmacist`);
+    } finally {
+      setFetchingHistory(false);
+    }
+  };
 
-            // Seed context
-            setWeightLossFollowupOriginalData({
-                patient_data,
-                consultation_data,
-                pharmacist_data,
-            });
 
-            // Keep superficial patient details so standard preview checks still see it
-            setPatient(patient_data || {});
+  const handlePreviewHistory = async (row) => {
+    try {
+      setFetchingHistory(true);
+      const history = await fetchConsultationHistory({
+        name: row.name,
+        dob: row.dob,
+        service: "weightloss",
+      });
+      setSelectedPatientHistory({ patient: row, history });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFetchingHistory(false);
+    }
+  };
 
-            // Navigate straight to Pharmacist Form (bypass consultation)
-            navigate(`/service/weightlossFollowup/pharmacist`);
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "—";
+    try {
+      return new Date(dateStr).toLocaleDateString("en-GB");
+    } catch {
+      return dateStr;
+    }
+  };
 
-        } catch (err) {
-            console.error(err);
-            alert("Error loading patient data: " + err.message);
-            setLoading(false);
-        }
-    };
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "—";
-        try {
-            return new Date(dateStr).toLocaleDateString("en-GB");
-        } catch {
-            return dateStr;
-        }
-    };
-
-    return (
-        <div className="patients-page patients" style={{ padding: 24 }}>
-            <h2 style={{ marginBottom: 8 }}>Search Previous Weight Loss Consultation</h2>
-            <p style={{ marginBottom: 20, color: '#6b7280' }}>Select an existing weight loss patient to register their follow-up formulation.</p>
-
-            {error && <div className="error-message">{error}</div>}
-
-            <div className="patients__filters">
-                <div className="patients__filter-group">
-                    <label>Search Name</label>
-                    <input
-                        type="text"
-                        className="patients__filter-input"
-                        placeholder="John Doe..."
-                        value={searchName}
-                        onChange={(e) => setSearchName(e.target.value)}
-                    />
-                </div>
-                <div className="patients__filter-group">
-                    <label>Date of Birth</label>
-                    <input
-                        type="date"
-                        className="patients__filter-input"
-                        value={searchDob}
-                        onChange={(e) => setSearchDob(e.target.value)}
-                    />
-                </div>
-                <div className="patients__filter-group">
-                    <label>Email</label>
-                    <input
-                        type="text"
-                        className="patients__filter-input"
-                        placeholder="email@..."
-                        value={searchEmail}
-                        onChange={(e) => setSearchEmail(e.target.value)}
-                    />
-                </div>
-            </div>
-
-            {loading ? (
-                <p>Loading weight loss patients...</p>
-            ) : (
-                <div className="tablewrap">
-                    <table className="table patients-table">
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>DOB</th>
-                                <th>Email</th>
-                                <th>Orig. Consultation Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPatients.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                                        No previous weight loss patients found matching your search.
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredPatients.map((p) => (
-                                    <tr key={p.id}>
-                                        <td style={{ fontWeight: 500, color: '#111827' }}>{p.name}</td>
-                                        <td>{formatDate(p.dob)}</td>
-                                        <td>{p.email || "—"}</td>
-                                        <td>{formatDate(p.created_at || p.date)}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn--primary"
-                                                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
-                                                onClick={() => handleSelectPatient(p)}
-                                            >
-                                                Select & Continue
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+  return (
+    <div className="patients-page patients" style={{ padding: 24 }}>
+      <div className="cph-card" style={{ marginBottom: 20 }}>
+        <div className="cph-card-header">
+          <div>
+            <h2 className="cph-card-title">⚖️ Search Weight Loss Patient Follow-Up</h2>
+            <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: "0.9rem" }}>
+              Search for an existing patient to view their complete consultation history chain and start a follow-up visit.
+            </p>
+          </div>
+          <span className="cph-badge cph-badge-emerald">
+            {tenant ? `Tenant: ${tenant}` : "All Branches"}
+          </span>
         </div>
-    );
+
+        {error && (
+          <div className="error-message" style={{ background: "#fef2f2", color: "#b91c1c", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        <div className="patients__filters">
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Search Name</label>
+            <input
+              type="text"
+              className="cph-input"
+              placeholder="e.g. Jane Smith..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+            />
+          </div>
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Date of Birth</label>
+            <input
+              type="date"
+              className="cph-input"
+              value={searchDob}
+              onChange={(e) => setSearchDob(e.target.value)}
+            />
+          </div>
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Email</label>
+            <input
+              type="text"
+              className="cph-input"
+              placeholder="email@..."
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {selectedPatientHistory && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0, color: "#0f172a" }}>
+              Patient History Chain: <strong>{selectedPatientHistory.patient.name}</strong>
+            </h3>
+            <button className="cph-btn cph-btn-secondary" onClick={() => setSelectedPatientHistory(null)}>
+              Close Timeline Preview
+            </button>
+          </div>
+          <ConsultationHistoryTimeline history={selectedPatientHistory.history} serviceType="weightloss" />
+        </div>
+      )}
+
+      {loading || fetchingHistory ? (
+        <div className="cph-card" style={{ textAlign: "center", padding: 40 }}>
+          <p style={{ color: "#166534", fontWeight: 600 }}>Loading patient history chain...</p>
+        </div>
+      ) : (
+        <div className="tablewrap">
+          <table className="table patients-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>DOB</th>
+                <th>Email</th>
+                <th>Last Visit Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPatients.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: "center", padding: "2rem", color: "#6b7280" }}>
+                    No previous Weight Loss consultations found matching your search criteria.
+                  </td>
+                </tr>
+              ) : (
+                filteredPatients.map((p) => (
+                  <tr key={p.id}>
+                    <td style={{ fontWeight: 600, color: "#0f172a" }}>{p.name}</td>
+                    <td>{formatDate(p.dob)}</td>
+                    <td>{p.email || "—"}</td>
+                    <td>{formatDate(p.created_at || p.date)}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          className="cph-btn cph-btn-primary"
+                          style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                          onClick={() => handleSelectPatient(p)}
+                        >
+                          Start Follow-Up
+                        </button>
+                        <button
+                          className="cph-btn cph-btn-secondary"
+                          style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                          onClick={() => handlePreviewHistory(p)}
+                        >
+                          📜 View Timeline
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }

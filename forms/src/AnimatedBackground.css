@@ -1,0 +1,71 @@
+/* AnimatedBackground.css - Premium Glassmorphism & Healthcare Canvas */
+
+.animated-bg-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: #f8fafc;
+}
+
+.gradient-mesh-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 10% 10%, rgba(22, 101, 52, 0.06) 0%, transparent 45%),
+              radial-gradient(circle at 90% 85%, rgba(99, 102, 241, 0.05) 0%, transparent 45%),
+              radial-gradient(circle at 50% 45%, rgba(2, 132, 199, 0.04) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.healthcare-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-effects-controls {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 999;
+}
+
+.bg-effect-toggle-btn {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.bg-effect-toggle-btn:hover {
+  background: #ffffff;
+  color: #166534;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.animated-bg-content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .bg-effects-controls {
+    display: none;
+  }
+}

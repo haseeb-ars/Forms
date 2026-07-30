@@ -2,51 +2,79 @@
 import { services } from "./servicesConfig";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "./AppContext.jsx";
+import "./designSystem.css";
 import "./ServiceSelectPage.css";
+
+const SERVICE_ICONS = {
+  perioddelay: "🌸",
+  b12: "💉",
+  weightloss: "⚖️",
+  weightlossFollowup: "📉",
+  earwax: "👂",
+  flu: "🛡️",
+  covid: "🔬",
+  travel: "✈️",
+  travelFollowUp: "🧭",
+  privateprescription: "💊",
+  followupprescription: "📝",
+  mmr: "💉",
+  meningitis: "🧠",
+  contraception: "🌸",
+  employeeAppraisal: "👔",
+  healthyLivingLog: "📋",
+};
 
 export default function ServiceSelectPage() {
   const navigate = useNavigate();
-  const { setSelectedFormType } = useApp();
+  const { setSelectedFormType, branch, currentUser } = useApp();
 
-const handleSelect = (serviceId) => {
-  setSelectedFormType(serviceId);
-  if (serviceId === "employeeAppraisal") {
-    navigate(`/service/employeeAppraisal/form`);
-  } else if (serviceId === "healthyLivingLog") {
-    navigate(`/service/healthyLivingLog/form`);
-  } else {
-    navigate(`/service/${serviceId}/patient`);
-  }
-};
+  const handleSelect = (serviceId) => {
+    setSelectedFormType(serviceId);
+    if (serviceId === "employeeAppraisal") {
+      navigate(`/service/employeeAppraisal/form`);
+    } else if (serviceId === "healthyLivingLog") {
+      navigate(`/service/healthyLivingLog/form`);
+    } else {
+      navigate(`/service/${serviceId}/patient`);
+    }
+  };
 
-
-  // ✅ Do NOT add private prescription here — it’s already in servicesConfig.js
-  const allServices = [
-    ...services,
-    // placeholder cards
-    { id: "placeholder1", name: "Lorem Ipsum", color: "#6366f1", placeholder: true },
-    { id: "placeholder2", name: "Dolor Sit", color: "#8b5cf6", placeholder: true },
-    { id: "placeholder3", name: "Amet Consectetur", color: "#f59e0b", placeholder: true },
-    { id: "placeholder4", name: "Adipiscing Elit", color: "#10b981", placeholder: true },
-    { id: "placeholder5", name: "Sed Do Eiusmod", color: "#ef4444", placeholder: true },
-    { id: "placeholder6", name: "Tempor Incididunt", color: "#06b6d4", placeholder: true },
-  ];
+  const activeServices = services;
 
   return (
-    <div className="bento-grid">
-      {allServices.map((s) => (
-        <div
-          key={s.id}
-          className={`bento-card ${s.placeholder ? "placeholder" : "service"}`}
-          style={{ backgroundColor: s.color }}
-          onClick={() => !s.placeholder && handleSelect(s.id)}
-        >
-          <div className="bento-content">
-            <h3>{s.name}</h3>
-            {s.placeholder && <p>Coming Soon</p>}
-          </div>
+    <div className="service-select-container">
+      <div className="service-select-header">
+        <div className="service-header-info">
+          <h1>CarePlus Health Services Portal</h1>
+          <p>Select a service below to initiate patient registration, consultation, or follow-up form.</p>
         </div>
-      ))}
+        <span className="cph-badge cph-badge-emerald" style={{ padding: "8px 16px", fontSize: "0.85rem" }}>
+          🏢 {branch?.pharmacyName || currentUser?.name || "CarePlus Health"}
+        </span>
+      </div>
+
+      <div className="bento-grid">
+        {activeServices.map((s) => (
+          <div
+            key={s.id}
+            className="bento-card service"
+            style={{ backgroundColor: s.color || "#166534" }}
+            onClick={() => handleSelect(s.id)}
+          >
+            <div className="bento-content">
+              <div className="bento-top-row">
+                <span className="service-icon-badge">
+                  {SERVICE_ICONS[s.id] || "📋"}
+                </span>
+              </div>
+              <h3>{s.name}</h3>
+              <div className="bento-bottom-row">
+                <span className="start-btn-label">Open Service Form →</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,63 +1,63 @@
-.appraisal-form {
-  max-width: 960px;
+/* EmployeeAppraisalFormPage.css - Premium CarePlus SaaS Theme */
+@import "./designSystem.css";
+
+.appraisal-form-wrapper {
+  max-width: 1000px;
   margin: 0 auto;
   padding: 24px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
 }
 
 .appraisal-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #eef2f6;
+  background: var(--cph-glass-bg);
+  backdrop-filter: var(--cph-glass-backdrop);
+  border: var(--cph-glass-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--cph-shadow-md);
 }
 
 .appraisal-badge {
   display: inline-block;
-  background: #e0e7ff;
-  color: #3730a3;
+  background: var(--cph-primary-50);
+  color: var(--cph-primary-600);
+  border: 1px solid var(--cph-primary-200);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
   margin-bottom: 8px;
 }
 
 .appraisal-header h2 {
   font-size: 1.75rem;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--cph-slate-900);
   margin: 4px 0 8px 0;
 }
 
 .appraisal-subtitle {
-  color: #64748b;
+  color: var(--cph-slate-500);
   font-size: 0.95rem;
   margin: 0;
 }
 
-.validation-alert {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-weight: 600;
+.appraisal-section {
+  background: #ffffff;
+  border: 1px solid var(--cph-slate-200);
+  border-radius: 14px;
+  padding: 24px;
   margin-bottom: 24px;
+  box-shadow: var(--cph-shadow-md);
+  transition: transform var(--cph-transition-smooth), box-shadow var(--cph-transition-smooth);
+  animation: cphFadeInUp 0.35s ease-out;
 }
 
-.appraisal-section {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
+.appraisal-section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cph-shadow-lg);
 }
 
 .section-header {
@@ -71,121 +71,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: #4f46e5;
+  width: 32px;
+  height: 32px;
+  background: var(--cph-primary-600);
   color: #ffffff;
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-weight: 800;
+  font-size: 0.9rem;
   border-radius: 50%;
 }
 
 .section-header h3 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--cph-slate-900);
   margin: 0;
-}
-
-.req-star {
-  font-size: 0.8rem;
-  color: #ef4444;
-  font-weight: 600;
-  margin-left: 6px;
-}
-
-.section-desc {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin-top: -8px;
-  margin-bottom: 16px;
-}
-
-/* Ratings Grid */
-.ratings-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .rating-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  padding: 12px 16px;
+  background: var(--cph-slate-50);
+  border: 1px solid var(--cph-slate-200);
+  padding: 14px 18px;
   border-radius: 10px;
   gap: 16px;
-}
-
-.rating-info h4 {
-  margin: 0 0 2px 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.rating-info p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #64748b;
-}
-
-.rating-buttons {
-  display: flex;
-  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .rating-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--cph-slate-300);
   background: #ffffff;
-  color: #334155;
+  color: var(--cph-slate-700);
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.15s ease-in-out;
+  transition: all var(--cph-transition-fast);
 }
 
 .rating-btn:hover {
-  border-color: #4f46e5;
-  color: #4f46e5;
-  background: #e0e7ff;
+  border-color: var(--cph-primary-500);
+  color: var(--cph-primary-600);
+  background: var(--cph-primary-50);
 }
 
 .rating-btn.active {
-  background: #4f46e5;
+  background: var(--cph-primary-600);
   color: #ffffff;
-  border-color: #4f46e5;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-}
-
-.rating-buttons--large .rating-btn--large {
-  width: 48px;
-  height: 48px;
-  font-size: 1.1rem;
-}
-
-.overall-score-picker {
-  margin-bottom: 20px;
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 28px;
-}
-
-.btn--lg {
-  padding: 14px 28px;
-  font-size: 1rem;
-  font-weight: 700;
-  border-radius: 10px;
+  border-color: var(--cph-primary-600);
+  box-shadow: 0 4px 10px rgba(22, 101, 52, 0.25);
 }

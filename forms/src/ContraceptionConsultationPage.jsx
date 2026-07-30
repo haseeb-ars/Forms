@@ -34,8 +34,18 @@ export default function ContraceptionConsultationPage() {
   };
 
   return (
-    <form className="contraception-consultation" onSubmit={handleSubmit}>
-      <h1 className="consultation-title">Contraception Consultation</h1>
+    <div className="contraception-consultation-wrapper">
+      <div className="contraception-header">
+        <div className="contraception-title-group">
+          <h2>🌸 Contraception Service Consultation</h2>
+          <p>Clinical questionnaire, blood pressure screening, and health assessment.</p>
+        </div>
+        <span className="cph-badge cph-badge-emerald">
+          Clinical Screening
+        </span>
+      </div>
+
+      <form className="contraception-consultation" onSubmit={handleSubmit}>
 
       {/* Q1 – Pill status */}
       <div className="question-card">
@@ -259,8 +269,9 @@ export default function ContraceptionConsultationPage() {
       </div>
 
       <button type="submit" className="btn btn--primary continue-btn">
-        Continue to Pharmacist Form
+        Continue to Pharmacist Form →
       </button>
     </form>
+  </div>
   );
 }

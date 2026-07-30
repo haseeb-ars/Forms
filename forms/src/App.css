@@ -1,128 +1,208 @@
+/* App.css - CarePlus SaaS Floating Header Theme */
+@import "./designSystem.css";
+
 .shell {
   min-height: 100vh;
-  background: #f9fafb
+  position: relative;
+  z-index: 1;
 }
 
+/* Floating Glassmorphic Topbar */
 .topbar {
+  position: sticky;
+  top: 12px;
+  z-index: 1000;
   display: flex;
   align-items: center;
-  gap: .75rem;
-  padding: .75rem .75rem;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb
+  gap: 1rem;
+  padding: 12px 24px;
+  margin: 12px 20px 20px 20px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 24px;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.topbar:hover {
+  box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.12);
+  border-color: rgba(21, 128, 61, 0.3);
 }
 
 .topbar__brand {
-  font-weight: 600
-}
-
-.topbar__nav {
-  margin-left: auto;
   display: flex;
-  gap: .5rem
-}
-
-.link {
-  padding: .25rem .5rem;
-  border-radius: .5rem;
-  text-decoration: none;
-  color: #111827
-}
-
-.link:hover {
-  background: #f3f4f6
-}
-
-.main {
-  max-width: 1152px;
-  margin: 0 auto;
-  padding: 1rem
-}
-
-.card {
-  background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
-  padding: 1.25rem
-}
-
-.h1 {
-  font-size: 1.5rem;
-  margin: 0 0 .5rem
-}
-
-.muted {
-  color: #6b7280;
-  margin-bottom: 1rem
-}
-
-.actions {
-  display: flex;
-  gap: .5rem
-}
-
-.btn {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: .75rem;
-  padding: .6rem 1rem;
-  color: #ff5c00;
-  text-decoration: none;
-  min-width: 120px;
-  text-align: center;
-}
-
-.btn--primary {
-  background: #4f46e5;
-  color: #fff;
-  border-color: #4f46e5
+  align-items: center;
 }
 
 .topbar__logo {
-  height: 72px;
-  /* adjust to match your topbar height */
+  height: 54px;
   object-fit: contain;
+  transition: transform 0.2s ease;
 }
-.link-btn{
+
+.topbar__logo:hover {
+  transform: scale(1.03);
+}
+
+/* User Profile & Branch Badge Pill */
+.topbar__profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 6px 14px;
+  border-radius: 30px;
+  margin-left: 12px;
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #166534;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(22, 101, 52, 0.3);
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.profile-branch {
+  font-size: 0.725rem;
+  color: #166534;
+  font-weight: 600;
+}
+
+.online-badge {
+  font-size: 0.75rem;
+}
+
+/* Navigation Menu */
+.topbar__nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-dropdown-wrapper {
+  display: inline-block;
+}
+
+/* Existing Header Buttons (Maintained Functionality & Preserved Visual Polish) */
+.link-btn {
   background-color: #FF5C00;
-      color: white;
-      padding: 16px 39px;
-      border-radius: 26px;
-      text-decoration: none;
-      display: inline-block;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 26px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(255, 92, 0, 0.25);
+  transition: all 0.2s ease;
 }
-.link-btn2{
-   background-color: #7ebf41;
-      color: white;
-      padding: 16px 39px;
-      border-radius: 26px;
-      text-decoration: none;
-      display: inline-block;
+
+.link-btn:hover {
+  background-color: #e05200;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 92, 0, 0.35);
 }
-.link-btn3{
-   background-color: #9149D4;
-      color: white;
-      padding: 16px 39px;
-      border-radius: 26px;
-      text-decoration: none;
-      display: inline-block;
+
+.link-btn2 {
+  background-color: #7ebf41;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 26px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(126, 191, 65, 0.25);
+  transition: all 0.2s ease;
 }
-.link-btn4{
-   background-color: #cc0e0e;
-      color: white;
-      padding: 16px 39px;
-      border-radius: 26px;
-      text-decoration: none;
-      display: inline-block;
+
+.link-btn2:hover {
+  background-color: #6da737;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(126, 191, 65, 0.35);
+}
+
+.link-btn3 {
+  background-color: #9149D4;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 26px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(145, 73, 212, 0.25);
+  transition: all 0.2s ease;
+}
+
+.link-btn3:hover {
+  background-color: #7c3bba;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(145, 73, 212, 0.35);
+}
+
+.link-btn4 {
+  background-color: #cc0e0e;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 26px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(204, 14, 14, 0.25);
+  transition: all 0.2s ease;
+}
+
+.link-btn4:hover {
+  background-color: #b00b0b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(204, 14, 14, 0.35);
+}
+
+.mobile-nav-toggle {
+  display: none;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-left: auto;
 }
 
 .main {
-  max-width: 1200px; /* or whatever you had */
+  max-width: 1250px;
   margin: 0 auto;
   padding: 24px;
 }
 
-/* 🚀 Full screen override for Holidays */
 .main--full {
   max-width: none;
   width: 100vw;
@@ -130,96 +210,62 @@
   padding: 0;
 }
 
-
-/* Responsive Design - Mobile First */
-@media (max-width: 768px) {
+/* Responsive Mobile Navigation Drawer */
+@media (max-width: 900px) {
   .topbar {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    margin: 8px 10px 16px 10px;
+    padding: 10px 16px;
+    flex-wrap: wrap;
   }
-  
+
+  .topbar__logo {
+    height: 44px;
+  }
+
+  .topbar__profile-pill {
+    display: none; /* Hidden on small screens to save header space */
+  }
+
+  .mobile-nav-toggle {
+    display: inline-block;
+  }
+
   .topbar__nav {
-    margin-left: 0;
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 10px;
+  }
+
+  .topbar__nav--mobile-open {
+    display: flex;
+  }
+
+  .link-btn, .link-btn2, .link-btn3, .link-btn4 {
+    width: 100%;
+    text-align: center;
+    margin-left: 0 !important;
+    border-radius: 12px;
+  }
+
+  .nav-dropdown-wrapper {
+    width: 100%;
+  }
+
+  .services-trigger-btn {
     width: 100%;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: .75rem;
-  }
-  
-  .topbar__logo {
-    height: 56px;
-  }
-  
-  .main {
-    padding: 0.5rem;
-  }
-  
-  .card {
-    padding: 1rem;
-    margin: 0.5rem 0;
-  }
-  
-  .h1 {
-    font-size: 1.25rem;
-  }
-  
-  .actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .btn {
-    padding: 0.85rem 1.1rem;
-    text-align: center;
-    font-size: 1rem;
-    width: 48%;
-  }
-  
-  .link {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
+    border-radius: 12px;
   }
 
-  .link-btn, .link-btn2 {
-    display: inline-block;
-    width: 48%;
-    text-align: center;
-    padding: 14px 0;
-    border-radius: 10px;
-  }
-}
-
-/* Tablet Styles */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .topbar {
-    padding: 1rem;
-  }
-  
-  .topbar__logo {
-    height: 70px;
-  }
-  
-  .main {
-    padding: 1.5rem;
-  }
-  
-  .card {
-    padding: 1.5rem;
-  }
-  
-  .actions {
-    gap: 0.75rem;
-  }
-}
-
-/* Large Screen Optimizations */
-@media (min-width: 1025px) {
-  .topbar {
-    padding: 1rem 1.5rem;
-  }
-  
-  .main {
-    padding: 2rem;
+  .services-dropdown-menu {
+    width: 100%;
+    position: static;
+    box-shadow: none;
+    margin-top: 8px;
   }
 }

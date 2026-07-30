@@ -133,11 +133,63 @@ export async function saveHealthyLivingLog(payload) {
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Server error (${res.status}): ${errorText}`);
-  }
-
   return res.json();
 }
+
+/* ---------------------------------------
+   Fetch Full Consultation History Chain
+   (Used by follow-up pages to load all past visits chronologically)
+------------------------------------------ */
+export async function fetchConsultationHistory({ name, dob, service, tenant }) {
+  const params = new URLSearchParams({
+    name: name || "",
+    service: service || "",
+  });
+
+  if (dob) params.set("dob", typeof dob === "string" ? dob.slice(0, 10) : dob);
+  if (tenant) params.set("tenant", tenant);
+
+  // 1. Primary endpoint: /api/form-submissions/history
+  try {
+    const res1 = await fetch(`${API_BASE}/api/form-submissions/history?${params.toString()}`);
+    if (res1.ok) {
+      const json = await res1.json();
+      if (json.ok && Array.isArray(json.rows) && json.rows.length > 0) {
+        return json.rows;
+      }
+    }
+  } catch (e1) {
+    console.warn("Primary history endpoint error", e1);
+  }
+
+  // 2. Secondary endpoint: /api/consultations/history
+  try {
+    const res2 = await fetch(`${API_BASE}/api/consultations/history?${params.toString()}`);
+    if (res2.ok) {
+      const json = await res2.json();
+      if (json.ok && Array.isArray(json.rows) && json.rows.length > 0) {
+        return json.rows;
+      }
+    }
+  } catch (e2) {
+    console.warn("Secondary history endpoint error", e2);
+  }
+
+  // 3. Fallback endpoint: /api/form-submissions/by-name
+  try {
+    const res3 = await fetch(`${API_BASE}/api/form-submissions/by-name?${params.toString()}`);
+    if (res3.ok) {
+      const json = await res3.json();
+      if (json.ok && json.row) {
+        return [json.row];
+      }
+    }
+  } catch (e3) {
+    console.warn("Fallback by-name endpoint error", e3);
+  }
+
+  return [];
+}
+
+
 

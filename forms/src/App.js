@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
 import { AppProvider, useApp } from "./AppContext.jsx";
 
@@ -12,12 +12,17 @@ import PatientsPage from "./PatientsPage.jsx";
 // 🧩 Consultation Pages
 import TravelConsultationPage from "./TravelConsultationPage.jsx";
 import WeightlossConsultationPage from "./WeightLossConsultationPage.jsx";
-import ConsultationPage from "./ConsultationPage.jsx"; // ✅ Shared for earwax, flu, covid, b12
+import ConsultationPage from "./ConsultationPage.jsx";
 import ContraceptionConsultationPage from "./ContraceptionConsultationPage.jsx";
 import EmployeeAppraisalFormPage from "./EmployeeAppraisalFormPage.jsx";
 import HealthyLivingLogFormPage from "./HealthyLivingLogFormPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
 
+// 🎨 Header Redesign Components
+import ServicesDropdown from "./ServicesDropdown.jsx";
+import AnimatedBackground from "./AnimatedBackground.jsx";
+
+import "./designSystem.css";
 import "./App.css";
 
 export default function App() {
@@ -28,190 +33,212 @@ export default function App() {
   );
 }
 
-/* 🧱 App Shell (allows full-width pages like Holidays) */
+/* 🧱 App Shell (floating glassmorphic header + animated background) */
 function AppShell() {
   const location = useLocation();
+  const { isAuthenticated, currentUser, branch } = useApp();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   const isFullWidthPage =
-  location.pathname === "/holidays" ||
-  location.pathname === "/patients";
+    location.pathname === "/holidays" || location.pathname === "/patients";
+
+  const userInitial = (currentUser?.name || "C")[0].toUpperCase();
+  const branchDisplay = branch?.pharmacyName || currentUser?.name || "CarePlus Health";
 
   return (
-    <div className="shell">
-      {/* Header */}
-      <header className="topbar">
-        <div className="topbar__brand">
-          <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
-        </div>
+    <AnimatedBackground>
+      <div className="shell">
+        {/* Floating Glassmorphic Topbar */}
+        <header className="topbar">
+          <div className="topbar__brand">
+            <Link to="/">
+              <img src="/Logo3.png" alt="CarePlus Logo" className="topbar__logo" />
+            </Link>
+          </div>
 
-        <nav className="topbar__nav">
-          <Link to="/" className="link-btn">
-            Home
-          </Link>
+          {/* User Profile & Branch Pill */}
+          {isAuthenticated && (
+            <div className="topbar__profile-pill">
+              <div className="profile-avatar">{userInitial}</div>
+              <div className="profile-details">
+                <span className="profile-name">{currentUser?.name || "Clinician"}</span>
+                <span className="profile-branch">🏢 {branchDisplay}</span>
+              </div>
+              <span className="online-badge" title="System Active">🟢</span>
+            </div>
+          )}
 
-          <a
-  href="https://holidaytracker.careplushealth.co.uk/#/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="link-btn3"
-  style={{ marginLeft: 8 }}
->
-  Holidays
-</a>
+          {/* Desktop Nav */}
+          <nav className={`topbar__nav ${mobileNavOpen ? "topbar__nav--mobile-open" : ""}`}>
+            <Link to="/" className="link-btn" onClick={() => setMobileNavOpen(false)}>
+              Home
+            </Link>
 
-          <Link to="/patients" className="link-btn2" style={{ marginLeft: 8 }}>
-            Patients
-          </Link>
+            <div className="nav-dropdown-wrapper">
+              <ServicesDropdown />
+            </div>
 
-          <AuthHeaderControls />
-        </nav>
-      </header>
+            <a
+              href="https://holidaytracker.careplushealth.co.uk/#/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-btn3"
+              style={{ marginLeft: 8 }}
+              onClick={() => setMobileNavOpen(false)}
+            >
+              Holidays
+            </a>
 
-      {/* Main Routes */}
-      <main className={`main ${isFullWidthPage ? "main--full" : ""}`}>
-        <Routes>
-          {/* 🔐 Login */}
-          <Route path="/login" element={<LoginPage />} />
+            <Link
+              to="/patients"
+              className="link-btn2"
+              style={{ marginLeft: 8 }}
+              onClick={() => setMobileNavOpen(false)}
+            >
+              Patients
+            </Link>
 
-          {/* 🏠 Home - Service Selection */}
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <ServiceSelectPage />
-              </RequireAuth>
-            }
-          />
+            <AuthHeaderControls />
+          </nav>
 
-          {/* 🌴 Holidays (embedded app) */}
-          <Route
-            path="/holidays"
-            element={
-              <RequireAuth>
-                <HolidaysPage />
-              </RequireAuth>
-            }
-          />
+          {/* Mobile Drawer Toggle */}
+          {isAuthenticated && (
+            <button
+              type="button"
+              className="mobile-nav-toggle"
+              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+            >
+              {mobileNavOpen ? "✕ Close" : "☰ Menu"}
+            </button>
+          )}
+        </header>
 
-          {/* 👔 Employee Performance Appraisal Form */}
-          <Route
-            path="/service/employeeAppraisal/form"
-            element={
-              <RequireAuth>
-                <EmployeeAppraisalFormPage />
-              </RequireAuth>
-            }
-          />
+        {/* Main Routes */}
+        <main className={`main ${isFullWidthPage ? "main--full" : ""}`}>
+          <Routes>
+            {/* 🔐 Login */}
+            <Route path="/login" element={<LoginPage />} />
 
-          <Route
-            path="/service/employeeAppraisal/patient"
-            element={
-              <RequireAuth>
-                <EmployeeAppraisalFormPage />
-              </RequireAuth>
-            }
-          />
+            {/* 🏠 Home - Service Selection */}
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <ServiceSelectPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 📋 Healthy Living Advice / Signposting Log */}
-          <Route
-            path="/service/healthyLivingLog/form"
-            element={
-              <RequireAuth>
-                <HealthyLivingLogFormPage />
-              </RequireAuth>
-            }
-          />
+            {/* 🌴 Holidays (embedded app) */}
+            <Route
+              path="/holidays"
+              element={
+                <RequireAuth>
+                  <HolidaysPage />
+                </RequireAuth>
+              }
+            />
 
-          <Route
-            path="/service/healthyLivingLog/patient"
-            element={
-              <RequireAuth>
-                <HealthyLivingLogFormPage />
-              </RequireAuth>
-            }
-          />
+            {/* 👔 Employee Performance Appraisal Form */}
+            <Route
+              path="/service/employeeAppraisal/form"
+              element={
+                <RequireAuth>
+                  <EmployeeAppraisalFormPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 🧭 Travel Consultation */}
-          <Route
-            path="/service/travel/consultation"
-            element={
-              <RequireAuth>
-                <TravelConsultationPage />
-              </RequireAuth>
-            }
-          />
+            {/* 📋 Healthy Living Advice / Signposting Log */}
+            <Route
+              path="/service/healthyLivingLog/form"
+              element={
+                <RequireAuth>
+                  <HealthyLivingLogFormPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* ⚖️ Weight Loss Consultation */}
-          <Route
-            path="/service/weightloss/consultation"
-            element={
-              <RequireAuth>
-                <WeightlossConsultationPage />
-              </RequireAuth>
-            }
-          />
+            {/* 🧑‍⚕️ Patient Form */}
+            <Route
+              path="/service/:id/patient"
+              element={
+                <RequireAuth>
+                  <PatientFormPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 💊 Contraception Consultation */}
-          <Route
-            path="/service/contraception/consultation"
-            element={
-              <RequireAuth>
-                <ContraceptionConsultationPage />
-              </RequireAuth>
-            }
-          />
+            {/* 🩺 Consultation Step */}
+            <Route
+              path="/service/travel/consultation"
+              element={
+                <RequireAuth>
+                  <TravelConsultationPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 🧠 Shared Consultation for: earwax, flu, covid, b12 */}
-          <Route
-            path="/service/:id/consultation"
-            element={
-              <RequireAuth>
-                <ConsultationPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/service/weightloss/consultation"
+              element={
+                <RequireAuth>
+                  <WeightlossConsultationPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 🧍 Patient Form */}
-          <Route
-            path="/service/:id/patient"
-            element={
-              <RequireAuth>
-                <PatientFormPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/service/contraception/consultation"
+              element={
+                <RequireAuth>
+                  <ContraceptionConsultationPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 💊 Pharmacist Form */}
-          <Route
-            path="/service/:id/pharmacist"
-            element={
-              <RequireAuth>
-                <PharmacistFormPage />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/service/:id/consultation"
+              element={
+                <RequireAuth>
+                  <ConsultationPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 🧾 Preview */}
-          <Route
-            path="/service/:id/preview"
-            element={
-              <RequireAuth>
-                <PreviewPage />
-              </RequireAuth>
-            }
-          />
+            {/* 💊 Pharmacist Form */}
+            <Route
+              path="/service/:id/pharmacist"
+              element={
+                <RequireAuth>
+                  <PharmacistFormPage />
+                </RequireAuth>
+              }
+            />
 
-          {/* 👥 Patients List */}
-          <Route
-            path="/patients"
-            element={
-              <RequireAuth>
-                <PatientsPage />
-              </RequireAuth>
-            }
-          />
-        </Routes>
-      </main>
-    </div>
+            {/* 🧾 Preview */}
+            <Route
+              path="/service/:id/preview"
+              element={
+                <RequireAuth>
+                  <PreviewPage />
+                </RequireAuth>
+              }
+            />
+
+            {/* 👥 Patients List */}
+            <Route
+              path="/patients"
+              element={
+                <RequireAuth>
+                  <PatientsPage />
+                </RequireAuth>
+              }
+            />
+          </Routes>
+        </main>
+      </div>
+    </AnimatedBackground>
   );
 }
 
@@ -235,7 +262,7 @@ function AuthHeaderControls() {
   if (!isAuthenticated) return null;
 
   return (
-    <button className="link-btn4" onClick={logout}>
+    <button className="link-btn4" onClick={logout} style={{ marginLeft: 8 }}>
       Logout
     </button>
   );

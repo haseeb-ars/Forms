@@ -1,33 +1,66 @@
-/* src/ContraceptionConsultationPage.css */
+/* ContraceptionConsultationPage.css - Premium CarePlus Theme */
+@import "./designSystem.css";
 
-.contraception-consultation {
-  max-width: 780px;
+.contraception-consultation-wrapper {
+  max-width: 950px;
   margin: 0 auto;
   padding: 24px;
 }
 
-.contraception-consultation .consultation-title {
-  text-align: center;
-  color: #1f2937;
+.contraception-header {
+  background: var(--cph-glass-bg);
+  backdrop-filter: var(--cph-glass-backdrop);
+  border: var(--cph-glass-border);
+  border-radius: 16px;
+  padding: 28px;
   margin-bottom: 24px;
+  box-shadow: var(--cph-shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.contraception-title-group h2 {
   font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--cph-primary-600);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contraception-title-group p {
+  margin: 0;
+  color: var(--cph-slate-500);
+  font-size: 0.9rem;
 }
 
 .contraception-consultation .question-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 18px 20px;
-  margin-bottom: 16px;
+  background: #ffffff;
+  border: 1px solid var(--cph-slate-200);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--cph-shadow-md);
+  transition: transform var(--cph-transition-smooth), box-shadow var(--cph-transition-smooth);
+  animation: cphFadeInUp 0.35s ease-out;
+}
+
+.contraception-consultation .question-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cph-shadow-lg);
 }
 
 .contraception-consultation .question-text {
   display: block;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-weight: 700;
+  color: var(--cph-slate-900);
+  margin-bottom: 12px;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
 .contraception-consultation .radio-group {
@@ -40,52 +73,55 @@
 .contraception-consultation .radio-option {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
   font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--cph-slate-700);
+  padding: 8px 16px;
+  background: var(--cph-slate-50);
+  border: 1px solid var(--cph-slate-200);
+  border-radius: 8px;
+  transition: all var(--cph-transition-fast);
+}
+
+.contraception-consultation .radio-option:hover {
+  background: var(--cph-primary-50);
+  border-color: var(--cph-primary-200);
+  color: var(--cph-primary-600);
 }
 
 .contraception-consultation .radio-option input[type="radio"] {
-  accent-color: #005eb8;
-}
-
-.contraception-consultation .extra-info {
-  margin-top: 10px;
-  width: 100%;
-  min-height: 70px;
-}
-
-/* Blood pressure group */
-.contraception-consultation .bp-group {
-  margin-top: 8px;
-}
-
-.contraception-consultation .bp-field {
-  margin-bottom: 12px;
-}
-
-.contraception-consultation .bp-label {
-  display: block;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 6px;
-  font-size: 0.9rem;
+  accent-color: var(--cph-primary-600);
+  width: 18px;
+  height: 18px;
 }
 
 .contraception-consultation .bp-inputs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
 }
 
 .contraception-consultation .continue-btn {
-  margin-top: 20px;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 28px auto 0;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--cph-primary-500) 0%, var(--cph-primary-600) 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 101, 52, 0.25);
+  transition: all var(--cph-transition-fast);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .contraception-consultation .bp-inputs {
-    grid-template-columns: 1fr;
-  }
+.contraception-consultation .continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 101, 52, 0.35);
 }

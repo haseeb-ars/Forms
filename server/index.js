@@ -338,6 +338,69 @@ app.get("/api/form-submissions/by-name", async (req, res) => {
 });
 
 /* ---------------------------------------
+   GET Consultation History Chain for Patient & Service
+   (Used by Follow-Up consultations to build full history chain)
+------------------------------------------ */
+app.get(["/api/consultations/history", "/api/form-submissions/history"], async (req, res) => {
+  const { name, dob, service, tenant } = req.query;
+
+  if (!name) {
+    return res.status(400).json({ ok: false, error: "missing_patient_name" });
+  }
+
+  const cleanName = name.trim();
+  const cleanService = (service || "").trim().toLowerCase();
+
+  try {
+    // Map service aliases to query patterns
+    let serviceCondition = `LOWER(service) = LOWER($2)`;
+    let serviceParam = cleanService;
+
+    if (cleanService === "weightloss" || cleanService === "weightlossfollowup") {
+      serviceCondition = `LOWER(service) IN ('weightloss', 'weightlossfollowup')`;
+    } else if (cleanService === "travel" || cleanService === "travelfollowup") {
+      serviceCondition = `LOWER(service) IN ('travel', 'travelfollowup')`;
+    } else if (cleanService) {
+      serviceCondition = `(LOWER(service) = LOWER($2) OR LOWER(service) LIKE LOWER($2) || '%')`;
+    }
+
+    const params = [cleanName];
+    let queryStr = `
+      SELECT *
+      FROM form_submissions
+      WHERE LOWER(TRIM(patient_name)) = LOWER(TRIM($1))
+    `;
+
+    if (cleanService) {
+      params.push(serviceParam);
+      queryStr += ` AND ${serviceCondition}`;
+    }
+
+    if (dob) {
+      params.push(dob);
+      queryStr += ` AND (dob = $${params.length} OR dob IS NULL)`;
+    }
+
+    if (tenant) {
+      params.push(tenant);
+      queryStr += ` AND (tenant = $${params.length} OR tenant IS NULL)`;
+    }
+
+    queryStr += ` ORDER BY created_at ASC`;
+
+    const { rows } = await pool.query(queryStr, params);
+
+    console.log(`📜 Consultation history lookup for "${cleanName}" (${cleanService}) -> ${rows.length} records found`);
+
+    return res.json({ ok: true, rows });
+  } catch (err) {
+    console.error("💥 history lookup error", err);
+    return res.status(500).json({ ok: false, error: "db_error" });
+  }
+});
+
+
+/* ---------------------------------------
    HEALTHY LIVING SIGNPOSTING LOG API & AUDIT
 ------------------------------------------ */
 app.post("/api/healthy-living-log", async (req, res) => {

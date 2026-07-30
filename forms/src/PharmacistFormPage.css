@@ -1,67 +1,78 @@
-.pharmacist-form {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-}
-.form-group {
-  margin-bottom: 15px;
-}
-button {
-  background-color: #06d6a0;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+/* PharmacistFormPage.css - Premium CarePlus SaaS Theme */
+@import "./designSystem.css";
+
+.pharmacist-form-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
-/* Responsive Design - Mobile First */
-@media (max-width: 768px) {
-  .pharmacist-form {
-    max-width: 100%;
-    padding: 15px;
-    margin: 0;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 15px 20px;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  input, textarea, select {
-    font-size: 16px;
-    padding: 12px;
-  }
+.pharmacist-form-header {
+  background: var(--cph-glass-bg);
+  backdrop-filter: var(--cph-glass-backdrop);
+  border: var(--cph-glass-border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--cph-shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-/* Tablet Styles */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .pharmacist-form {
-    max-width: 700px;
-    padding: 25px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  button {
-    padding: 12px 25px;
-    font-size: 16px;
-  }
+.pharmacist-header-title h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--cph-primary-600);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pharmacist-header-title p {
+  margin: 0;
+  color: var(--cph-slate-500);
+  font-size: 0.9rem;
+}
+
+.pharmacist-form-card {
+  background: #ffffff;
+  border: 1px solid var(--cph-slate-200);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: var(--cph-shadow-md);
+  margin-bottom: 24px;
+  animation: cphFadeInUp 0.4s ease-out;
+}
+
+.pharmacist-form-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cph-slate-900);
+  border-bottom: 2px solid var(--cph-slate-100);
+  padding-bottom: 12px;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .malaria-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ddd;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--cph-slate-200);
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
+.pharmacist-actions-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}

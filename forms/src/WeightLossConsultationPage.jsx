@@ -117,10 +117,19 @@ export default function WeightLossConsultationPage() {
   ];
 
   return (
-    <div className="weight-consultation">
+    <div className="weight-consultation-wrapper">
+      <div className="weight-consultation-header">
+        <div className="weight-header-title">
+          <h2>⚖️ Weight Loss Consultation &amp; Clinical Screening</h2>
+          <p>Step {step} of 2 – {step === 1 ? "Medical Screening Questionnaire" : "Patient Measurements & Risk Assessment"}</p>
+        </div>
+        <span className="cph-badge cph-badge-emerald">
+          Step {step} / 2
+        </span>
+      </div>
+
       {step === 1 ? (
         <div className="weight-page">
-          <h2 className="weight-page-title">Medical Screening</h2>
 
           <div className="weight-card">
             {questions.map((q, i) => (

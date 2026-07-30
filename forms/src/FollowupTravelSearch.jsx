@@ -1,223 +1,278 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchPatients, fetchSubmissionByName } from "./api";
+import { fetchPatients, fetchConsultationHistory } from "./api";
 import { useApp } from "./AppContext";
-import "./PatientsPage.css"; // Reuse table styling
+import ConsultationHistoryTimeline from "./ConsultationHistoryTimeline";
+import "./designSystem.css";
+import "./PatientsPage.css";
 
 export default function FollowupTravelSearch() {
-    const navigate = useNavigate();
-    const { currentUser, setTravelFollowUpOriginalData, setPatient } = useApp();
+  const navigate = useNavigate();
+  const { currentUser, setTravelFollowUpOriginalData, setPatient } = useApp();
 
-    const [patients, setPatients] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedPatientHistory, setSelectedPatientHistory] = useState(null);
+  const [fetchingHistory, setFetchingHistory] = useState(false);
 
-    const [searchName, setSearchName] = useState("");
-    const [searchDob, setSearchDob] = useState("");
-    const [searchEmail, setSearchEmail] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchDob, setSearchDob] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
 
-    const tenant = useMemo(() => {
-        const n = (currentUser?.name || "").toUpperCase();
-        if (n.includes("WILMSLOW")) return "WRP";
-        if (n.includes("CAREPLUS")) return "CPC";
-        if (n.includes("247")) return "247";
-        return "";
-    }, [currentUser]);
+  const tenant = useMemo(() => {
+    const n = (currentUser?.name || "").toUpperCase();
+    if (n.includes("WILMSLOW")) return "WRP";
+    if (n.includes("CAREPLUS")) return "CPC";
+    if (n.includes("247")) return "247";
+    return "";
+  }, [currentUser]);
 
-    useEffect(() => {
-        if (!tenant) {
-            setError("No tenant found for user.");
-            setLoading(false);
-            return;
+  useEffect(() => {
+    fetchPatients(tenant || "")
+      .then((data) => {
+        const travelPatients = data.filter(
+          (r) => r.service === "travel" || r.service === "travelFollowUp"
+        );
+
+        // Deduplicate by name & dob
+        const unique = [];
+        const seen = new Set();
+        for (const p of travelPatients) {
+          const key = `${(p.name || "").trim().toLowerCase()}|${p.dob || ""}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(p);
+          }
         }
+        setPatients(unique);
+      })
+      .catch((err) => setError(`Failed to load patients: ${err.message}`))
+      .finally(() => setLoading(false));
+  }, [tenant]);
 
-        fetchPatients(tenant)
-            .then((data) => {
-                // Only keep travel
-                const travelPatients = data.filter((r) => r.service === "travel");
-                setPatients(travelPatients);
-            })
-            .catch((err) => setError(`Failed to load patients: ${err.message}`))
-            .finally(() => setLoading(false));
-    }, [tenant]);
+  const filteredPatients = useMemo(() => {
+    return patients.filter((p) => {
+      if (searchName && !(p.name || "").toLowerCase().includes(searchName.toLowerCase())) return false;
+      if (searchDob && !p.dob?.includes(searchDob)) return false;
+      if (searchEmail && !(p.email || "").toLowerCase().includes(searchEmail.toLowerCase())) return false;
+      return true;
+    });
+  }, [patients, searchName, searchDob, searchEmail]);
 
-    const filteredPatients = useMemo(() => {
-        return patients.filter((p) => {
-            if (searchName && !(p.name || "").toLowerCase().includes(searchName.toLowerCase())) return false;
-            if (searchDob && !p.dob?.includes(searchDob)) return false;
-            if (searchEmail && !(p.email || "").toLowerCase().includes(searchEmail.toLowerCase())) return false;
-            return true;
+  const handleSelectPatient = async (row) => {
+    try {
+      setFetchingHistory(true);
+      setError("");
+
+      let history = [];
+      try {
+        history = await fetchConsultationHistory({
+          name: row.name,
+          dob: row.dob,
+          service: "travel",
         });
-    }, [patients, searchName, searchDob, searchEmail]);
+      } catch (err) {
+        console.warn("History lookup error, using row fallback", err);
+      }
 
-    const handleSelectPatient = async (row) => {
-        try {
-            setLoading(true);
-            
-            // 1. Find ALL visits for this patient (name + dob match) to build cumulative history
-            // We search for both 'travel' and 'travelFollowUp' services
-            const allVisits = patients.filter(p => 
-                p.name === row.name && 
-                p.dob === row.dob && 
-                (p.service === "travel" || p.service === "travelFollowUp")
-            );
-
-            // Sort by date (oldest first)
-            allVisits.sort((a, b) => new Date(a.created_at || a.date) - new Date(b.created_at || b.date));
-
-            // 2. Fetch full data for each visit to extract vaccines
-            const history = [];
-            let latestPatientData = null;
-            let latestConsultationData = null;
-            let latestPharmacistData = null;
-
-            for (const visit of allVisits) {
-                const result = await fetchSubmissionByName({
-                    name: visit.name,
-                    dob: visit.dob,
-                    service: visit.service,
-                    tenant,
-                    // Note: fetchSubmissionByName might need an ID or date to be specific if multiple exist, 
-                    // but usually it returns the most recent. This is a bit tricky with the current API.
-                    // If the API supports passing an ID, that would be better.
-                });
-
-                if (result.ok && result.row) {
-                    const { pharmacist_data } = result.row;
-                    const vax = Array.isArray(pharmacist_data?.vaccines) ? pharmacist_data.vaccines : [];
-                    const malVax = Array.isArray(pharmacist_data?.malariaVaccines) ? pharmacist_data.malariaVaccines : [];
-                    const fupVax = Array.isArray(pharmacist_data?.followUpVaccines) ? pharmacist_data.followUpVaccines : [];
-                    
-                    // Add all vaccines from this visit to history
-                    history.push(...vax, ...malVax, ...fupVax);
-
-                    // Keep track of the latest data for context seeding
-                    latestPatientData = result.row.patient_data;
-                    latestConsultationData = result.row.consultation_data;
-                    latestPharmacistData = result.row.pharmacist_data;
-                }
-            }
-
-            if (!latestPatientData) {
-                alert("Could not load original travel consultation for this patient.");
-                setLoading(false);
-                return;
-            }
-
-            // Seed context
-            setTravelFollowUpOriginalData({
-                patient_data: latestPatientData,
-                consultation_data: latestConsultationData,
-                pharmacist_data: latestPharmacistData,
-                history: history, // ✅ Bug 4: Cumulative history
-            });
-
-            // Keep superficial patient details so standard preview checks still see it
-            setPatient(latestPatientData || {});
-
-            // Navigate straight to Pharmacist Form (bypass consultation)
-            navigate(`/service/travelFollowUp/pharmacist`);
-
-
-        } catch (err) {
-            console.error(err);
-            alert("Error loading patient data: " + err.message);
-            setLoading(false);
+      const vaxHistory = [];
+      if (history && history.length > 0) {
+        for (const visit of history) {
+          const rx = visit.pharmacist_data || visit.pharmacist || {};
+          if (Array.isArray(rx.vaccines)) vaxHistory.push(...rx.vaccines);
+          if (Array.isArray(rx.malariaVaccines)) vaxHistory.push(...rx.malariaVaccines);
+          if (Array.isArray(rx.followUpVaccines)) vaxHistory.push(...rx.followUpVaccines);
         }
-    };
+      }
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "—";
-        try {
-            return new Date(dateStr).toLocaleDateString("en-GB");
-        } catch {
-            return dateStr;
-        }
-    };
+      const latest = (history && history.length > 0) ? history[history.length - 1] : row;
+      const pData = latest.patient_data || latest.patient || {
+        fullName: row.name,
+        name: row.name,
+        dob: row.dob,
+        email: row.email,
+        date: row.created_at || row.date,
+      };
+      const cData = latest.consultation_data || latest.consultation || {};
+      const rxData = latest.pharmacist_data || latest.pharmacist || {};
 
-    return (
-        <div className="patients-page patients" style={{ padding: 24 }}>
-            <h2 style={{ marginBottom: 8 }}>Search Previous Travel Consultation</h2>
-            <p style={{ marginBottom: 20, color: '#6b7280' }}>Select an existing travel patient to register their follow-up vaccine dose.</p>
+      setTravelFollowUpOriginalData({
+        patient_data: pData,
+        consultation_data: cData,
+        pharmacist_data: rxData,
+        history: vaxHistory,
+        fullConsultationHistory: history.length > 0 ? history : [latest],
+      });
 
-            {error && <div className="error-message">{error}</div>}
+      setPatient(pData || {});
+      navigate(`/service/travelFollowUp/pharmacist`);
+    } catch (err) {
+      console.error("Selection error:", err);
+      const pData = row.patient_data || { fullName: row.name, name: row.name, dob: row.dob, email: row.email };
+      setTravelFollowUpOriginalData({
+        patient_data: pData,
+        consultation_data: row.consultation_data || {},
+        pharmacist_data: row.pharmacist_data || {},
+        history: [],
+        fullConsultationHistory: [row],
+      });
+      setPatient(pData);
+      navigate(`/service/travelFollowUp/pharmacist`);
+    } finally {
+      setFetchingHistory(false);
+    }
+  };
 
-            <div className="patients__filters">
-                <div className="patients__filter-group">
-                    <label>Search Name</label>
-                    <input
-                        type="text"
-                        className="patients__filter-input"
-                        placeholder="John Doe..."
-                        value={searchName}
-                        onChange={(e) => setSearchName(e.target.value)}
-                    />
-                </div>
-                <div className="patients__filter-group">
-                    <label>Date of Birth</label>
-                    <input
-                        type="date"
-                        className="patients__filter-input"
-                        value={searchDob}
-                        onChange={(e) => setSearchDob(e.target.value)}
-                    />
-                </div>
-                <div className="patients__filter-group">
-                    <label>Email</label>
-                    <input
-                        type="text"
-                        className="patients__filter-input"
-                        placeholder="email@..."
-                        value={searchEmail}
-                        onChange={(e) => setSearchEmail(e.target.value)}
-                    />
-                </div>
-            </div>
 
-            {loading ? (
-                <p>Loading travel patients...</p>
-            ) : (
-                <div className="tablewrap">
-                    <table className="table patients-table">
-                        <thead>
-                            <tr>
-                                <th>Patient Name</th>
-                                <th>DOB</th>
-                                <th>Email</th>
-                                <th>Orig. Consultation Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPatients.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                                        No previous travel patients found matching your search.
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredPatients.map((p) => (
-                                    <tr key={p.id}>
-                                        <td style={{ fontWeight: 500, color: '#111827' }}>{p.name}</td>
-                                        <td>{formatDate(p.dob)}</td>
-                                        <td>{p.email || "—"}</td>
-                                        <td>{formatDate(p.created_at || p.date)}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn--primary"
-                                                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
-                                                onClick={() => handleSelectPatient(p)}
-                                            >
-                                                Select & Continue
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+  const handlePreviewHistory = async (row) => {
+    try {
+      setFetchingHistory(true);
+      const history = await fetchConsultationHistory({
+        name: row.name,
+        dob: row.dob,
+        service: "travel",
+      });
+      setSelectedPatientHistory({ patient: row, history });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFetchingHistory(false);
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "—";
+    try {
+      return new Date(dateStr).toLocaleDateString("en-GB");
+    } catch {
+      return dateStr;
+    }
+  };
+
+  return (
+    <div className="patients-page patients" style={{ padding: 24 }}>
+      <div className="cph-card" style={{ marginBottom: 20 }}>
+        <div className="cph-card-header">
+          <div>
+            <h2 className="cph-card-title">✈️ Search Travel Clinic Follow-Up Patient</h2>
+            <p style={{ margin: "4px 0 0 0", color: "#64748b", fontSize: "0.9rem" }}>
+              Retrieve prior travel risk assessments, vaccination history, and administer booster/follow-up vaccines.
+            </p>
+          </div>
+          <span className="cph-badge cph-badge-emerald">
+            {tenant ? `Tenant: ${tenant}` : "All Branches"}
+          </span>
         </div>
-    );
+
+        {error && (
+          <div className="error-message" style={{ background: "#fef2f2", color: "#b91c1c", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        <div className="patients__filters">
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Search Name</label>
+            <input
+              type="text"
+              className="cph-input"
+              placeholder="e.g. John Smith..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+            />
+          </div>
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Date of Birth</label>
+            <input
+              type="date"
+              className="cph-input"
+              value={searchDob}
+              onChange={(e) => setSearchDob(e.target.value)}
+            />
+          </div>
+          <div className="patients__filter-group">
+            <label className="cph-field-label">Email</label>
+            <input
+              type="text"
+              className="cph-input"
+              placeholder="email@..."
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {selectedPatientHistory && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0, color: "#0f172a" }}>
+              Travel History Chain: <strong>{selectedPatientHistory.patient.name}</strong>
+            </h3>
+            <button className="cph-btn cph-btn-secondary" onClick={() => setSelectedPatientHistory(null)}>
+              Close Timeline Preview
+            </button>
+          </div>
+          <ConsultationHistoryTimeline history={selectedPatientHistory.history} serviceType="travel" />
+        </div>
+      )}
+
+      {loading || fetchingHistory ? (
+        <div className="cph-card" style={{ textAlign: "center", padding: 40 }}>
+          <p style={{ color: "#166534", fontWeight: 600 }}>Loading travel consultation history...</p>
+        </div>
+      ) : (
+        <div className="tablewrap">
+          <table className="table patients-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>DOB</th>
+                <th>Email</th>
+                <th>Last Visit Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPatients.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: "center", padding: "2rem", color: "#6b7280" }}>
+                    No previous Travel Clinic consultations found matching your search criteria.
+                  </td>
+                </tr>
+              ) : (
+                filteredPatients.map((p) => (
+                  <tr key={p.id}>
+                    <td style={{ fontWeight: 600, color: "#0f172a" }}>{p.name}</td>
+                    <td>{formatDate(p.dob)}</td>
+                    <td>{p.email || "—"}</td>
+                    <td>{formatDate(p.created_at || p.date)}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          className="cph-btn cph-btn-primary"
+                          style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                          onClick={() => handleSelectPatient(p)}
+                        >
+                          Start Follow-Up
+                        </button>
+                        <button
+                          className="cph-btn cph-btn-secondary"
+                          style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                          onClick={() => handlePreviewHistory(p)}
+                        >
+                          📜 View Timeline
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }

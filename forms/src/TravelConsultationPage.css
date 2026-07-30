@@ -1,84 +1,110 @@
-.consultation1 {
-  max-width: 980px;
+/* TravelConsultationPage.css - Premium CarePlus SaaS Theme */
+@import "./designSystem.css";
+
+.consultation1-wrapper {
+  max-width: 1050px;
   margin: 0 auto;
   padding: 24px;
 }
 
-.page-title1 {
-  font-size: 40px;
+.travel-consultation-header {
+  background: var(--cph-glass-bg);
+  backdrop-filter: var(--cph-glass-backdrop);
+  border: var(--cph-glass-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--cph-shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.travel-header-title h2 {
+  font-size: 1.6rem;
   font-weight: 800;
-  color: #0f172a;
-  margin: 12px 0 24px;
+  color: var(--cph-primary-600);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.travel-header-title p {
+  margin: 0;
+  color: var(--cph-slate-500);
+  font-size: 0.9rem;
 }
 
 .card1, .form-card1 {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
+  border: 1px solid var(--cph-slate-200);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--cph-shadow-md);
+  transition: transform var(--cph-transition-smooth), box-shadow var(--cph-transition-smooth);
+  animation: cphFadeInUp 0.35s ease-out;
 }
 
-.card-title1 {
-  font-size: 18px;
-  font-weight: 800;
-  color: #0b3fad;
-  margin-bottom: 10px;
+.card1:hover, .form-card1:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cph-shadow-lg);
 }
 
-.q-title1 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0b3fad;
-  margin: 4px 0 12px;
+.card-title1, .q-title1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cph-slate-900);
+  border-bottom: 2px solid var(--cph-slate-100);
+  padding-bottom: 10px;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .form-group1 {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 14px;
 }
 
 .label1 {
-  font-weight: 700;
-  color: #111827;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select,
-textarea {
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 14px;
-  width: 100%;
-}
-
-textarea {
-  min-height: 70px;
+  font-weight: 600;
+  color: var(--cph-slate-700);
+  font-size: 0.875rem;
 }
 
 .checkboxes1 {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  margin: 8px 0 4px;
+  gap: 16px;
+  margin: 8px 0;
 }
 
 .check1 {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-weight: 500;
+  color: var(--cph-slate-700);
+  cursor: pointer;
+}
+
+.check1 input[type="checkbox"] {
+  accent-color: var(--cph-primary-600);
+  width: 18px;
+  height: 18px;
 }
 
 .radio-group1 {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
   margin: 8px 0 12px;
 }
 
@@ -86,64 +112,30 @@ textarea {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 600;
+  color: var(--cph-slate-700);
+  cursor: pointer;
+}
+
+.radio1 input[type="radio"] {
+  accent-color: var(--cph-primary-600);
+  width: 18px;
+  height: 18px;
 }
 
 .two-col1 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
 }
 
 .actions1 {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-.btn1 {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 16px;
-  cursor: pointer;
-  background: #e5e7eb;
-  font-weight: 700;
-}
-
-.btn--primary1 {
-  background: #2563eb;
-  color: white;
-}
-
-.muted1 {
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.vaccine-link {
-  background: none;
-  border: none;
-  color: #0077cc;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  text-align: left;
-}
-
-.vaccine-link:hover {
-  text-decoration: underline;
-}
-
-.vaccine-info {
-  background: #f8fafc;
-  border-left: 3px solid #0077cc;
-  padding: 8px 12px;
-  margin: 6px 0 10px 0;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-/* === Vaccine Cards Layout (3 on top + 1 below) === */
 .cards-31 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -151,39 +143,10 @@ textarea {
   margin-top: 16px;
 }
 
-/* make all 3 vaccine boxes look consistent */
-.cards-31 .card1 {
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
+.cards-31 .card1:nth-child(1) { border-top: 4px solid var(--cph-primary-500); }
+.cards-31 .card1:nth-child(2) { border-top: 4px solid var(--cph-warning); }
+.cards-31 .card1:nth-child(3) { border-top: 4px solid var(--cph-error); }
 
-/* make the "Other Risks" box span full width */
-.cards-31 + .card1 {
-  grid-column: 1 / -1;
-}
-
-/* optional subtle coloring per type */
-.cards-31 .card1:nth-child(1) {
-  border-top: 4px solid #2563eb; /* blue */
-}
-.cards-31 .card1:nth-child(2) {
-  border-top: 4px solid #facc15; /* yellow */
-}
-.cards-31 .card1:nth-child(3) {
-  border-top: 4px solid #dc2626; /* red */
-}
-.cards-31 + .card1 {
-  border-top: 4px solid #6b7280; /* gray */
-}
-
-/* Responsive stacking for tablets & mobile */
 @media (max-width: 900px) {
-  .cards-31 {
-    grid-template-columns: 1fr;
-  }
-  .cards-31 + .card1 {
-    grid-column: auto;
-  }
+  .cards-31 { grid-template-columns: 1fr; }
 }

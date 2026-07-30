@@ -235,12 +235,20 @@ export default function TravelConsultationPage({ onContinue }) {
     </ul>
   );
 
-  // ---------------------- Render ----------------------
   return (
-    <div className="consultation1">
+    <div className="consultation1-wrapper">
+      <div className="travel-consultation-header">
+        <div className="travel-header-title">
+          <h2>✈️ Travel Clinic Risk Assessment &amp; Consultation</h2>
+          <p>Step {step} of 2 – {step === 1 ? "Trip Itinerary & Special Health Conditions" : "Clinical Screening & Medical Questionnaire"}</p>
+        </div>
+        <span className="cph-badge cph-badge-emerald">
+          Step {step} / 2
+        </span>
+      </div>
+
       {step === 1 ? (
         <div className="page1">
-          <h2 className="page-title1">Travel Vaccination Consultation</h2>
 
           <div className="card1">
             <div className="form-group1">

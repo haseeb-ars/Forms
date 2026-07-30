@@ -83,20 +83,23 @@
 .healthy-input-short,
 .healthy-input-text {
   width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
+  height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
   font-size: 0.85rem;
+  box-sizing: border-box;
 }
 
 .healthy-textarea {
   width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
+  padding: 8px 10px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
   font-size: 0.85rem;
   resize: vertical;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .healthy-input-date:focus,
@@ -105,7 +108,7 @@
 .healthy-textarea:focus {
   outline: none;
   border-color: #166534;
-  box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.15);
+  box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.15);
 }
 
 .healthy-entry-table input[type="checkbox"] {

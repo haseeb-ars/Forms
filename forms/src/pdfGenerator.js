@@ -90,14 +90,15 @@ export async function generatePDFFromData({
 }) {
   return new Promise(async (resolve) => {
     const isACWY = fileName.includes("acwy-certificate");
+    const isLandscape = serviceId === "healthyLivingLog" || fileName.includes("healthy-living");
     const host = document.createElement("div");
     Object.assign(host.style, {
       position: "absolute",
       left: "-99999px",
       top: "0",
-      width: isACWY ? "680px" : "900px",
+      width: isLandscape ? "1080px" : isACWY ? "680px" : "900px",
       background: "#fff",
-      padding: isACWY ? "0" : "24px",
+      padding: isACWY ? "0" : isLandscape ? "0px" : "24px",
       zIndex: "-1",
     });
     document.body.appendChild(host);
@@ -144,19 +145,19 @@ export async function generatePDFFromData({
     );
 
     await new Promise((r) => requestAnimationFrame(r));
-    await new Promise((r) => setTimeout(r, 150));
+    await new Promise((r) => setTimeout(r, 200));
     await waitForImages(host);
 
     try {
       const canvas = await html2canvas(host, {
-        scale: isACWY ? 2.5 : 1.25,
+        scale: isLandscape ? 2 : isACWY ? 2.5 : 1.25,
         useCORS: true,
         backgroundColor: "#ffffff",
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", isACWY ? 1.0 : 0.72);
+      const imgData = canvas.toDataURL("image/jpeg", isLandscape || isACWY ? 1.0 : 0.85);
       const pdf = new jsPDF({
-        orientation: "p",
+        orientation: isLandscape ? "l" : "p",
         unit: "pt",
         format: "a4",
         compress: true,
@@ -164,20 +165,31 @@ export async function generatePDFFromData({
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      const ratio = pdfWidth / canvas.width;
-      const scaledHeight = canvas.height * ratio;
 
-      let heightLeft = scaledHeight;
-      let position = 0;
+      if (isLandscape) {
+        // 10mm margins = ~28.3pt
+        const margin = 28.3;
+        const printWidth = pdfWidth - margin * 2;
+        const ratio = printWidth / canvas.width;
+        const printHeight = canvas.height * ratio;
 
-      pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
-      heightLeft -= pdfHeight;
+        pdf.addImage(imgData, "JPEG", margin, margin, printWidth, printHeight);
+      } else {
+        const ratio = pdfWidth / canvas.width;
+        const scaledHeight = canvas.height * ratio;
 
-      while (heightLeft > 0) {
-        position -= pdfHeight;
-        pdf.addPage();
+        let heightLeft = scaledHeight;
+        let position = 0;
+
         pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
         heightLeft -= pdfHeight;
+
+        while (heightLeft > 0) {
+          position -= pdfHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
+          heightLeft -= pdfHeight;
+        }
       }
 
       const safeName =

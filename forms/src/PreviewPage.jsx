@@ -119,6 +119,7 @@ export default function PreviewPage() {
     perioddelayConsultation,
     privatePrescriptionConsultation,
     employeeAppraisalConsultation,
+    healthyLivingLogConsultation,
     weightLossFollowupConsultation,
     contraceptionConsultation,
     travelFollowUpOriginalData,
@@ -202,6 +203,10 @@ export default function PreviewPage() {
           { key: "consult", label: "Consultation", Comp: ContraceptionConsultationTemplate, pdfName: "contraception-consultation.pdf" },
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "contraception-prescription.pdf" },
         ];
+      case "healthyLivingLog":
+        return [
+          { key: "form", label: "Signposting Log", Comp: Template, pdfName: "healthy-living-signposting-log.pdf" },
+        ];
       case "employeeAppraisal":
         return [
           { key: "form", label: "Appraisal Form", Comp: EmployeeAppraisalTemplate, pdfName: "employee-performance-appraisal.pdf" },
@@ -235,6 +240,7 @@ export default function PreviewPage() {
       case "perioddelay": return perioddelayConsultation;
       case "contraception": return contraceptionConsultation;
       case "employeeAppraisal": return employeeAppraisalConsultation;
+      case "healthyLivingLog": return healthyLivingLogConsultation;
       case "travelFollowUp": return travelFollowUpOriginalData?.consultation_data || {};
       default: return {};
     }
@@ -242,7 +248,8 @@ export default function PreviewPage() {
     id, travelConsultation, weightLossConsultation, weightLossFollowupConsultation,
     fluConsultation, covidConsultation, b12Consultation, earwaxConsultation,
     mmrConsultation, meningitisConsultation, perioddelayConsultation,
-    privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, travelFollowUpOriginalData?.consultation_data,
+    privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
+    healthyLivingLogConsultation, travelFollowUpOriginalData?.consultation_data,
   ]);
 
   const getMergedData = useCallback(() => {
@@ -250,6 +257,7 @@ export default function PreviewPage() {
     const mergeAll = (consult) => deepFormatDates({ ...safePatient, ...pharm, ...consult, ...branch });
 
     switch (id) {
+      case "healthyLivingLog": return mergeAll(healthyLivingLogConsultation);
       case "travel": return mergeAll(travelConsultation);
       case "weightloss": return mergeAll(weightLossConsultation);
       case "weightlossFollowup": {
@@ -297,7 +305,7 @@ export default function PreviewPage() {
     fluConsultation, covidConsultation,
     b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation,
     perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
-    travelFollowUpOriginalData, weightLossFollowupOriginalData,
+    healthyLivingLogConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
   ]);
 
     const tenant = useMemo(() => {
@@ -445,11 +453,12 @@ export default function PreviewPage() {
 
   const generatePDF = useCallback(async (Comp, fileName, extraProps = {}) => {
     const isACWY = fileName.includes("acwy-certificate");
+    const isLandscape = id === "healthyLivingLog" || fileName.includes("healthy-living");
     const host = document.createElement("div");
     Object.assign(host.style, {
       position: "absolute", left: "-99999px", top: "0",
-      width: isACWY ? "680px" : "900px",
-      background: "#fff", padding: isACWY ? "0" : "24px", zIndex: "-1",
+      width: isLandscape ? "1080px" : isACWY ? "680px" : "900px",
+      background: "#fff", padding: isACWY ? "0" : isLandscape ? "0px" : "24px", zIndex: "-1",
     });
     document.body.appendChild(host);
 
@@ -462,7 +471,7 @@ export default function PreviewPage() {
         patient, pharm, currentUser, branch, travelConsultation, weightLossConsultation,
         fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation,
         meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation,
-        contraceptionConsultation, employeeAppraisalConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
+        contraceptionConsultation, employeeAppraisalConsultation, healthyLivingLogConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
       }}>
         <Comp
           data={mergedData} consultation={consultF} pharmacist={pharmF}
@@ -477,23 +486,39 @@ export default function PreviewPage() {
     await waitForImages(host);
 
     try {
-      const canvas = await html2canvas(host, { scale: isACWY ? 2.5 : 1.25, useCORS: true, backgroundColor: "#ffffff" });
-      const imgData = canvas.toDataURL("image/jpeg", isACWY ? 1.0 : 0.72);
-      const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4", compress: true });
+      const canvas = await html2canvas(host, {
+        scale: isLandscape ? 2 : isACWY ? 2.5 : 1.25,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
+      const imgData = canvas.toDataURL("image/jpeg", isLandscape || isACWY ? 1.0 : 0.85);
+      const pdf = new jsPDF({ orientation: isLandscape ? "l" : "p", unit: "pt", format: "a4", compress: true });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      const ratio = pdfWidth / canvas.width;
-      const scaledHeight = canvas.height * ratio;
 
-      let heightLeft = scaledHeight;
-      let position = 0;
-      pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
-      heightLeft -= pdfHeight;
-      while (heightLeft > 0) {
-        position -= pdfHeight;
-        pdf.addPage();
+      if (isLandscape) {
+        const margin = 28.3; // 10mm margin
+        const printWidth = pdfWidth - margin * 2;
+        const ratio = printWidth / canvas.width;
+        const printHeight = canvas.height * ratio;
+
+        pdf.addImage(imgData, "JPEG", margin, margin, printWidth, printHeight);
+      } else {
+        const ratio = pdfWidth / canvas.width;
+        const scaledHeight = canvas.height * ratio;
+
+        let heightLeft = scaledHeight;
+        let position = 0;
+
         pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
         heightLeft -= pdfHeight;
+
+        while (heightLeft > 0) {
+          position -= pdfHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "JPEG", 0, position, pdfWidth, scaledHeight);
+          heightLeft -= pdfHeight;
+        }
       }
       const pName = patient.fullName || [patient.firstName, patient.surname].filter(Boolean).join(" ");
       const safeName = pName ? pName.replace(/\s+/g, "_") : "form";
@@ -502,7 +527,7 @@ export default function PreviewPage() {
       try { root.unmount(); } catch { }
       document.body.removeChild(host);
     }
-  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
+  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, healthyLivingLogConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
 
   const downloadPDFs = useCallback(async () => {
     for (const tab of serviceTabs) {

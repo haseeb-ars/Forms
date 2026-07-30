@@ -67,6 +67,43 @@ async function ensureSchema() {
       extra_meta JSONB
     );
   `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS healthy_living_signposting_log (
+      id SERIAL PRIMARY KEY,
+      submission_id INT,
+      branch_id TEXT,
+      branch_name TEXT,
+      date DATE,
+      staff_initials TEXT,
+      nhs_number TEXT,
+      clinical_location TEXT,
+      non_clinical_location TEXT,
+      lifestyle_advice TEXT,
+      otc_advice TEXT,
+      self_care TEXT,
+      signposting TEXT,
+      brief_description TEXT,
+      gp_informed TEXT,
+      recorded_in_pnr TEXT,
+      outcome_summary TEXT,
+      created_by TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS healthy_living_signposting_log_audit (
+      id SERIAL PRIMARY KEY,
+      log_id INT,
+      action TEXT,
+      changed_by TEXT,
+      branch_id TEXT,
+      timestamp TIMESTAMPTZ DEFAULT NOW(),
+      changes JSONB
+    );
+  `);
 }
 
 ensureSchema().catch((err) => console.error("ensureSchema error", err));
@@ -297,6 +334,165 @@ app.get("/api/form-submissions/by-name", async (req, res) => {
       ok: false,
       error: "db_error",
     });
+  }
+});
+
+/* ---------------------------------------
+   HEALTHY LIVING SIGNPOSTING LOG API & AUDIT
+------------------------------------------ */
+app.post("/api/healthy-living-log", async (req, res) => {
+  console.log("📥 /api/healthy-living-log called");
+  try {
+    const { branchId, branchName, createdBy, submissionId, entries } = req.body || {};
+
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return res.status(400).json({ ok: false, error: "empty_entries" });
+    }
+
+    const savedRows = [];
+    for (const item of entries) {
+      const {
+        id,
+        date,
+        staffInitials,
+        nhsNumber,
+        clinicalLocation,
+        nonClinicalLocation,
+        lifestyleAdvice,
+        otcAdvice,
+        selfCare,
+        signposting,
+        briefDescription,
+        gpInformed,
+        recordedInPnr,
+        outcomeSummary,
+      } = item;
+
+      if (id) {
+        // Update existing row
+        const updateRes = await pool.query(
+          `
+          UPDATE healthy_living_signposting_log
+          SET branch_id = $1,
+              branch_name = $2,
+              date = $3,
+              staff_initials = $4,
+              nhs_number = $5,
+              clinical_location = $6,
+              non_clinical_location = $7,
+              lifestyle_advice = $8,
+              otc_advice = $9,
+              self_care = $10,
+              signposting = $11,
+              brief_description = $12,
+              gp_informed = $13,
+              recorded_in_pnr = $14,
+              outcome_summary = $15,
+              updated_at = NOW()
+          WHERE id = $16
+          RETURNING *
+        `,
+          [
+            branchId || null,
+            branchName || null,
+            date ? new Date(date) : new Date(),
+            staffInitials || null,
+            nhsNumber || null,
+            clinicalLocation || null,
+            nonClinicalLocation || null,
+            lifestyleAdvice || null,
+            otcAdvice || null,
+            selfCare || null,
+            signposting || null,
+            briefDescription || null,
+            gpInformed || null,
+            recordedInPnr || null,
+            outcomeSummary || null,
+            id,
+          ]
+        );
+        const row = updateRes.rows[0];
+        savedRows.push(row);
+
+        // Audit entry
+        await pool.query(
+          `
+          INSERT INTO healthy_living_signposting_log_audit
+            (log_id, action, changed_by, branch_id, changes)
+          VALUES ($1, 'UPDATE', $2, $3, $4)
+        `,
+          [row.id, createdBy || "system", branchId || null, JSON.stringify(item)]
+        );
+      } else {
+        // Insert new row
+        const insertRes = await pool.query(
+          `
+          INSERT INTO healthy_living_signposting_log (
+            submission_id, branch_id, branch_name, date, staff_initials,
+            nhs_number, clinical_location, non_clinical_location, lifestyle_advice,
+            otc_advice, self_care, signposting, brief_description, gp_informed,
+            recorded_in_pnr, outcome_summary, created_by
+          ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+          RETURNING *
+        `,
+          [
+            submissionId || null,
+            branchId || null,
+            branchName || null,
+            date ? new Date(date) : new Date(),
+            staffInitials || null,
+            nhsNumber || null,
+            clinicalLocation || null,
+            nonClinicalLocation || null,
+            lifestyleAdvice || null,
+            otcAdvice || null,
+            selfCare || null,
+            signposting || null,
+            briefDescription || null,
+            gpInformed || null,
+            recordedInPnr || null,
+            outcomeSummary || null,
+            createdBy || "system",
+          ]
+        );
+        const row = insertRes.rows[0];
+        savedRows.push(row);
+
+        // Audit entry
+        await pool.query(
+          `
+          INSERT INTO healthy_living_signposting_log_audit
+            (log_id, action, changed_by, branch_id, changes)
+          VALUES ($1, 'CREATE', $2, $3, $4)
+        `,
+          [row.id, createdBy || "system", branchId || null, JSON.stringify(item)]
+        );
+      }
+    }
+
+    res.json({ ok: true, rows: savedRows });
+  } catch (err) {
+    console.error("💥 healthy-living-log save error", err);
+    res.status(500).json({ ok: false, error: "db_error" });
+  }
+});
+
+app.get("/api/healthy-living-log", async (req, res) => {
+  const { branchId } = req.query;
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT * FROM healthy_living_signposting_log
+      WHERE ($1::text IS NULL OR branch_id = $1)
+      ORDER BY date DESC, created_at DESC
+      LIMIT 500
+    `,
+      [branchId || null]
+    );
+    res.json({ ok: true, rows });
+  } catch (err) {
+    console.error("💥 healthy-living-log select error", err);
+    res.status(500).json({ ok: false, error: "db_error" });
   }
 });
 

@@ -182,6 +182,25 @@ export function AppProvider({ children }) {
     useState({});
   const [employeeAppraisalConsultation, setEmployeeAppraisalConsultation] =
     useState(DEFAULT_EMPLOYEE_APPRAISAL);
+  const [healthyLivingLogConsultation, setHealthyLivingLogConsultation] = useState({
+    entries: [
+      {
+        date: new Date().toISOString().split("T")[0],
+        staffInitials: "",
+        nhsNumber: "",
+        clinicalLocation: false,
+        nonClinicalLocation: false,
+        lifestyleAdvice: false,
+        otcAdvice: false,
+        selfCare: false,
+        signposting: false,
+        briefDescription: "",
+        gpInformed: false,
+        recordedInPnr: false,
+        outcomeSummary: "",
+      },
+    ],
+  });
   const [weightLossFollowupConsultation, setWeightLossFollowupConsultation] =
     useState({});
   const [weightLossFollowupOriginalData, setWeightLossFollowupOriginalData] = useState(null);
@@ -347,6 +366,9 @@ export function AppProvider({ children }) {
 
         employeeAppraisalConsultation,
         setEmployeeAppraisalConsultation,
+
+        healthyLivingLogConsultation,
+        setHealthyLivingLogConsultation,
 
         travelFollowUpOriginalData,
         setTravelFollowUpOriginalData,

@@ -121,3 +121,23 @@ export async function fetchSubmissionByName({ name, dob, service, tenant }) {
 
   return res.json(); // { ok: boolean, row: {...} | null }
 }
+
+/* ---------------------------------------
+   Save Healthy Living Signposting Log Entries
+------------------------------------------ */
+export async function saveHealthyLivingLog(payload) {
+  console.log("[API] Starting saveHealthyLivingLog", payload);
+  const res = await fetch(`${API_BASE}/api/healthy-living-log`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Server error (${res.status}): ${errorText}`);
+  }
+
+  return res.json();
+}
+

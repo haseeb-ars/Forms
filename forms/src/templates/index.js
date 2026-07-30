@@ -25,6 +25,7 @@ import PrivatePrescriptionTemplate from "./PrivatePrescriptionTemplate.jsx";
 import PrivatePrescriptionConsultationTemplate from "./PrivatePrescriptionConsultationTemplate.jsx";
 import PeriodDelayTemplate from "./PeriodDelayTemplate.jsx";
 import FollowupTravelPrescriptionTemplate from "./FollowupTravelPrescriptionTemplate.jsx";
+import HealthyLivingLogTemplate from "./HealthyLivingLogTemplate.jsx";
 
 const templates = {
   // main “form” templates keyed by service id
@@ -48,6 +49,7 @@ const templates = {
   contraceptionConsultation: ContraceptionConsultationTemplate,
   acwyCertificate: ACWYCertificateTemplate,
   employeeAppraisal: EmployeeAppraisalTemplate,
+  healthyLivingLog: HealthyLivingLogTemplate,
 
 
 

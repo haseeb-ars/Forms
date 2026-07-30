@@ -627,6 +627,15 @@ export const services = [
     ],
     pharmacistFields: [],
     template: "EmployeeAppraisalTemplate"
+  },
+  {
+    id: "healthyLivingLog",
+    name: "Intervention / Healthy Living Advice / Signposting Log",
+    color: "#15803d",
+    patientFields: [],
+    pharmacistFields: [],
+    template: "HealthyLivingLogTemplate"
   }
 ];
+
 

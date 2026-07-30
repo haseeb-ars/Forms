@@ -1,0 +1,199 @@
+/* HealthyLivingLogTemplate.css - Fixed NHS Audit Document Layout */
+
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+.healthy-log-document.fixed-landscape-layout {
+  width: 1080px;
+  min-width: 1080px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px;
+  background-color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  box-sizing: border-box;
+}
+
+/* Header section */
+.healthy-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  width: 1056px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-title-container {
+  flex: 1;
+  text-align: center;
+  padding-top: 6px;
+}
+
+.healthy-doc-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #166534; /* Dark green brand color */
+  margin: 0;
+  letter-spacing: -0.2px;
+  text-transform: none;
+}
+
+.header-branding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 200px;
+}
+
+.careplus-logo {
+  height: 40px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.branch-name-display {
+  font-size: 11px;
+  font-weight: 800;
+  color: #166534;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+
+/* Main Grid Table with Fixed Layout */
+.healthy-grid-table {
+  width: 1056px;
+  min-width: 1056px;
+  max-width: 1056px;
+  border-collapse: collapse;
+  border: 1.5px solid #000000;
+  table-layout: fixed;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+.healthy-grid-table th,
+.healthy-grid-table td {
+  border: 1px solid #000000;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Vertical Headers */
+.th-vertical {
+  height: 135px;
+  vertical-align: top;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.header-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.svg-vertical-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  fill: #000000;
+  letter-spacing: 0.1px;
+}
+
+/* Horizontal Brief Description Header */
+.th-horizontal.col-description {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 10px !important;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.desc-header-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 4px;
+}
+
+.desc-header-guidance {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+
+.desc-header-example {
+  font-size: 9px;
+  font-weight: 500;
+  color: #333333;
+  line-height: 1.25;
+}
+
+/* Table Body Rows */
+.grid-row {
+  height: 36px;
+  min-height: 36px;
+  max-height: 36px;
+}
+
+.cell-center {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 4px !important;
+}
+
+.cell-left {
+  text-align: left;
+  vertical-align: middle;
+  font-size: 10.5px;
+  padding: 4px 6px !important;
+  line-height: 1.25;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.cell-desc {
+  font-size: 10px;
+}
+
+/* Printable & Preview Alignment */
+@media print {
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .healthy-log-document.fixed-landscape-layout {
+    width: 1080px !important;
+    min-width: 1080px !important;
+    max-width: 1080px !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+  }
+
+  .healthy-grid-table {
+    border: 1.5px solid #000000 !important;
+  }
+
+  .healthy-grid-table th,
+  .healthy-grid-table td {
+    border: 1px solid #000000 !important;
+  }
+}

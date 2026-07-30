@@ -12,6 +12,8 @@ const handleSelect = (serviceId) => {
   setSelectedFormType(serviceId);
   if (serviceId === "employeeAppraisal") {
     navigate(`/service/employeeAppraisal/form`);
+  } else if (serviceId === "healthyLivingLog") {
+    navigate(`/service/healthyLivingLog/form`);
   } else {
     navigate(`/service/${serviceId}/patient`);
   }

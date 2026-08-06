@@ -26,6 +26,7 @@ import PrivatePrescriptionConsultationTemplate from "./PrivatePrescriptionConsul
 import PeriodDelayTemplate from "./PeriodDelayTemplate.jsx";
 import FollowupTravelPrescriptionTemplate from "./FollowupTravelPrescriptionTemplate.jsx";
 import HealthyLivingLogTemplate from "./HealthyLivingLogTemplate.jsx";
+import StaffFileNoteTemplate from "./StaffFileNoteTemplate.jsx";
 
 const templates = {
   // main “form” templates keyed by service id
@@ -50,6 +51,7 @@ const templates = {
   acwyCertificate: ACWYCertificateTemplate,
   employeeAppraisal: EmployeeAppraisalTemplate,
   healthyLivingLog: HealthyLivingLogTemplate,
+  staffFileNote: StaffFileNoteTemplate,
 
 
 

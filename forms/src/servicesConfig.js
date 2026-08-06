@@ -635,6 +635,24 @@ export const services = [
     patientFields: [],
     pharmacistFields: [],
     template: "HealthyLivingLogTemplate"
+  },
+  {
+    id: "staffFileNote",
+    name: "Staff File Note",
+    color: "#2563eb",
+    patientFields: [
+      { name: "employeeName", label: "Employee Name", type: "text", required: true },
+      { name: "employeeId", label: "Employee ID", type: "text" },
+      { name: "department", label: "Department", type: "text" },
+      { name: "jobTitle", label: "Position/Job Title", type: "text" },
+      { name: "manager", label: "Manager", type: "text" },
+      { name: "meetingDate", label: "Date of Meeting", type: "date", required: true },
+      { name: "meetingPurpose", label: "Purpose of Meeting", type: "select", options: ["Formal Meeting", "Informal Meeting", "Disciplinary"], required: true },
+      { name: "keyDiscussionPoints", label: "Key Discussion Points", type: "textarea", required: true },
+      { name: "preparedBy", label: "Prepared By", type: "text", required: true },
+    ],
+    pharmacistFields: [],
+    template: "StaffFileNoteTemplate"
   }
 ];
 

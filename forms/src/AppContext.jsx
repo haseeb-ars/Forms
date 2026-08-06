@@ -146,6 +146,51 @@ export const DEFAULT_EMPLOYEE_APPRAISAL = {
   dateSigned: "",
 };
 
+// 🔹 CarePlus Health Staff Directory for autocomplete/selection
+export const CAREPLUS_STAFF_LIST = [
+  { id: "CP-101", name: "Dr. Sarah Jenkins", department: "Clinical Services", jobTitle: "Senior Lead Pharmacist", manager: "Dr. Robert Vance" },
+  { id: "CP-102", name: "Michael Chang", department: "Pharmacy Operations", jobTitle: "Dispensary Technician", manager: "Dr. Sarah Jenkins" },
+  { id: "CP-103", name: "Emma Watson", department: "Human Resources", jobTitle: "HR Specialist", manager: "David Miller" },
+  { id: "CP-104", name: "James Wilson", department: "Patient Care", jobTitle: "Healthcare Assistant", manager: "Dr. Sarah Jenkins" },
+  { id: "CP-105", name: "Sophia Patel", department: "Administration", jobTitle: "Practice Administrator", manager: "David Miller" },
+  { id: "CP-106", name: "Alexander Wright", department: "Clinical Operations", jobTitle: "Independent Prescriber", manager: "Dr. Robert Vance" },
+  { id: "CP-107", name: "Emily Davies", department: "Customer Support", jobTitle: "Front Desk Coordinator", manager: "Sophia Patel" },
+  { id: "CP-108", name: "Oliver Taylor", department: "Logistics", jobTitle: "Inventory Manager", manager: "Michael Chang" },
+];
+
+// 🔹 Default Staff File Note Form State
+export const DEFAULT_STAFF_FILE_NOTE = {
+  employeeName: "",
+  employeeId: "",
+  department: "",
+  jobTitle: "",
+  manager: "",
+  meetingDate: new Date().toISOString().split("T")[0],
+  meetingTime: "",
+
+  meetingPurpose: "Formal Meeting", // Formal Meeting | Informal Meeting | Disciplinary
+
+  keyDiscussionPoints: "",
+  criticalDetails: "",
+
+  actionsRequired: "",
+  responsiblePerson: "",
+  followUpDueDate: "",
+  followUpRequired: "No", // "Yes" | "No"
+  followUpMeetingDate: "",
+
+  additionalComments: "",
+
+  preparedBy: "",
+  preparedDate: new Date().toISOString().split("T")[0],
+  reviewedBy: "",
+  approvalDate: "",
+
+  isAuthorized: true,
+  createdAt: null,
+  updatedAt: null,
+};
+
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
 
@@ -182,6 +227,8 @@ export function AppProvider({ children }) {
     useState({});
   const [employeeAppraisalConsultation, setEmployeeAppraisalConsultation] =
     useState(DEFAULT_EMPLOYEE_APPRAISAL);
+  const [staffFileNoteConsultation, setStaffFileNoteConsultation] =
+    useState(DEFAULT_STAFF_FILE_NOTE);
   const [healthyLivingLogConsultation, setHealthyLivingLogConsultation] = useState({
     entries: [
       {
@@ -304,6 +351,7 @@ export function AppProvider({ children }) {
     setMeningitisConsultation({}); // ✅ clear on logout
     setContraceptionConsultation({}); // ✅ clear on logout
     setEmployeeAppraisalConsultation(DEFAULT_EMPLOYEE_APPRAISAL); // ✅ clear on logout
+    setStaffFileNoteConsultation(DEFAULT_STAFF_FILE_NOTE); // ✅ clear on logout
   };
 
   return (
@@ -324,6 +372,7 @@ export function AppProvider({ children }) {
         login,
         logout,
         apiBase,
+        staffList: CAREPLUS_STAFF_LIST,
 
         // 🔹 Consultations
         travelConsultation,
@@ -366,6 +415,9 @@ export function AppProvider({ children }) {
 
         employeeAppraisalConsultation,
         setEmployeeAppraisalConsultation,
+
+        staffFileNoteConsultation,
+        setStaffFileNoteConsultation,
 
         healthyLivingLogConsultation,
         setHealthyLivingLogConsultation,

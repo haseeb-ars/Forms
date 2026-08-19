@@ -32,6 +32,7 @@ import ACWYCertificateTemplate from "./templates/ACWYCertificateTemplate.jsx";
 
 import EmployeeAppraisalTemplate from "./templates/EmployeeAppraisalTemplate.jsx";
 import StaffFileNoteTemplate from "./templates/StaffFileNoteTemplate.jsx";
+import SicknessReviewTemplate from "./templates/SicknessReviewTemplate.jsx";
 
 /* -------------------------------
    Date helpers
@@ -121,6 +122,7 @@ export default function PreviewPage() {
     privatePrescriptionConsultation,
     employeeAppraisalConsultation,
     staffFileNoteConsultation,
+    sicknessReviewConsultation,
     healthyLivingLogConsultation,
     weightLossFollowupConsultation,
     contraceptionConsultation,
@@ -217,6 +219,10 @@ export default function PreviewPage() {
         return [
           { key: "form", label: "Staff File Note", Comp: StaffFileNoteTemplate, pdfName: "staff-file-note.pdf" },
         ];
+      case "sicknessReview":
+        return [
+          { key: "form", label: "Sickness Review", Comp: SicknessReviewTemplate, pdfName: "sickness-review.pdf" },
+        ];
       case "followupprescription":
         return [
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: "follow-up-prescription.pdf" },
@@ -247,6 +253,7 @@ export default function PreviewPage() {
       case "contraception": return contraceptionConsultation;
       case "employeeAppraisal": return employeeAppraisalConsultation;
       case "staffFileNote": return staffFileNoteConsultation;
+      case "sicknessReview": return sicknessReviewConsultation;
       case "healthyLivingLog": return healthyLivingLogConsultation;
       case "travelFollowUp": return travelFollowUpOriginalData?.consultation_data || {};
       default: return {};
@@ -256,7 +263,7 @@ export default function PreviewPage() {
     fluConsultation, covidConsultation, b12Consultation, earwaxConsultation,
     mmrConsultation, meningitisConsultation, perioddelayConsultation,
     privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
-    staffFileNoteConsultation, healthyLivingLogConsultation, travelFollowUpOriginalData?.consultation_data,
+    staffFileNoteConsultation, sicknessReviewConsultation, healthyLivingLogConsultation, travelFollowUpOriginalData?.consultation_data,
   ]);
 
   const getMergedData = useCallback(() => {
@@ -291,6 +298,7 @@ export default function PreviewPage() {
       case "contraception": return mergeAll(contraceptionConsultation);
       case "employeeAppraisal": return mergeAll(employeeAppraisalConsultation);
       case "staffFileNote": return mergeAll(staffFileNoteConsultation);
+      case "sicknessReview": return mergeAll(sicknessReviewConsultation);
       case "travelFollowUp": {
         const pData = travelFollowUpOriginalData?.patient_data || pharm.originalPatient || {};
         const rxData = travelFollowUpOriginalData?.pharmacist_data || pharm.originalMeds || {};
@@ -313,7 +321,7 @@ export default function PreviewPage() {
     fluConsultation, covidConsultation,
     b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation,
     perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
-    staffFileNoteConsultation, healthyLivingLogConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
+    staffFileNoteConsultation, sicknessReviewConsultation, healthyLivingLogConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
   ]);
 
     const tenant = useMemo(() => {

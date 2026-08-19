@@ -653,6 +653,20 @@ export const services = [
     ],
     pharmacistFields: [],
     template: "StaffFileNoteTemplate"
+  },
+  {
+    id: "sicknessReview",
+    name: "Sickness Review",
+    color: "#3d5a80",
+    patientFields: [
+      { name: "fullName", label: "Full Name", type: "text", required: true },
+      { name: "employeeId", label: "Employee ID", type: "text" },
+      { name: "department", label: "Department", type: "text" },
+      { name: "lineManager", label: "Line Manager", type: "text" },
+      { name: "reviewDate", label: "Review Date", type: "date", required: true },
+    ],
+    pharmacistFields: [],
+    template: "SicknessReviewTemplate"
   }
 ];
 

@@ -191,6 +191,38 @@ export const DEFAULT_STAFF_FILE_NOTE = {
   updatedAt: null,
 };
 
+// 🔹 Default Sickness Review Form State
+export const DEFAULT_SICKNESS_REVIEW = {
+  fullName: "",
+  employeeId: "",
+  department: "",
+  lineManager: "",
+
+  instance1Start: "",
+  instance1End: "",
+  instance1Days: "—",
+
+  instance2Start: "",
+  instance2End: "",
+  instance2Days: "—",
+
+  instance3Start: "",
+  instance3End: "",
+  instance3Days: "—",
+
+  illnessType: "",
+  illnessDescription: "",
+
+  fitFully: false,
+  fitDoctorNote: false,
+  fitAdjustments: false,
+  adjustmentsNeeded: "",
+
+  discussionNotes: "",
+  managerSignature: "",
+  reviewDate: new Date().toISOString().split("T")[0],
+};
+
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
 
@@ -229,6 +261,8 @@ export function AppProvider({ children }) {
     useState(DEFAULT_EMPLOYEE_APPRAISAL);
   const [staffFileNoteConsultation, setStaffFileNoteConsultation] =
     useState(DEFAULT_STAFF_FILE_NOTE);
+  const [sicknessReviewConsultation, setSicknessReviewConsultation] =
+    useState(DEFAULT_SICKNESS_REVIEW);
   const [healthyLivingLogConsultation, setHealthyLivingLogConsultation] = useState({
     entries: [
       {
@@ -352,6 +386,7 @@ export function AppProvider({ children }) {
     setContraceptionConsultation({}); // ✅ clear on logout
     setEmployeeAppraisalConsultation(DEFAULT_EMPLOYEE_APPRAISAL); // ✅ clear on logout
     setStaffFileNoteConsultation(DEFAULT_STAFF_FILE_NOTE); // ✅ clear on logout
+    setSicknessReviewConsultation(DEFAULT_SICKNESS_REVIEW); // ✅ clear on logout
   };
 
   return (
@@ -418,6 +453,9 @@ export function AppProvider({ children }) {
 
         staffFileNoteConsultation,
         setStaffFileNoteConsultation,
+
+        sicknessReviewConsultation,
+        setSicknessReviewConsultation,
 
         healthyLivingLogConsultation,
         setHealthyLivingLogConsultation,

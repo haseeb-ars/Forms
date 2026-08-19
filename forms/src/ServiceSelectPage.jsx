@@ -23,6 +23,7 @@ const SERVICE_ICONS = {
   employeeAppraisal: "👔",
   healthyLivingLog: "📋",
   staffFileNote: "📝",
+  sicknessReview: "🤒",
 };
 
 export default function ServiceSelectPage() {
@@ -37,6 +38,8 @@ export default function ServiceSelectPage() {
       navigate(`/service/healthyLivingLog/form`);
     } else if (serviceId === "staffFileNote") {
       navigate(`/service/staffFileNote/form`);
+    } else if (serviceId === "sicknessReview") {
+      navigate(`/service/sicknessReview/form`);
     } else {
       navigate(`/service/${serviceId}/patient`);
     }

@@ -6,7 +6,7 @@ import "./ServicesDropdown.css";
 const CATEGORIES = [
   {
     name: "⭐ Quick Access / Popular",
-    ids: ["staffFileNote", "weightloss", "travel", "healthyLivingLog", "employeeAppraisal"],
+    ids: ["sicknessReview", "staffFileNote", "weightloss", "travel", "healthyLivingLog", "employeeAppraisal"],
   },
   {
     name: "🩺 Clinical & Consultation Services",
@@ -27,6 +27,7 @@ const CATEGORIES = [
   {
     name: "📝 Follow-Ups & Administration",
     ids: [
+      "sicknessReview",
       "staffFileNote",
       "employeeAppraisal",
       "healthyLivingLog",
@@ -54,6 +55,7 @@ const SERVICE_ICONS = {
   employeeAppraisal: "👔",
   healthyLivingLog: "📋",
   staffFileNote: "📋",
+  sicknessReview: "🤒",
 };
 
 export default function ServicesDropdown() {
@@ -91,6 +93,8 @@ export default function ServicesDropdown() {
       navigate(`/service/healthyLivingLog/form`);
     } else if (serviceId === "staffFileNote") {
       navigate(`/service/staffFileNote/form`);
+    } else if (serviceId === "sicknessReview") {
+      navigate(`/service/sicknessReview/form`);
     } else {
       navigate(`/service/${serviceId}/patient`);
     }

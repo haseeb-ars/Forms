@@ -1,0 +1,202 @@
+/* SicknessReviewTemplate.css - Printable Document Styling */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+.sickness-template {
+  background: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1917;
+  padding: 36px 40px;
+  box-sizing: border-box;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.sickness-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #3d5a80;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.sickness-doc-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sickness-doc-header .brand-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.sickness-doc-header .company-meta h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1917;
+  margin: 0 0 2px 0;
+}
+
+.sickness-doc-header .company-meta p {
+  font-size: 0.8rem;
+  color: #6b6860;
+  margin: 0;
+}
+
+.sickness-doc-header .header-right {
+  text-align: right;
+}
+
+.sickness-doc-header .doc-type-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #3d5a80;
+  background: #e8eef5;
+  padding: 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.sickness-doc-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #1a1917;
+  margin: 0;
+}
+
+.sickness-doc-section {
+  margin-bottom: 20px;
+}
+
+.doc-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9c9a95;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e2e0d8;
+  margin-bottom: 12px;
+}
+
+.instance-block {
+  background: #f9f8f5;
+  border: 1px solid #e2e0d8;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.mt-block {
+  margin-top: 10px;
+}
+
+.instance-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: #3d5a80;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.info-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.info-cell {
+  background: #ffffff;
+  border: 1px solid #e2e0d8;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.info-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b6860;
+  margin-bottom: 3px;
+}
+
+.info-value {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1917;
+}
+
+.info-value.highlight {
+  color: #3d5a80;
+}
+
+.text-block-box {
+  background: #f9f8f5;
+  border: 1px solid #e2e0d8;
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.illness-type-badge {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3d5a80;
+  margin-top: 4px;
+}
+
+.text-desc-wrapper {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e0d8;
+}
+
+.text-desc {
+  font-size: 13.5px;
+  color: #1a1917;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+.fitness-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fitness-item {
+  font-size: 13.5px;
+  color: #6b6860;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fitness-item.active {
+  color: #1a1917;
+  font-weight: 600;
+}
+
+.doc-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e2e0d8;
+  padding-top: 12px;
+  margin-top: 28px;
+  font-size: 0.75rem;
+  color: #9c9a95;
+}

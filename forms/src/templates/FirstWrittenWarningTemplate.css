@@ -1,0 +1,263 @@
+/* src/templates/FirstWrittenWarningTemplate.css */
+
+.warning-doc-template {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  background: #ffffff;
+  padding: 24px;
+  max-width: 850px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Header */
+.warning-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2.5px solid #dc2626;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.company-meta h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.company-meta p {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.doc-type-tag {
+  display: inline-block;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #fecaca;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-right h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Timestamp Bar */
+.doc-timestamp-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+.bar-separator {
+  color: #cbd5e1;
+}
+
+/* Sections */
+.warning-doc-section {
+  margin-bottom: 18px;
+}
+
+.doc-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.sec-badge {
+  background: #dc2626;
+  color: #ffffff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.info-value {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.info-value.highlight {
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* Text Blocks */
+.text-block-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.text-block-content {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #1e293b;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Acknowledgement Box */
+.acknowledgement-doc-section {
+  background: #fffbf0;
+  border: 1px solid #fef08a;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.acknowledgement-doc-box p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #713f12;
+  font-weight: 500;
+  text-align: justify;
+}
+
+/* Signatures */
+.sign-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.sign-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sign-role {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+
+.sign-image-container {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.sig-img {
+  max-height: 52px;
+  max-width: 90%;
+  object-fit: contain;
+}
+
+.sig-placeholder {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.sign-name,
+.sign-date {
+  font-size: 0.8rem;
+  color: #334155;
+}
+
+/* Footer */
+.doc-footer {
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+/* Print Overrides */
+@media print {
+  .warning-doc-template {
+    padding: 0;
+  }
+}

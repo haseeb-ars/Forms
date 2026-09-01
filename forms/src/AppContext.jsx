@@ -223,6 +223,26 @@ export const DEFAULT_SICKNESS_REVIEW = {
   reviewDate: new Date().toISOString().split("T")[0],
 };
 
+// 🔹 Default First Written Warning Form State
+export const DEFAULT_FIRST_WRITTEN_WARNING = {
+  employeeName: "",
+  employeeId: "",
+  department: "",
+  position: "",
+  manager: "",
+  dateOfWarning: new Date().toISOString().split("T")[0],
+  reasonForWarning: "",
+  discussionAndImprovement: "",
+  employeeComments: "",
+  acknowledgementAgreed: true,
+  employeeSignature: "",
+  employeeSignatureDate: new Date().toISOString().split("T")[0],
+  managerSignature: "",
+  managerSignatureDate: new Date().toISOString().split("T")[0],
+  createdAt: null,
+  updatedAt: null,
+};
+
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
 
@@ -263,6 +283,8 @@ export function AppProvider({ children }) {
     useState(DEFAULT_STAFF_FILE_NOTE);
   const [sicknessReviewConsultation, setSicknessReviewConsultation] =
     useState(DEFAULT_SICKNESS_REVIEW);
+  const [firstWrittenWarningConsultation, setFirstWrittenWarningConsultation] =
+    useState(DEFAULT_FIRST_WRITTEN_WARNING);
   const [healthyLivingLogConsultation, setHealthyLivingLogConsultation] = useState({
     entries: [
       {
@@ -456,6 +478,9 @@ export function AppProvider({ children }) {
 
         sicknessReviewConsultation,
         setSicknessReviewConsultation,
+
+        firstWrittenWarningConsultation,
+        setFirstWrittenWarningConsultation,
 
         healthyLivingLogConsultation,
         setHealthyLivingLogConsultation,

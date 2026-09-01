@@ -667,6 +667,21 @@ export const services = [
     ],
     pharmacistFields: [],
     template: "SicknessReviewTemplate"
+  },
+  {
+    id: "firstWrittenWarning",
+    name: "First Written Warning",
+    color: "#dc2626",
+    patientFields: [
+      { name: "employeeName", label: "Employee Name", type: "text", required: true },
+      { name: "employeeId", label: "Employee ID", type: "text" },
+      { name: "department", label: "Department", type: "text" },
+      { name: "position", label: "Position", type: "text" },
+      { name: "manager", label: "Manager/Supervisor", type: "text" },
+      { name: "dateOfWarning", label: "Date of Warning", type: "date", required: true },
+    ],
+    pharmacistFields: [],
+    template: "FirstWrittenWarningTemplate"
   }
 ];
 

@@ -28,6 +28,7 @@ import FollowupTravelPrescriptionTemplate from "./FollowupTravelPrescriptionTemp
 import HealthyLivingLogTemplate from "./HealthyLivingLogTemplate.jsx";
 import StaffFileNoteTemplate from "./StaffFileNoteTemplate.jsx";
 import SicknessReviewTemplate from "./SicknessReviewTemplate.jsx";
+import FirstWrittenWarningTemplate from "./FirstWrittenWarningTemplate.jsx";
 
 const templates = {
   // main “form” templates keyed by service id
@@ -54,6 +55,7 @@ const templates = {
   healthyLivingLog: HealthyLivingLogTemplate,
   staffFileNote: StaffFileNoteTemplate,
   sicknessReview: SicknessReviewTemplate,
+  firstWrittenWarning: FirstWrittenWarningTemplate,
 
 
 

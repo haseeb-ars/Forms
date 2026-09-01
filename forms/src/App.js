@@ -17,6 +17,7 @@ import ContraceptionConsultationPage from "./ContraceptionConsultationPage.jsx";
 import EmployeeAppraisalFormPage from "./EmployeeAppraisalFormPage.jsx";
 import StaffFileNoteFormPage from "./StaffFileNoteFormPage.jsx";
 import SicknessReviewFormPage from "./SicknessReviewFormPage.jsx";
+import FirstWrittenWarningFormPage from "./FirstWrittenWarningFormPage.jsx";
 import HealthyLivingLogFormPage from "./HealthyLivingLogFormPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
 
@@ -167,6 +168,16 @@ function AppShell() {
               element={
                 <RequireAuth>
                   <SicknessReviewFormPage />
+                </RequireAuth>
+              }
+            />
+
+            {/* ⚠️ First Written Warning Form */}
+            <Route
+              path="/service/firstWrittenWarning/form"
+              element={
+                <RequireAuth>
+                  <FirstWrittenWarningFormPage />
                 </RequireAuth>
               }
             />

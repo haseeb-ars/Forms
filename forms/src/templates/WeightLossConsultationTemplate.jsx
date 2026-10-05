@@ -225,7 +225,7 @@ export default function WeightLossConsultationTemplate({
             <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
             <p><strong>Date Given:</strong> {safe(data.dateGiven || new Date().toISOString().split("T")[0])}</p>
             <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
-            <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+            <p><strong>Pen Expiry Date:</strong> {safe(data.dateExpiry)}</p>
             <p><strong>Pharmacist Notes:</strong> {safe(data.notes)}</p>
           </>
         ) : (
@@ -239,6 +239,7 @@ export default function WeightLossConsultationTemplate({
             <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
             <p><strong>Follow-Up Date:</strong> {safe(f.followUpDate)}</p>
             <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+            <p><strong>Pen Expiry Date:</strong> {safe(f.dateExpiry)}</p>
             <p><strong>Additional Notes:</strong> {safe(f.additionalNotes)}</p>
           </>
         )}

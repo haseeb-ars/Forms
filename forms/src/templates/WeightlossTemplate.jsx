@@ -132,7 +132,7 @@ export default function WeightlossTemplate({
             <p><strong>Dose Number:</strong> {safe(data.doseNumber)}</p>
             <p><strong>Date Supplied:</strong> {safe(data.dateGiven || new Date().toISOString().split("T")[0])}</p>
             <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
-            <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+            <p><strong>Pen Expiry Date:</strong> {safe(data.dateExpiry)}</p>
           </>
         ) : (
           <>
@@ -145,6 +145,7 @@ export default function WeightlossTemplate({
             <p><strong>Start Date:</strong> {safe(f.startDate)}</p>
             <p><strong>Follow-up Date:</strong> {safe(f.followUpDate)}</p>
             <p><strong>Batch Number:</strong> {safe(f.batchNumber)}</p>
+            <p><strong>Pen Expiry Date:</strong> {safe(f.dateExpiry)}</p>
           </>
         )}
       </section>

@@ -69,7 +69,7 @@ export default function WeightLossFollowupTemplate({ data = {} }) {
           <p><strong>Quantity Supplied:</strong> {safe(data.quantity)}</p>
           <p><strong>Dose/Month Number:</strong> {safe(data.doseNumber)}</p>
           <p><strong>Batch Number:</strong> {safe(data.batchNumber)}</p>
-          <p><strong>Expiry Date:</strong> {safe(data.dateExpiry)}</p>
+          <p><strong>Pen Expiry Date:</strong> {safe(data.dateExpiry)}</p>
           <p><strong>Date Supplied:</strong> {safe(data.dateGiven || new Date().toISOString().split("T")[0])}</p>
           <p><strong>Prescriber:</strong> {safe(data.prescriberName)}</p>
         </div>

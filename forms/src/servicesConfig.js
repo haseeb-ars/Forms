@@ -155,6 +155,11 @@ export const services = [
         type: "text"
       },
       {
+        name: "dateExpiry",
+        label: "Pen Expiry Date",
+        type: "date"
+      },
+      {
         name: "prescriberType",
         label: "Prescriber Type",
         type: "select",
@@ -242,7 +247,7 @@ export const services = [
       },
       {
         name: "dateExpiry",
-        label: "Expiry Date",
+        label: "Pen Expiry Date",
         type: "date"
       },
       {

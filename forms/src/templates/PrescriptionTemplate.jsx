@@ -356,7 +356,7 @@ function normaliseItems(data, serviceId) {
   // Weightloss (single fields)
   if (
     (serviceId === "weightloss" || serviceId === "weightlossFollowup") &&
-    (data.medication || data.otherMedication || data.dosage || data.batchNumber || data.startDate)
+    (data.medication || data.otherMedication || data.dosage || data.batchNumber || data.startDate || data.dateExpiry)
   ) {
     pushItem({
       name:

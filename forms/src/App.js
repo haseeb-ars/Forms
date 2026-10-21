@@ -18,8 +18,10 @@ import EmployeeAppraisalFormPage from "./EmployeeAppraisalFormPage.jsx";
 import StaffFileNoteFormPage from "./StaffFileNoteFormPage.jsx";
 import SicknessReviewFormPage from "./SicknessReviewFormPage.jsx";
 import FirstWrittenWarningFormPage from "./FirstWrittenWarningFormPage.jsx";
+import TeamMeetingFormPage from "./TeamMeetingFormPage.jsx";
 import HealthyLivingLogFormPage from "./HealthyLivingLogFormPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
+import ConsumablesOrderingPage from "./ConsumablesOrderingPage.jsx";
 
 // 🎨 Header Redesign Components
 import ServicesDropdown from "./ServicesDropdown.jsx";
@@ -43,7 +45,10 @@ function AppShell() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const isFullWidthPage =
-    location.pathname === "/holidays" || location.pathname === "/patients";
+    location.pathname === "/holidays" ||
+    location.pathname === "/patients" ||
+    location.pathname === "/consumables" ||
+    location.pathname === "/consumables-ordering";
 
   const userInitial = (currentUser?.name || "C")[0].toUpperCase();
   const branchDisplay = branch?.pharmacyName || currentUser?.name || "CarePlus Health";
@@ -101,6 +106,15 @@ function AppShell() {
               Patients
             </Link>
 
+            <Link
+              to="/consumables"
+              className="link-btn2"
+              style={{ marginLeft: 8 }}
+              onClick={() => setMobileNavOpen(false)}
+            >
+              Consumables
+            </Link>
+
             <AuthHeaderControls />
           </nav>
 
@@ -142,6 +156,24 @@ function AppShell() {
               }
             />
 
+            {/* 📦 Consumables Ordering */}
+            <Route
+              path="/consumables"
+              element={
+                <RequireAuth>
+                  <ConsumablesOrderingPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/consumables-ordering"
+              element={
+                <RequireAuth>
+                  <ConsumablesOrderingPage />
+                </RequireAuth>
+              }
+            />
+
             {/* 👔 Employee Performance Appraisal Form */}
             <Route
               path="/service/employeeAppraisal/form"
@@ -178,6 +210,16 @@ function AppShell() {
               element={
                 <RequireAuth>
                   <FirstWrittenWarningFormPage />
+                </RequireAuth>
+              }
+            />
+
+            {/* 👥 Team Meeting Service Form */}
+            <Route
+              path="/service/teamMeeting/form"
+              element={
+                <RequireAuth>
+                  <TeamMeetingFormPage />
                 </RequireAuth>
               }
             />

@@ -243,6 +243,23 @@ export const DEFAULT_FIRST_WRITTEN_WARNING = {
   updatedAt: null,
 };
 
+// 🔹 Default Team Meeting Form State
+export const DEFAULT_TEAM_MEETING = {
+  meetingDate: new Date().toISOString().split("T")[0],
+  meetingTime: "",
+  teamMembers: "",
+  pointsDiscussed: "",
+  targets: "",
+  actionPlan: "",
+  actionItems: [
+    { id: 1, action: "", responsiblePerson: "", deadline: "" }
+  ],
+  meetingChair: "",
+  location: "",
+  createdAt: null,
+  updatedAt: null,
+};
+
 const AppCtx = createContext(null);
 export const useApp = () => useContext(AppCtx);
 
@@ -285,6 +302,8 @@ export function AppProvider({ children }) {
     useState(DEFAULT_SICKNESS_REVIEW);
   const [firstWrittenWarningConsultation, setFirstWrittenWarningConsultation] =
     useState(DEFAULT_FIRST_WRITTEN_WARNING);
+  const [teamMeetingConsultation, setTeamMeetingConsultation] =
+    useState(DEFAULT_TEAM_MEETING);
   const [healthyLivingLogConsultation, setHealthyLivingLogConsultation] = useState({
     entries: [
       {
@@ -484,6 +503,9 @@ export function AppProvider({ children }) {
 
         healthyLivingLogConsultation,
         setHealthyLivingLogConsultation,
+
+        teamMeetingConsultation,
+        setTeamMeetingConsultation,
 
         travelFollowUpOriginalData,
         setTravelFollowUpOriginalData,

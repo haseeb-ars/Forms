@@ -6,7 +6,7 @@ import "./ServicesDropdown.css";
 const CATEGORIES = [
   {
     name: "⭐ Quick Access / Popular",
-    ids: ["firstWrittenWarning", "sicknessReview", "staffFileNote", "weightloss", "travel", "healthyLivingLog", "employeeAppraisal"],
+    ids: ["teamMeeting", "firstWrittenWarning", "sicknessReview", "staffFileNote", "weightloss", "travel", "healthyLivingLog", "employeeAppraisal"],
   },
   {
     name: "🩺 Clinical & Consultation Services",
@@ -27,6 +27,7 @@ const CATEGORIES = [
   {
     name: "📝 Follow-Ups & Administration",
     ids: [
+      "teamMeeting",
       "firstWrittenWarning",
       "sicknessReview",
       "staffFileNote",
@@ -58,6 +59,7 @@ const SERVICE_ICONS = {
   staffFileNote: "📋",
   sicknessReview: "🤒",
   firstWrittenWarning: "⚠️",
+  teamMeeting: "👥",
 };
 
 export default function ServicesDropdown() {
@@ -99,6 +101,8 @@ export default function ServicesDropdown() {
       navigate(`/service/sicknessReview/form`);
     } else if (serviceId === "firstWrittenWarning") {
       navigate(`/service/firstWrittenWarning/form`);
+    } else if (serviceId === "teamMeeting") {
+      navigate(`/service/teamMeeting/form`);
     } else {
       navigate(`/service/${serviceId}/patient`);
     }

@@ -687,6 +687,21 @@ export const services = [
     ],
     pharmacistFields: [],
     template: "FirstWrittenWarningTemplate"
+  },
+  {
+    id: "teamMeeting",
+    name: "Team Meeting",
+    color: "#0d9488",
+    patientFields: [
+      { name: "date", label: "Date", type: "date", required: true },
+      { name: "time", label: "Time", type: "time", required: true },
+      { name: "teamMembers", label: "Team Members Involved", type: "textarea", span: true },
+      { name: "pointsDiscussed", label: "Points Discussed", type: "textarea", span: true },
+      { name: "targets", label: "Targets", type: "textarea", span: true },
+      { name: "actionPlan", label: "Action Plan and Deadline for Targets", type: "textarea", span: true },
+    ],
+    pharmacistFields: [],
+    template: "TeamMeetingTemplate"
   }
 ];
 

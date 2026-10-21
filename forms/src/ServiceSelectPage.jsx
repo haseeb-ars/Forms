@@ -25,6 +25,7 @@ const SERVICE_ICONS = {
   staffFileNote: "📝",
   sicknessReview: "🤒",
   firstWrittenWarning: "⚠️",
+  teamMeeting: "👥",
 };
 
 export default function ServiceSelectPage() {
@@ -43,6 +44,8 @@ export default function ServiceSelectPage() {
       navigate(`/service/sicknessReview/form`);
     } else if (serviceId === "firstWrittenWarning") {
       navigate(`/service/firstWrittenWarning/form`);
+    } else if (serviceId === "teamMeeting") {
+      navigate(`/service/teamMeeting/form`);
     } else {
       navigate(`/service/${serviceId}/patient`);
     }

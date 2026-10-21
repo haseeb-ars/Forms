@@ -298,6 +298,12 @@ export default function PatientsPage() {
           ];
           break;
 
+        case "teamMeeting":
+          serviceTabs = [
+            { key: "form", Comp: templates.teamMeeting, pdfName: "team-meeting.pdf" },
+          ];
+          break;
+
         case "covid":
         case "b12":
         case "earwax": {

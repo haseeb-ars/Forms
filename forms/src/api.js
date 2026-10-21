@@ -1,11 +1,14 @@
 // src/api.js
 console.log("API_BASE =", process.env.REACT_APP_API_BASE);
 
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== "undefined"
-    ? window.__API_BASE__ || "http://localhost:4000"
-    : "http://localhost:4000");
+const isLocalhost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1");
+
+const API_BASE = isLocalhost
+  ? "http://localhost:4000"
+  : process.env.REACT_APP_API_BASE || "http://localhost:4000";
 
 /* ---------------------------------------
    Save basic patient row
@@ -190,6 +193,56 @@ export async function fetchConsultationHistory({ name, dob, service, tenant }) {
 
   return [];
 }
+
+/* ---------------------------------------
+   CONSUMABLES ORDERING API
+------------------------------------------ */
+
+export async function fetchConsumablesCatalogue() {
+  try {
+    const res = await fetch(`${API_BASE}/api/consumables/catalogue`);
+    if (res.ok) {
+      const data = await res.json();
+      return data.catalogue || [];
+    }
+  } catch (e) {
+    console.warn("[API] fetchConsumablesCatalogue network error, using local catalogue fallback:", e);
+  }
+  return null;
+}
+
+export async function submitConsumablesOrder(payload) {
+  const res = await fetch(`${API_BASE}/api/consumables/order`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `Server error (${res.status})`);
+  }
+
+  return data;
+}
+
+export async function fetchConsumablesOrders(branchId) {
+  const params = branchId ? `?branchId=${encodeURIComponent(branchId)}` : "";
+  const res = await fetch(`${API_BASE}/api/consumables/orders${params}`);
+  if (!res.ok) throw new Error("Failed to fetch past consumables orders");
+  const data = await res.json();
+  return data.rows || [];
+}
+
+export async function retryConsumablesOrderEmail(orderId) {
+  const res = await fetch(`${API_BASE}/api/consumables/orders/${encodeURIComponent(orderId)}/retry-email`, {
+    method: "POST",
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Retry email failed");
+  return data;
+}
+
 
 
 

@@ -24,6 +24,8 @@ jobs:
         working-directory: forms
       - run: npm run build
         working-directory: forms
+        env:
+          REACT_APP_API_BASE: https://forms-32ar.onrender.com
       - uses: actions/upload-pages-artifact@v3
         with:
           path: forms/build

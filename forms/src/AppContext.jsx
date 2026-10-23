@@ -273,7 +273,9 @@ export function AppProvider({ children }) {
   const [branch, setBranch] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [apiBase] = useState(
-    process.env.REACT_APP_API_BASE || "http://localhost:4000"
+    process.env.REACT_APP_API_BASE ||
+      (typeof window !== "undefined" && window.__API_BASE__) ||
+      "https://forms-32ar.onrender.com"
   );
 
   // 🔹 Consultation States

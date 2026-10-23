@@ -6,9 +6,12 @@ const isLocalhost =
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1");
 
-const API_BASE = isLocalhost
-  ? "http://localhost:4000"
-  : process.env.REACT_APP_API_BASE || "http://localhost:4000";
+const PRODUCTION_API_BASE = "https://forms-32ar.onrender.com";
+
+const API_BASE =
+  process.env.REACT_APP_API_BASE ||
+  (typeof window !== "undefined" && window.__API_BASE__) ||
+  (isLocalhost ? "http://localhost:4000" : PRODUCTION_API_BASE);
 
 /* ---------------------------------------
    Save basic patient row

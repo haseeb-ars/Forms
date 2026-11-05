@@ -21,7 +21,7 @@ const VACCINE_OPTIONS = [
   "Pneumonia",
   "Shingles",
   "HPV",
-  "Men B",
+  "Meningitis vaccine",
   "Atovaquone/ Proguanil",
   "Malarone (12)",
   "Lariam",

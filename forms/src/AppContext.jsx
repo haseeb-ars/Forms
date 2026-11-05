@@ -31,16 +31,22 @@ const BRANCH_CONFIG = {
     logo: `${process.env.PUBLIC_URL}/logos/wilmslow.png`,
     pharmacyName: "Wilmslow Road Pharmacy",
     pharmacyAddress: "480 Wilmslow Rd, Withington, Manchester M20 3BG",
+    phone: "0161 445 3282",
+    email: "wilmslowrdpharmacy@gmail.com",
   },
   southport: {
     logo: `${process.env.PUBLIC_URL}/logos/southport.png`,
     pharmacyName: "CarePlus Chemist",
     pharmacyAddress: "34 Shakespeare St, Southport PR8 5AB",
+    phone: "01704 339220",
+    email: "carepluschemists@gmail.com",
   },
   liverpool: {
     logo: `${process.env.PUBLIC_URL}/logos/liverpool.png`,
     pharmacyName: "247 Pharmacy",
     pharmacyAddress: "15 Stuart Rd, Waterloo, Liverpool L22 4QR",
+    phone: "0151 332 3300",
+    email: "247medicinesltd@gmail.com",
   },
 };
 
@@ -272,10 +278,18 @@ export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [branch, setBranch] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const isLocal =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname === "0.0.0.0");
+
   const [apiBase] = useState(
-    process.env.REACT_APP_API_BASE ||
-      (typeof window !== "undefined" && window.__API_BASE__) ||
-      "https://forms-32ar.onrender.com"
+    isLocal
+      ? "http://localhost:4000"
+      : (process.env.REACT_APP_API_BASE ||
+        (typeof window !== "undefined" && window.__API_BASE__) ||
+        "https://forms-32ar.onrender.com")
   );
 
   // 🔹 Consultation States
@@ -329,6 +343,9 @@ export function AppProvider({ children }) {
     useState({});
   const [weightLossFollowupOriginalData, setWeightLossFollowupOriginalData] = useState(null);
   const [travelFollowUpOriginalData, setTravelFollowUpOriginalData] = useState(null);
+  const [medicationRecommendations, setMedicationRecommendations] = useState({});
+
+  const resetMedicationRecommendations = () => setMedicationRecommendations({});
 
   const resetTravelConsultation = () =>
     setTravelConsultation(DEFAULT_TRAVEL_CONSULTATION);
@@ -430,6 +447,7 @@ export function AppProvider({ children }) {
     setEmployeeAppraisalConsultation(DEFAULT_EMPLOYEE_APPRAISAL); // ✅ clear on logout
     setStaffFileNoteConsultation(DEFAULT_STAFF_FILE_NOTE); // ✅ clear on logout
     setSicknessReviewConsultation(DEFAULT_SICKNESS_REVIEW); // ✅ clear on logout
+    resetMedicationRecommendations(); // ✅ clear on logout
   };
 
   return (
@@ -514,6 +532,11 @@ export function AppProvider({ children }) {
 
         weightLossFollowupOriginalData,
         setWeightLossFollowupOriginalData,
+
+        // 💊 Medication & Supplement Recommendations
+        medicationRecommendations,
+        setMedicationRecommendations,
+        resetMedicationRecommendations,
       }}
     >
       {children}

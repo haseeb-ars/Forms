@@ -30,6 +30,7 @@ import StaffFileNoteTemplate from "./StaffFileNoteTemplate.jsx";
 import SicknessReviewTemplate from "./SicknessReviewTemplate.jsx";
 import FirstWrittenWarningTemplate from "./FirstWrittenWarningTemplate.jsx";
 import TeamMeetingTemplate from "./TeamMeetingTemplate.jsx";
+import MedicationRecommendationsPreviewTemplate from "./MedicationRecommendationsPreviewTemplate.jsx";
 
 const templates = {
   // main “form” templates keyed by service id
@@ -68,6 +69,7 @@ const templates = {
   weightlossConsultation: WeightlossConsultationTemplate,
   privatePrescriptionForm: PrivatePrescriptionTemplate,
   privatePrescriptionConsultation: PrivatePrescriptionConsultationTemplate,
+  medicationRecommendations: MedicationRecommendationsPreviewTemplate,
 };
 
 export default templates;

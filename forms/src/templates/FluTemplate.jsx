@@ -28,7 +28,9 @@ export default function FluTemplate({ data }) {
         <h2>Vaccination Details</h2>
         <p><strong>Vaccine Brand:</strong> {data.vaccineBrand}</p>
         <p><strong>Date Given:</strong> {data.dateGiven}</p>
+        <p><strong>Expiry Date:</strong> {data.dateExpiry}</p>
         <p><strong>Batch Number:</strong> {data.batchNumber}</p>
+        <p><strong>Site Administered:</strong> {data.site}</p>
       </section>
 
       <section className="template-section signature-section">

@@ -211,8 +211,8 @@ const prescriptionMappings = {
   },
 
   meningitis: {
-    title: "Meningitis B Vaccine Prescription",
-    drug: (d) => d.vaccineBrand || "Meningitis B Vaccine",
+    title: "Meningitis Vaccine Prescription",
+    drug: (d) => d.vaccineBrand || "Meningitis vaccine",
     quantity: () => "1 dose",
     dose: (d) => `Dose ${d.doseNumber || "-"}`,
     prescriber: (d) =>
@@ -324,7 +324,7 @@ function normaliseItems(data, serviceId) {
   // Flu (single fields)
   if (
     serviceId === "flu" &&
-    (data.vaccineBrand || data.batchNumber || data.dateGiven)
+    (data.vaccineBrand || data.batchNumber || data.dateGiven || data.dateExpiry)
   ) {
     pushItem({
       name: data.vaccineBrand || "Influenza vaccine",
@@ -332,8 +332,9 @@ function normaliseItems(data, serviceId) {
       dose: "0.5ml IM injection",
       quantity: "1",
       batchNumber: data.batchNumber,
-      expiry: "",
+      expiry: data.dateExpiry || data.expiry || "",
       dateGiven: data.dateGiven,
+      site: data.site || "",
     });
   }
 
@@ -412,7 +413,7 @@ function normaliseItems(data, serviceId) {
     (data.vaccineBrand || data.batchNumber || data.dateGiven || data.dateExpiry)
   ) {
     pushItem({
-      name: data.vaccineBrand || "Meningitis B Vaccine",
+      name: data.vaccineBrand || "Meningitis vaccine",
       vaccineBrand: data.vaccineBrand,
       dose: data.doseNumber ? `Dose ${data.doseNumber}` : "",
       quantity: "1",

@@ -117,6 +117,12 @@ export async function generatePDFFromData({
       ...pharmF,
       ...consultF,
       ...branchF,
+      medicationRecommendations:
+        pharmF.recommendations ||
+        pharmF.medicationRecommendations ||
+        pharm.recommendations ||
+        extraContext?.medicationRecommendations ||
+        {},
     };
 
     root.render(
@@ -224,6 +230,11 @@ export async function downloadPDFsFromSubmission(submission, serviceTabs) {
     submission.consultation || submission.consultation_data || {};
   const branch = submission.branch || submission.branch_data || {};
   const meta = submission.extra_meta || submission.meta || {};
+  const medicationRecommendations =
+    submission.medicationRecommendations ||
+    pharm.recommendations ||
+    pharm.medicationRecommendations ||
+    {};
 
   const serviceId = submission.service;
   const serviceName = (submission.service || "").toUpperCase();
@@ -234,12 +245,13 @@ export async function downloadPDFsFromSubmission(submission, serviceTabs) {
       Comp: tab.Comp,
       fileName: tab.pdfName,
       patient,
-      pharm,
+      pharm: { ...pharm, recommendations: medicationRecommendations },
       consultation,
       branch,
       currentUser,
       serviceId,
       serviceName,
+      extraContext: { medicationRecommendations },
     });
   }
 }

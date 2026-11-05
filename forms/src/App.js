@@ -22,6 +22,7 @@ import TeamMeetingFormPage from "./TeamMeetingFormPage.jsx";
 import HealthyLivingLogFormPage from "./HealthyLivingLogFormPage.jsx";
 import HolidaysPage from "./HolidaysPage.jsx";
 import ConsumablesOrderingPage from "./ConsumablesOrderingPage.jsx";
+import MedicationRecommendationsPage from "./MedicationRecommendationsPage.jsx";
 
 // 🎨 Header Redesign Components
 import ServicesDropdown from "./ServicesDropdown.jsx";
@@ -287,6 +288,16 @@ function AppShell() {
               element={
                 <RequireAuth>
                   <PharmacistFormPage />
+                </RequireAuth>
+              }
+            />
+
+            {/* 💊 Medication & Supplement Recommendations */}
+            <Route
+              path="/service/:id/recommendations"
+              element={
+                <RequireAuth>
+                  <MedicationRecommendationsPage />
                 </RequireAuth>
               }
             />

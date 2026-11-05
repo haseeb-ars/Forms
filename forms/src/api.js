@@ -4,14 +4,16 @@ console.log("API_BASE =", process.env.REACT_APP_API_BASE);
 const isLocalhost =
   typeof window !== "undefined" &&
   (window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1");
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "0.0.0.0");
 
 const PRODUCTION_API_BASE = "https://forms-32ar.onrender.com";
 
-const API_BASE =
-  process.env.REACT_APP_API_BASE ||
-  (typeof window !== "undefined" && window.__API_BASE__) ||
-  (isLocalhost ? "http://localhost:4000" : PRODUCTION_API_BASE);
+const API_BASE = isLocalhost
+  ? "http://localhost:4000"
+  : (process.env.REACT_APP_API_BASE ||
+    (typeof window !== "undefined" && window.__API_BASE__) ||
+    PRODUCTION_API_BASE);
 
 /* ---------------------------------------
    Save basic patient row
@@ -234,7 +236,7 @@ export async function fetchConsumablesOrders(branchId) {
   const res = await fetch(`${API_BASE}/api/consumables/orders${params}`);
   if (!res.ok) throw new Error("Failed to fetch past consumables orders");
   const data = await res.json();
-  return data.rows || [];
+  return data;
 }
 
 export async function retryConsumablesOrderEmail(orderId) {

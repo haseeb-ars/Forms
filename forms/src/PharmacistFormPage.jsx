@@ -5,6 +5,7 @@ import { useApp } from "./AppContext.jsx";
 import LabeledField from "./LabeledField.jsx";
 import SignatureBox from "./SignatureBox.jsx";
 import MedicationRepeater from "./MedicationRepeater.jsx";
+import { isConsultationService } from "./medicationsConfig";
 import "./designSystem.css";
 import "./PharmacistFormPage.css";
 
@@ -21,11 +22,14 @@ export default function PharmacistFormPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // ✅ Always navigate to Preview with autoDownload query
-    navigate({
-      pathname: `/service/${id}/preview`,
-      search: `?autoDownload=true`,
-    });
+    if (isConsultationService(id)) {
+      navigate(`/service/${id}/recommendations`);
+    } else {
+      navigate({
+        pathname: `/service/${id}/preview`,
+        search: `?autoDownload=true`,
+      });
+    }
   };
 
   const malariaFields = service.pharmacistFields.filter((f) => f.name.startsWith("malaria"));
@@ -304,7 +308,9 @@ export default function PharmacistFormPage() {
             className="cph-btn cph-btn-primary"
             style={{ padding: "12px 28px", fontSize: "1rem" }}
           >
-            Preview &amp; Generate Documents →
+            {isConsultationService(id)
+              ? "Continue to Medication Recommendations →"
+              : "Preview & Generate Documents →"}
           </button>
         </div>
       </form>

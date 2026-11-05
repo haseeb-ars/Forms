@@ -10,6 +10,7 @@ import "./PatientsPage.css";
 
 import { downloadPDFsFromSubmission } from "./pdfGenerator.js";
 import templates from "./templates";
+import { isConsultationService } from "./medicationsConfig";
 
 export default function PatientsPage() {
   const { currentUser } = useApp();
@@ -378,6 +379,14 @@ export default function PatientsPage() {
             },
           ];
         }
+      }
+
+      if (isConsultationService(submission.service) && templates.medicationRecommendations) {
+        serviceTabs.push({
+          key: "medRecommendations",
+          Comp: templates.medicationRecommendations,
+          pdfName: `${submission.service}-medication-recommendations.pdf`,
+        });
       }
 
       /* ------------------------------

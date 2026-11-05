@@ -2,6 +2,7 @@
 import React from "react";
 import "./ConsultationTemplate.css";
 import { consultationQuestions } from "../consultationQuestions"; // ✅ IMPORT QUESTIONS
+import MedicationRecommendationsSection from "./MedicationRecommendationsSection.jsx";
 
 export default function ConsultationTemplate({
   serviceName,
@@ -115,6 +116,9 @@ export default function ConsultationTemplate({
           </table>
         )}
       </section>
+
+      {/* ==== MEDICATION RECOMMENDATIONS ==== */}
+      <MedicationRecommendationsSection />
 
       {/* ==== SIGNATURES (IF PRESENT) ==== */}
       {(patientForm.SignaturePatient ||

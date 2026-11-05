@@ -1,5 +1,6 @@
 import React from "react";
 import "./TravelTemplate.css"; // reuse same styling as TravelConsultationTemplate
+import MedicationRecommendationsSection from "./MedicationRecommendationsSection.jsx";
 
 export default function PrivatePrescriptionConsultationTemplate({
   consultation,
@@ -125,6 +126,9 @@ export default function PrivatePrescriptionConsultationTemplate({
           {f.prescriberGPhC || f.gphcNumber || "-"}
         </p>
       </section>
+
+      {/* ---------------- Medication Recommendations ---------------- */}
+      <MedicationRecommendationsSection data={data} />
 
       {/* ---------------- Signatures ---------------- */}
       <section className="template-section signature-section">

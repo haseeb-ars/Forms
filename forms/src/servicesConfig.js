@@ -344,7 +344,9 @@ export const services = [
     pharmacistFields: [
       { name: "vaccineBrand", label: "Vaccine Brand", type: "text" },
       { name: "dateGiven", label: "Date Given", type: "date" },
-      { name: "batchNumber", label: "Batch Number", type: "text" }
+      { name: "dateExpiry", label: "Expiry Date", type: "date" },
+      { name: "batchNumber", label: "Batch Number", type: "text" },
+      { name: "site", label: "Site Administered", type: "select", options: ["Left Arm", "Right Arm"] }
     ],
     template: "FluTemplate"
   },
@@ -543,7 +545,7 @@ export const services = [
 
   {
     id: "meningitis",
-    name: "Meningitis B Vaccine",
+    name: "Meningitis vaccine",
     color: "#0E7C7B",
     patientFields: [
       { name: "fullName", label: "Full Name", type: "text" },

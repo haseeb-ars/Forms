@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import { useApp, AppContext } from "./AppContext.jsx";
 import templates from "./templates";
@@ -14,6 +14,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./PreviewPage.css";
 import { savePatientRow, saveFullSubmission } from "./api";
+import { isConsultationService } from "./medicationsConfig";
+import MedicationRecommendationsPreviewTemplate from "./templates/MedicationRecommendationsPreviewTemplate.jsx";
 
 
 // 🧩 Template Imports
@@ -132,10 +134,12 @@ export default function PreviewPage() {
     contraceptionConsultation,
     travelFollowUpOriginalData,
     weightLossFollowupOriginalData,
+    medicationRecommendations,
   } = useApp();
 
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const previewRef = useRef();
   const [activeTab, setActiveTab] = useState("form");
   const [savedOnce, setSavedOnce] = useState(false);
@@ -146,7 +150,8 @@ export default function PreviewPage() {
   const Template = templates[id] || templates.b12;
 
   const serviceTabs = useMemo(() => {
-    switch (id) {
+    const tabs = (() => {
+      switch (id) {
       case "travel":
         return [
           { key: "form", label: "Form", Comp: Template, pdfName: "travel-form.pdf" },
@@ -245,7 +250,19 @@ export default function PreviewPage() {
           { key: "rx", label: "Prescription", Comp: PrescriptionTemplate, pdfName: `${id}-prescription.pdf` },
         ];
     }
-  }, [id, Template]);
+  })();
+
+  if (isConsultationService(id)) {
+    tabs.push({
+      key: "medRecommendations",
+      label: "Medication Recommendations",
+      Comp: MedicationRecommendationsPreviewTemplate,
+      pdfName: `${id}-medication-recommendations.pdf`,
+    });
+  }
+
+  return tabs;
+}, [id, Template]);
 
   const activeTabDef = serviceTabs.find((t) => t.key === activeTab) || serviceTabs[0];
 
@@ -282,7 +299,7 @@ export default function PreviewPage() {
 
   const getMergedData = useCallback(() => {
     const safePatient = { ...patient, gpName: patient.gpName || "", gpAddress: patient.gpAddress || "" };
-    const mergeAll = (consult) => deepFormatDates({ ...safePatient, ...pharm, ...consult, ...branch });
+    const mergeAll = (consult) => deepFormatDates({ ...safePatient, ...pharm, ...consult, ...branch, medicationRecommendations });
 
     switch (id) {
       case "healthyLivingLog": return mergeAll(healthyLivingLogConsultation);
@@ -330,10 +347,10 @@ export default function PreviewPage() {
         });
       }
 
-      default: return deepFormatDates({ ...safePatient, ...pharm, ...branch });
+      default: return deepFormatDates({ ...safePatient, ...pharm, ...branch, medicationRecommendations });
     }
   }, [
-    id, patient, pharm, branch, travelConsultation, weightLossConsultation,
+    id, patient, pharm, branch, medicationRecommendations, travelConsultation, weightLossConsultation,
     fluConsultation, covidConsultation,
     b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation,
     perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation,
@@ -398,24 +415,28 @@ export default function PreviewPage() {
         tenant,
         service: id,
         patient: { ...patient, fullName }, // Ensure fullName is present
-        pharm: id === "travelFollowUp" 
-          ? { 
-              ...pharm, 
-              history: travelFollowUpOriginalData?.history || [],
-              originalPatient: travelFollowUpOriginalData?.patient_data || {},
-              originalMeds: travelFollowUpOriginalData?.pharmacist_data || {},
-              originalConsultation: travelFollowUpOriginalData?.consultation_data || {}
-            } 
-          : id === "weightlossFollowup"
+        pharm: {
+          ...(id === "travelFollowUp" 
             ? { 
                 ...pharm, 
-                originalPatient: weightLossFollowupOriginalData?.patient_data || {},
-                originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {},
-                originalConsultation: weightLossFollowupOriginalData?.consultation_data || {}
-              }
-            : pharm,
+                history: travelFollowUpOriginalData?.history || [],
+                originalPatient: travelFollowUpOriginalData?.patient_data || {},
+                originalMeds: travelFollowUpOriginalData?.pharmacist_data || {},
+                originalConsultation: travelFollowUpOriginalData?.consultation_data || {}
+              } 
+            : id === "weightlossFollowup"
+              ? { 
+                  ...pharm, 
+                  originalPatient: weightLossFollowupOriginalData?.patient_data || {},
+                  originalMeds: weightLossFollowupOriginalData?.pharmacist_data || {},
+                  originalConsultation: weightLossFollowupOriginalData?.consultation_data || {}
+                }
+              : pharm),
+          recommendations: medicationRecommendations || {},
+        },
 
         consultation: currentConsultation || {},
+        medicationRecommendations: medicationRecommendations || {},
         branch,
         extraMeta: {
           currentUserName: currentUser?.name || "",
@@ -451,7 +472,7 @@ export default function PreviewPage() {
         setSaveStatus("error");
         setSaveError(err.message || "Failed to persist consultation.");
       }
-    }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation, tenant, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
+    }, [saveStatus, currentUser, patient, id, pharm, branch, currentConsultation, tenant, travelFollowUpOriginalData, weightLossFollowupOriginalData, medicationRecommendations]);
 
 
   useEffect(() => {
@@ -504,6 +525,7 @@ export default function PreviewPage() {
         fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation,
         meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation,
         contraceptionConsultation, employeeAppraisalConsultation, staffFileNoteConsultation, sicknessReviewConsultation, firstWrittenWarningConsultation, teamMeetingConsultation, healthyLivingLogConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData,
+        medicationRecommendations,
       }}>
         <Comp
           data={mergedData} consultation={consultF} pharmacist={pharmF}
@@ -559,7 +581,7 @@ export default function PreviewPage() {
       try { root.unmount(); } catch { }
       document.body.removeChild(host);
     }
-  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, staffFileNoteConsultation, sicknessReviewConsultation, firstWrittenWarningConsultation, teamMeetingConsultation, healthyLivingLogConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
+  }, [getMergedData, patient, pharm, branch, currentUser, currentConsultation, id, medicationRecommendations, travelConsultation, weightLossConsultation, fluConsultation, covidConsultation, b12Consultation, earwaxConsultation, mmrConsultation, meningitisConsultation, perioddelayConsultation, privatePrescriptionConsultation, contraceptionConsultation, employeeAppraisalConsultation, staffFileNoteConsultation, sicknessReviewConsultation, firstWrittenWarningConsultation, teamMeetingConsultation, healthyLivingLogConsultation, weightLossFollowupConsultation, travelFollowUpOriginalData, weightLossFollowupOriginalData]);
 
   const downloadPDFs = useCallback(async () => {
     for (const tab of serviceTabs) {
@@ -621,6 +643,17 @@ export default function PreviewPage() {
       </div>
 
       <div className="preview-actions">
+        {isConsultationService(id) && (
+          <button
+            type="button"
+            className="btn btn--secondary"
+            onClick={() => navigate(`/service/${id}/recommendations`)}
+            style={{ marginRight: "1rem" }}
+          >
+            ← Back to Recommendations
+          </button>
+        )}
+
         <button 
           className="btn btn--primary" 
           onClick={downloadPDFs}

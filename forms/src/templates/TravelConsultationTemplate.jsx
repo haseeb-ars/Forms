@@ -3,6 +3,7 @@ import React from "react";
 import "./TravelTemplate.css"; // reuse same styling
 
 import { useApp } from "../AppContext.jsx";
+import MedicationRecommendationsSection from "./MedicationRecommendationsSection.jsx";
 
 export default function TravelConsultationTemplate({ consultation, data, pharmacist, serviceId }) {
   const context = useApp();
@@ -342,6 +343,9 @@ export default function TravelConsultationTemplate({ consultation, data, pharmac
           <p>No medical questions answered.</p>
         )}
       </section>
+
+      {/* Medication & Supplement Recommendations */}
+      <MedicationRecommendationsSection data={data} />
 
       {/* ---------------- Signatures ---------------- */}
       <section className="template-section signature-section">

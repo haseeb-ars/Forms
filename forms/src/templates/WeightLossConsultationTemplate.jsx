@@ -1,6 +1,7 @@
 import React from "react";
 import "./WeightLossConsultationTemplate.css";
 import { useApp } from "../AppContext.jsx";
+import MedicationRecommendationsSection from "./MedicationRecommendationsSection.jsx";
 
 export default function WeightLossConsultationTemplate({
   data = {},
@@ -244,6 +245,9 @@ export default function WeightLossConsultationTemplate({
           </>
         )}
       </section>
+
+      {/* Medication & Supplement Recommendations */}
+      <MedicationRecommendationsSection data={data} />
 
       {/* Signatures */}
       <section className="template-section signature-section">
